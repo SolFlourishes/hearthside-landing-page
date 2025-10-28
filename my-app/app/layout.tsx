@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   title: "Hearthside Works - Tools for Flourishing Through Connection",
   description:
     "A safe space for connection and understanding. Discover tools, resources, and services to help you flourish through meaningful relationships.",
+    generator: 'v0.app'
 }
 
 export default function RootLayout({

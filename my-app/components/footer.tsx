@@ -2,34 +2,31 @@ import Link from "next/link"
 
 export function Footer() {
   const footerLinks = {
-    Products: [
-      { name: "The Clarity Coach", href: "#" },
-      { name: "Features", href: "#" },
-      { name: "Pricing", href: "#" },
-      { name: "Guardian Program", href: "#" },
+    Divisions: [
+      { name: "Hearthside Games", href: "/games" },
+      { name: "Hearthside Stories", href: "/stories" },
+      { name: "Hearthside Care", href: "/care" },
+      { name: "Hearthside Cultivates", href: "/cultivates" },
     ],
-    Services: [
-      { name: "Hearthside Cultivates", href: "#" },
-      { name: "Workshops", href: "#" },
-      { name: "Consulting", href: "#" },
-      { name: "Training", href: "#" },
+    Products: [
+      { name: "Clarity Coach", href: "http://clarity.hearthsideworks.com", external: true },
+      { name: "Project Cohesion", href: "/games/project-cohesion" },
+      { name: "Elder Program", href: "/elder-program" },
     ],
     Company: [
-      { name: "About Us", href: "#" },
-      { name: "Our Mission", href: "#" },
-      { name: "Hearthside Foundation", href: "#" },
-      { name: "Contact", href: "#" },
+      { name: "About Us", href: "/about" },
+      { name: "Our Commitments", href: "/commitments" },
+      { name: "Hearthside Foundation", href: "/foundation" },
+      { name: "Contact", href: "/contact" },
     ],
     Resources: [
-      { name: "Blog", href: "#" },
-      { name: "Documentation", href: "#" },
-      { name: "Support", href: "#" },
-      { name: "Community", href: "#" },
+      { name: "Support", href: "/contact" },
+      { name: "Community", href: "/care" },
     ],
   }
 
   return (
-    <footer className="bg-[#1F2937] text-white py-16">
+    <footer className="bg-[#1F2937] dark:bg-[#111827] text-white py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-12 mb-12">
           {/* Brand */}
@@ -48,9 +45,20 @@ export function Footer() {
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.name}>
-                    <Link href={link.href} className="text-white/70 hover:text-[#FFC72C] transition-colors">
-                      {link.name}
-                    </Link>
+                    {link.external ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white/70 hover:text-[#FFC72C] transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    ) : (
+                      <Link href={link.href} className="text-white/70 hover:text-[#FFC72C] transition-colors">
+                        {link.name}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -64,14 +72,8 @@ export function Footer() {
             © {new Date().getFullYear()} Hearthside Works, LLC. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link href="#" className="text-white/60 hover:text-[#FFC72C] transition-colors text-sm">
-              Privacy Policy
-            </Link>
-            <Link href="#" className="text-white/60 hover:text-[#FFC72C] transition-colors text-sm">
-              Terms of Service
-            </Link>
-            <Link href="#" className="text-white/60 hover:text-[#FFC72C] transition-colors text-sm">
-              Accessibility
+            <Link href="/commitments" className="text-white/60 hover:text-[#FFC72C] transition-colors text-sm">
+              Privacy & Accessibility
             </Link>
           </div>
         </div>
