@@ -45,10 +45,10 @@ Remember: You're a coach, not a therapist. Focus on communication strategies and
 
 Format your responses in HTML with proper paragraph tags for readability.`
 
-    console.log("[v0] Calling Google AI with model: gemini-1.5-pro")
+    console.log("[v0] Calling Google AI with model: gemini-1.5-pro-latest")
 
     const { text } = await generateText({
-      model: google("gemini-1.5-pro"),
+      model: google("gemini-1.5-pro-latest"),
       messages: [
         { role: "system", content: systemPrompt },
         ...history.map((msg: any) => ({
