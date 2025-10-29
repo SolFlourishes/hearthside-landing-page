@@ -4,8 +4,26 @@ import { google } from "@ai-sdk/google"
 
 export async function POST(request: NextRequest) {
   try {
+    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+      console.error("[v0] Chat API error: GOOGLE_GENERATIVE_AI_API_KEY is not set")
+      return NextResponse.json(
+        {
+          error: "API key not configured",
+          details: "GOOGLE_GENERATIVE_AI_API_KEY environment variable is missing",
+          success: false,
+        },
+        { status: 500 },
+      )
+    }
+
     const body = await request.json()
     const { history } = body
+
+    console.log("[v0] Chat request received:", {
+      historyLength: history?.length,
+      historyType: Array.isArray(history) ? "array" : typeof history,
+      firstMessage: history?.[0],
+    })
 
     if (!history || !Array.isArray(history)) {
       return NextResponse.json({ error: "Invalid messages format", success: false }, { status: 400 })
@@ -26,6 +44,8 @@ Your approach:
 Remember: You're a coach, not a therapist. Focus on communication strategies and practical solutions.
 
 Format your responses in HTML with proper paragraph tags for readability.`
+
+    console.log("[v0] Calling Google AI with model: gemini-1.5-pro")
 
     const { text } = await generateText({
       model: google("gemini-1.5-pro"),
@@ -51,7 +71,13 @@ Format your responses in HTML with proper paragraph tags for readability.`
       success: true,
     })
   } catch (error) {
-    console.error("[v0] Chat API error:", error)
+    console.error("[v0] Chat API error:", {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined,
+      fullError: error,
+    })
+
     return NextResponse.json(
       {
         error: "Failed to generate chat response",
