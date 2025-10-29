@@ -2,7 +2,27 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/firebase-admin"
 
 export async function POST(request: NextRequest) {
+  console.log("[v0] === EDIT FEEDBACK API CALLED ===")
+
   try {
+    const hasFirebaseConfig = !!(
+      process.env.FIREBASE_SERVICE_ACCOUNT_KEY ||
+      (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL)
+    )
+
+    if (!hasFirebaseConfig) {
+      console.error("[v0] Firebase environment variables are not configured")
+      return NextResponse.json(
+        {
+          error:
+            "Firebase is not configured. Please set Firebase environment variables in your Vercel project settings.",
+          success: false,
+        },
+        { status: 500 },
+      )
+    }
+
+    console.log("[v0] Firebase config check passed")
     console.log("[v0] Edit feedback request received")
 
     const body = await request.json()
@@ -42,6 +62,11 @@ export async function POST(request: NextRequest) {
       })
     } catch (firestoreError) {
       console.error("[v0] Firestore operation failed:", firestoreError)
+      console.error(
+        "[v0] Firestore error message:",
+        firestoreError instanceof Error ? firestoreError.message : "Unknown",
+      )
+      console.error("[v0] Firestore error stack:", firestoreError instanceof Error ? firestoreError.stack : "No stack")
       throw firestoreError
     }
   } catch (error) {
