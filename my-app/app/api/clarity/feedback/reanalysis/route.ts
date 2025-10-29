@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/firebase-admin"
+import { getDb } from "@/lib/firebase-admin"
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       createdAt: new Date(),
     }
 
-    await db.collection("feedback_reanalysis").add(reanalysisData)
+    await getDb().collection("feedback_reanalysis").add(reanalysisData)
 
     return NextResponse.json({
       success: true,
