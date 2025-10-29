@@ -11,6 +11,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid messages format", success: false }, { status: 400 })
     }
 
+    console.log("[v0] Chat request received with", messages.length, "messages")
+
     const systemPrompt = `You are the Clarity Coach, a supportive communication expert. You help people navigate difficult conversations and improve their communication skills.
 
 Your approach:
@@ -24,7 +26,7 @@ Your approach:
 Remember: You're a coach, not a therapist. Focus on communication strategies and practical solutions.`
 
     const { text } = await generateText({
-      model: google("gemini-2.0-flash-exp"),
+      model: google("gemini-1.5-pro"),
       messages: [
         { role: "system", content: systemPrompt },
         ...messages.map((msg: any) => ({
@@ -35,12 +37,21 @@ Remember: You're a coach, not a therapist. Focus on communication strategies and
       temperature: 0.8,
     })
 
+    console.log("[v0] Chat response generated, length:", text.length)
+
     return NextResponse.json({
       response: text,
       success: true,
     })
   } catch (error) {
     console.error("[v0] Chat API error:", error)
-    return NextResponse.json({ error: "Failed to generate chat response", success: false }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: "Failed to generate chat response",
+        details: error instanceof Error ? error.message : String(error),
+        success: false,
+      },
+      { status: 500 },
+    )
   }
 }

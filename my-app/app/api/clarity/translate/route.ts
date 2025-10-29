@@ -8,6 +8,8 @@ export async function POST(request: NextRequest) {
     const { intent, draft, myStyle, audienceStyle, myNeurotype, audienceNeurotype, myGeneration, audienceGeneration } =
       body
 
+    console.log("[v0] Translation request received:", { intent, draft, myStyle, audienceStyle })
+
     const systemPrompt = `You are the Clarity Coach, an expert communication translator. Your role is to help people communicate more clearly by translating their messages to match their audience's communication style.
 
 Communication Styles:
@@ -33,7 +35,7 @@ ${myGeneration ? `My Generation: ${myGeneration}` : ""}
 ${audienceGeneration ? `Audience Generation: ${audienceGeneration}` : ""}`
 
     const { text } = await generateText({
-      model: google("gemini-2.0-flash-exp"),
+      model: google("gemini-1.5-pro"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
@@ -41,12 +43,16 @@ ${audienceGeneration ? `Audience Generation: ${audienceGeneration}` : ""}`
       temperature: 0.7,
     })
 
+    console.log("[v0] AI response received, length:", text.length)
+
     let cleanedText = text.trim()
     if (cleanedText.startsWith("```json")) {
       cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "")
     } else if (cleanedText.startsWith("```")) {
       cleanedText = cleanedText.replace(/^```\s*/, "").replace(/\s*```$/, "")
     }
+
+    console.log("[v0] Cleaned text:", cleanedText.substring(0, 100))
 
     const parsed = JSON.parse(cleanedText)
 
@@ -57,6 +63,13 @@ ${audienceGeneration ? `Audience Generation: ${audienceGeneration}` : ""}`
     })
   } catch (error) {
     console.error("[v0] Translation API error:", error)
-    return NextResponse.json({ error: "Failed to generate translation", success: false }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: "Failed to generate translation",
+        details: error instanceof Error ? error.message : String(error),
+        success: false,
+      },
+      { status: 500 },
+    )
   }
 }
