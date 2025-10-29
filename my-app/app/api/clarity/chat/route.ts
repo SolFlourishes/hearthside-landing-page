@@ -5,13 +5,13 @@ import { google } from "@ai-sdk/google"
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { messages } = body
+    const { history } = body
 
-    if (!messages || !Array.isArray(messages)) {
+    if (!history || !Array.isArray(history)) {
       return NextResponse.json({ error: "Invalid messages format", success: false }, { status: 400 })
     }
 
-    console.log("[v0] Chat request received with", messages.length, "messages")
+    console.log("[v0] Chat request received with", history.length, "messages")
 
     const systemPrompt = `You are the Clarity Coach, a supportive communication expert. You help people navigate difficult conversations and improve their communication skills.
 
@@ -23,15 +23,17 @@ Your approach:
 - Help users understand both their own communication patterns and their audience's needs
 - Give thorough, thoughtful responses that demonstrate deep understanding
 
-Remember: You're a coach, not a therapist. Focus on communication strategies and practical solutions.`
+Remember: You're a coach, not a therapist. Focus on communication strategies and practical solutions.
+
+Format your responses in HTML with proper paragraph tags for readability.`
 
     const { text } = await generateText({
       model: google("gemini-1.5-pro"),
       messages: [
         { role: "system", content: systemPrompt },
-        ...messages.map((msg: any) => ({
-          role: msg.role,
-          content: msg.content,
+        ...history.map((msg: any) => ({
+          role: msg.role === "model" ? "assistant" : "user",
+          content: typeof msg.content === "string" ? msg.content.replace(/<[^>]*>/g, "") : msg.content,
         })),
       ],
       temperature: 0.8,
@@ -39,8 +41,13 @@ Remember: You're a coach, not a therapist. Focus on communication strategies and
 
     console.log("[v0] Chat response generated, length:", text.length)
 
+    const formattedResponse = text
+      .split("\n\n")
+      .map((para) => `<p>${para}</p>`)
+      .join("")
+
     return NextResponse.json({
-      response: text,
+      reply: formattedResponse,
       success: true,
     })
   } catch (error) {

@@ -5,12 +5,28 @@ import { google } from "@ai-sdk/google"
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { intent, draft, myStyle, audienceStyle, myNeurotype, audienceNeurotype, myGeneration, audienceGeneration } =
-      body
 
-    console.log("[v0] Translation request received:", { intent, draft, myStyle, audienceStyle })
+    const {
+      mode,
+      text,
+      context,
+      sender,
+      receiver,
+      senderNeurotype,
+      receiverNeurotype,
+      senderGeneration,
+      receiverGeneration,
+      analyzeContext,
+      interpretation,
+    } = body
 
-    const systemPrompt = `You are the Clarity Coach, an expert communication translator. Your role is to help people communicate more clearly by translating their messages to match their audience's communication style.
+    console.log("[v0] Translation request received:", { mode, text, context, sender, receiver })
+
+    let systemPrompt = ""
+    let userPrompt = ""
+
+    if (mode === "draft") {
+      systemPrompt = `You are the Clarity Coach, an expert communication translator. Your role is to help people communicate more clearly by translating their messages to match their audience's communication style.
 
 Communication Styles:
 - Direct: Prefers concise, straightforward communication with clear action items
@@ -25,16 +41,44 @@ Your task:
 IMPORTANT: Respond with ONLY a valid JSON object in this exact format (no markdown, no code blocks):
 {"explanation": "your detailed explanation here", "translation": "your improved message here"}`
 
-    const userPrompt = `Intent: ${intent}
-Original Draft: ${draft}
-My Style: ${myStyle}
-Audience Style: ${audienceStyle}
-${myNeurotype ? `My Neurotype: ${myNeurotype}` : ""}
-${audienceNeurotype ? `Audience Neurotype: ${audienceNeurotype}` : ""}
-${myGeneration ? `My Generation: ${myGeneration}` : ""}
-${audienceGeneration ? `Audience Generation: ${audienceGeneration}` : ""}`
+      userPrompt = `Intent: ${context || ""}
+Original Draft: ${text}
+My Style: ${sender}
+Audience Style: ${receiver}
+${senderNeurotype ? `My Neurotype: ${senderNeurotype}` : ""}
+${receiverNeurotype ? `Audience Neurotype: ${receiverNeurotype}` : ""}
+${senderGeneration ? `My Generation: ${senderGeneration}` : ""}
+${receiverGeneration ? `Audience Generation: ${receiverGeneration}` : ""}`
+    } else if (mode === "analyze") {
+      systemPrompt = `You are the Clarity Coach, an expert communication analyst. Your role is to help people understand messages they've received by analyzing tone, subtext, and potential misinterpretations.
 
-    const { text } = await generateText({
+Communication Styles:
+- Direct: Says what they mean clearly and concisely
+- Indirect: Uses context, subtext, and softer language
+
+Your task:
+1. Analyze what the sender likely meant
+2. Consider communication styles, neurotypes, and generational differences
+3. Explain potential misinterpretations
+4. Provide a suggested response that bridges the gap
+
+IMPORTANT: Respond with ONLY a valid JSON object in this exact format (no markdown, no code blocks):
+{"explanation": "what they likely meant and why", "translation": "suggested response"}`
+
+      userPrompt = `Message Received: ${text}
+Situation Context: ${analyzeContext || ""}
+How I Interpreted It: ${interpretation}
+Their Style: ${sender}
+My Style: ${receiver}
+${senderNeurotype ? `Their Neurotype: ${senderNeurotype}` : ""}
+${receiverNeurotype ? `My Neurotype: ${receiverNeurotype}` : ""}
+${senderGeneration ? `Their Generation: ${senderGeneration}` : ""}
+${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}`
+    } else {
+      throw new Error("Invalid mode. Must be 'draft' or 'analyze'")
+    }
+
+    const { text: aiText } = await generateText({
       model: google("gemini-1.5-pro"),
       messages: [
         { role: "system", content: systemPrompt },
@@ -43,9 +87,9 @@ ${audienceGeneration ? `Audience Generation: ${audienceGeneration}` : ""}`
       temperature: 0.7,
     })
 
-    console.log("[v0] AI response received, length:", text.length)
+    console.log("[v0] AI response received, length:", aiText.length)
 
-    let cleanedText = text.trim()
+    let cleanedText = aiText.trim()
     if (cleanedText.startsWith("```json")) {
       cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "")
     } else if (cleanedText.startsWith("```")) {
