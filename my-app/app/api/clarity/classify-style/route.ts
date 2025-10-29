@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
+import { google } from "@ai-sdk/google"
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,7 +24,7 @@ Indirect style characteristics:
 Respond with ONLY a JSON object: {"style": "direct"} or {"style": "indirect"}`
 
     const { text: aiResponse } = await generateText({
-      model: "google/gemini-2.5-flash-image",
+      model: google("gemini-2.0-flash-exp"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: text },
@@ -31,7 +32,14 @@ Respond with ONLY a JSON object: {"style": "direct"} or {"style": "indirect"}`
       temperature: 0.3,
     })
 
-    const result = JSON.parse(aiResponse)
+    let cleanedText = aiResponse.trim()
+    if (cleanedText.startsWith("```json")) {
+      cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "")
+    } else if (cleanedText.startsWith("```")) {
+      cleanedText = cleanedText.replace(/^```\s*/, "").replace(/\s*```$/, "")
+    }
+
+    const result = JSON.parse(cleanedText)
 
     return NextResponse.json({
       style: result.style,

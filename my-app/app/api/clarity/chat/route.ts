@@ -1,10 +1,15 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
+import { google } from "@ai-sdk/google"
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { messages } = body
+
+    if (!messages || !Array.isArray(messages)) {
+      return NextResponse.json({ error: "Invalid messages format", success: false }, { status: 400 })
+    }
 
     const systemPrompt = `You are the Clarity Coach, a supportive communication expert. You help people navigate difficult conversations and improve their communication skills.
 
@@ -19,8 +24,14 @@ Your approach:
 Remember: You're a coach, not a therapist. Focus on communication strategies and practical solutions.`
 
     const { text } = await generateText({
-      model: "google/gemini-2.5-flash-image",
-      messages: [{ role: "system", content: systemPrompt }, ...messages],
+      model: google("gemini-2.0-flash-exp"),
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...messages.map((msg: any) => ({
+          role: msg.role,
+          content: msg.content,
+        })),
+      ],
       temperature: 0.8,
     })
 

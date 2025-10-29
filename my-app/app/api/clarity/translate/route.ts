@@ -1,15 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { generateObject } from "ai"
-import { z } from "zod"
-
-const translationSchema = z.object({
-  explanation: z
-    .string()
-    .describe(
-      "A detailed explanation of how the original message might be interpreted and why it could cause confusion",
-    ),
-  translation: z.string().describe("The improved message that better conveys the intent to the audience"),
-})
+import { generateText } from "ai"
+import { google } from "@ai-sdk/google"
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,7 +18,10 @@ Your task:
 1. Analyze the user's intent and draft
 2. Consider the communication styles, neurotypes, and generational differences
 3. Provide a detailed translation that bridges the gap
-4. Explain thoroughly how the original might be misinterpreted and why the translation is better`
+4. Explain thoroughly how the original might be misinterpreted and why the translation is better
+
+IMPORTANT: Respond with ONLY a valid JSON object in this exact format (no markdown, no code blocks):
+{"explanation": "your detailed explanation here", "translation": "your improved message here"}`
 
     const userPrompt = `Intent: ${intent}
 Original Draft: ${draft}
@@ -38,9 +32,8 @@ ${audienceNeurotype ? `Audience Neurotype: ${audienceNeurotype}` : ""}
 ${myGeneration ? `My Generation: ${myGeneration}` : ""}
 ${audienceGeneration ? `Audience Generation: ${audienceGeneration}` : ""}`
 
-    const { object } = await generateObject({
-      model: "google/gemini-2.5-flash-image",
-      schema: translationSchema,
+    const { text } = await generateText({
+      model: google("gemini-2.0-flash-exp"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
@@ -48,9 +41,18 @@ ${audienceGeneration ? `Audience Generation: ${audienceGeneration}` : ""}`
       temperature: 0.7,
     })
 
+    let cleanedText = text.trim()
+    if (cleanedText.startsWith("```json")) {
+      cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "")
+    } else if (cleanedText.startsWith("```")) {
+      cleanedText = cleanedText.replace(/^```\s*/, "").replace(/\s*```$/, "")
+    }
+
+    const parsed = JSON.parse(cleanedText)
+
     return NextResponse.json({
-      explanation: object.explanation,
-      response: object.translation,
+      explanation: parsed.explanation,
+      response: parsed.translation,
       success: true,
     })
   } catch (error) {
