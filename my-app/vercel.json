@@ -1,12 +1,9 @@
-// vercel.json in the root of hearthside-landing-page repo
 {
   "rewrites": [
-    // Rule 1: Proxies the root path for the sub-app
     {
       "source": "/apps/clarity",
       "destination": "https://hearthside-landing-page-git-f-f115ae-sol-roberts-liebs-projects.vercel.app/"
     },
-    // Rule 2: Proxies all internal routes and assets for the sub-app
     {
       "source": "/apps/clarity/:match*",
       "destination": "https://hearthside-landing-page-git-f-f115ae-sol-roberts-liebs-projects.vercel.app/:match*"
