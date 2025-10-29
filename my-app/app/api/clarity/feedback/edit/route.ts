@@ -34,15 +34,16 @@ export async function POST(request: NextRequest) {
 
       const docRef = await db.collection("feedback_edits").add(editData)
       console.log("[v0] Edit saved successfully with ID:", docRef.id)
+
+      return NextResponse.json({
+        success: true,
+        message: "Edit saved successfully",
+        docId: docRef.id,
+      })
     } catch (firestoreError) {
       console.error("[v0] Firestore operation failed:", firestoreError)
       throw firestoreError
     }
-
-    return NextResponse.json({
-      success: true,
-      message: "Edit saved successfully",
-    })
   } catch (error) {
     console.error("[v0] Edit feedback API error:", error)
     console.error("[v0] Error details:", {
