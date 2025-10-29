@@ -1,12 +1,10 @@
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { Sparkles, Gamepad2 } from "lucide-react"
+import { Footer } from "@/components/footer"
 
 export default function AppsPage() {
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-background pt-20">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto text-center mb-16">

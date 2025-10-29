@@ -47,17 +47,16 @@ export function Header() {
                 <ChevronDown className="w-4 h-4" aria-hidden="true" />
               </button>
               {appsOpen && (
-                <div
-                  className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-[#374151] rounded-lg shadow-lg border border-[#E5E7EB] dark:border-[#4B5563] py-2"
-                  role="menu"
-                >
-                  <Link
-                    href="/apps/clarity"
-                    className="block px-4 py-2 text-sm text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#F9FAFB] dark:hover:bg-[#4B5563] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors"
-                    role="menuitem"
-                  >
-                    Clarity Coach
-                  </Link>
+                <div className="absolute top-full left-0 pt-1" role="menu">
+                  <div className="w-48 bg-white dark:bg-[#374151] rounded-lg shadow-lg border border-[#E5E7EB] dark:border-[#4B5563] py-2">
+                    <Link
+                      href="/apps/clarity"
+                      className="block px-4 py-2 text-sm text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#F9FAFB] dark:hover:bg-[#4B5563] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors"
+                      role="menuitem"
+                    >
+                      Clarity Coach
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
@@ -73,17 +72,16 @@ export function Header() {
                 <ChevronDown className="w-4 h-4" aria-hidden="true" />
               </button>
               {gamesOpen && (
-                <div
-                  className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-[#374151] rounded-lg shadow-lg border border-[#E5E7EB] dark:border-[#4B5563] py-2"
-                  role="menu"
-                >
-                  <Link
-                    href="/games/project-cohesion"
-                    className="block px-4 py-2 text-sm text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#F9FAFB] dark:hover:bg-[#4B5563] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors"
-                    role="menuitem"
-                  >
-                    Project Cohesion
-                  </Link>
+                <div className="absolute top-full left-0 pt-1" role="menu">
+                  <div className="w-48 bg-white dark:bg-[#374151] rounded-lg shadow-lg border border-[#E5E7EB] dark:border-[#4B5563] py-2">
+                    <Link
+                      href="/games/project-cohesion"
+                      className="block px-4 py-2 text-sm text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#F9FAFB] dark:hover:bg-[#4B5563] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors"
+                      role="menuitem"
+                    >
+                      Project Cohesion
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>

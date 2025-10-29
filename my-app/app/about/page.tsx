@@ -1,11 +1,9 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Gamepad2, BookOpen, Heart, Users } from "lucide-react"
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#111827]">
-      <Header />
       <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-[#007B8C] to-[#005A68] dark:from-[#006270] dark:to-[#004A56] text-white py-16">

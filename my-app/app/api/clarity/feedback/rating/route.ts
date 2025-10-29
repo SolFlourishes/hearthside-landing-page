@@ -1,28 +1,33 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { db } from "@/lib/firebase-admin"
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    const { type, rating, comment, sessionId, timestamp } = body
 
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://clarity.hearthsideworks.com"
-
-    const response = await fetch(`${apiBaseUrl}/api/feedback/rating`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: "Failed to submit rating" }))
-      return NextResponse.json(errorData, { status: response.status })
+    // Validate input
+    if (!type || !rating || rating < 1 || rating > 5) {
+      return NextResponse.json({ error: "Invalid rating data", success: false }, { status: 400 })
     }
 
-    const data = await response.json()
-    return NextResponse.json(data)
+    const feedbackData = {
+      type,
+      rating,
+      comment: comment || "",
+      sessionId: sessionId || "anonymous",
+      timestamp: timestamp || new Date().toISOString(),
+      createdAt: new Date(),
+    }
+
+    await db.collection("feedback_ratings").add(feedbackData)
+
+    return NextResponse.json({
+      success: true,
+      message: "Feedback received successfully",
+    })
   } catch (error) {
     console.error("[v0] Rating API error:", error)
-    return NextResponse.json({ error: "Failed to submit rating" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to submit rating", success: false }, { status: 500 })
   }
 }

@@ -1,77 +1,214 @@
 import { Card } from "@/components/ui/card"
-import { Check, Circle } from "lucide-react"
+import { Check, Circle, Clock } from "lucide-react"
 
 export default function RoadmapPage() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background pt-32">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
-        <h1 className="font-serif text-4xl font-bold text-foreground mb-6">Product Roadmap</h1>
+        <h1 className="font-serif text-4xl font-bold text-foreground mb-4">Application Roadmap</h1>
         <p className="text-muted-foreground mb-8">
-          Our vision for the future of Clarity Coach and how we're building toward it.
+          We believe in transparency. This page outlines our current state and future vision, divided into Beta
+          (Stabilization and Free Features) and Gamma (Premium Features) phases.
         </p>
 
         <div className="space-y-6">
-          <Card className="p-6">
+          {/* Beta 3.0 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
             <div className="flex items-start gap-3 mb-4">
               <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
-              <div>
-                <h2 className="font-serif text-2xl font-bold text-primary mb-2">Alpha v1.0 (Completed)</h2>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.0</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Core Infrastructure Redesign</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Intent-first design for accurate analysis</li>
-                  <li>Draft and Analyze modes</li>
-                  <li>Communication style selectors</li>
-                  <li>Basic neurotype and generation support</li>
-                  <li>Feedback system with star ratings</li>
+                  <li>Complete re-design of backend infrastructure</li>
+                  <li>UI redesign with Tailwind CSS</li>
+                  <li>Implementation of the Golden Feedback Loop</li>
+                  <li>Enhanced user experience and performance</li>
                 </ul>
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 border-primary">
+          {/* Beta 3.1 - Completed (formerly 3.2) */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
             <div className="flex items-start gap-3 mb-4">
-              <Circle className="w-6 h-6 text-primary mt-1 flex-shrink-0 fill-primary" />
-              <div>
-                <h2 className="font-serif text-2xl font-bold text-primary mb-2">Beta Phase (Current)</h2>
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.1</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">General Polish</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Golden Feedback Loop: User-edited translations as training data</li>
-                  <li>Smarter Brain: RAG system with scholarly articles from Zotero</li>
-                  <li>Advanced Modes: Enhanced generational and DISC profile selectors</li>
-                  <li>Behavioral Translator: Decode non-verbal actions and situational subtext</li>
-                  <li>Chat Mode improvements with conversation history</li>
+                  <li>UI/UX enhancements and refinements</li>
+                  <li>Power-user features and shortcuts</li>
+                  <li>Accessibility improvements (WCAG 2.1 Level AA compliance)</li>
+                  <li>Quality-of-life improvements based on user feedback</li>
                 </ul>
               </div>
             </div>
           </Card>
 
+          {/* Beta 3.2 - Planning (formerly 3.1) */}
+          <Card className="p-6">
+            <div className="flex items-start gap-3 mb-4">
+              <Clock className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.2</h2>
+                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
+                    Planning
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">A Smarter AI Brain (RAG)</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Integration of Retrieval-Augmented Generation (RAG)</li>
+                  <li>Ground AI advice in factual, evidence-based knowledge base</li>
+                  <li>Enhanced accuracy and reliability of translations</li>
+                  <li>Scholarly research integration from Zotero library</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Gamma Phase Header */}
+          <div className="pt-8">
+            <h2 className="font-serif text-3xl font-bold text-foreground mb-2">Gamma Phase (Premium Features)</h2>
+            <p className="text-muted-foreground mb-6">
+              The Gamma phase introduces premium features and monetization, enabling sustainable growth while
+              maintaining our commitment to universal access through the Elder Program.
+            </p>
+          </div>
+
+          {/* Gamma 1.0 */}
           <Card className="p-6">
             <div className="flex items-start gap-3 mb-4">
               <Circle className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
-              <div>
-                <h2 className="font-serif text-2xl font-bold text-primary mb-2">v1.0 Launch (Planned)</h2>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Gamma 1.0</h2>
+                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
+                    Planning
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Monetization / Personalization</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>User accounts and authentication</li>
-                  <li>Dynamic Contact Profiles: Save communication preferences for frequent contacts</li>
-                  <li>Premium tier with advanced features</li>
-                  <li>Elder Program: Community-supported subscriptions</li>
-                  <li>Mobile app (iOS and Android)</li>
-                  <li>Browser extension for real-time email/message assistance</li>
+                  <li>User profiles and authentication</li>
+                  <li>Conversation history and saved drafts</li>
+                  <li>Premium tier launch</li>
+                  <li>Elder Program implementation</li>
                 </ul>
               </div>
             </div>
           </Card>
 
+          {/* Gamma 1.1 */}
           <Card className="p-6">
             <div className="flex items-start gap-3 mb-4">
               <Circle className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
-              <div>
-                <h2 className="font-serif text-2xl font-bold text-primary mb-2">Future Vision</h2>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Gamma 1.1</h2>
+                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
+                    Planning
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Advanced Ideological Translation</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Team collaboration features for workplace communication</li>
-                  <li>Integration with email clients and messaging platforms</li>
-                  <li>Voice-to-text analysis for verbal communication</li>
-                  <li>Multilingual support</li>
-                  <li>API for third-party integrations</li>
-                  <li>Community-contributed communication patterns and templates</li>
+                  <li>Politalk: Translate discourse between different ideological viewpoints</li>
+                  <li>Bridge political and cultural divides</li>
+                  <li>Foster understanding across perspectives</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Gamma 1.2 */}
+          <Card className="p-6">
+            <div className="flex items-start gap-3 mb-4">
+              <Circle className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Gamma 1.2</h2>
+                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
+                    Planning
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Generational & Professionalism Analysis</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>The Professionalism Lens: Analyze perceived professionalism</li>
+                  <li>Generational context awareness</li>
+                  <li>Hierarchical communication patterns</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Gamma 1.3 */}
+          <Card className="p-6">
+            <div className="flex items-start gap-3 mb-4">
+              <Circle className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Gamma 1.3</h2>
+                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
+                    Planning
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Advanced Cross-Cultural Analysis</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>International & Cultural Translation</li>
+                  <li>Multiple language support</li>
+                  <li>Cultural context awareness</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Gamma 1.4 */}
+          <Card className="p-6">
+            <div className="flex items-start gap-3 mb-4">
+              <Circle className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Gamma 1.4</h2>
+                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
+                    Planning
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Skill Building</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Practice Conversation Simulator</li>
+                  <li>Real-time conversation with AI personas</li>
+                  <li>Skill development and practice scenarios</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Gamma 1.5 */}
+          <Card className="p-6">
+            <div className="flex items-start gap-3 mb-4">
+              <Circle className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Gamma 1.5</h2>
+                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
+                    Planning
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Workflow Integration</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Browser & App Extension</li>
+                  <li>Integration with email clients</li>
+                  <li>Direct integration into web browsers and applications</li>
                 </ul>
               </div>
             </div>

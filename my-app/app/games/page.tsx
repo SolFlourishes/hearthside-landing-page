@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -7,7 +6,6 @@ import { Gamepad2, Users, Heart, Sparkles } from "lucide-react"
 export default function GamesPage() {
   return (
     <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#111827]">
-      <Header />
       <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-[#007B8C] to-[#005A68] dark:from-[#006270] dark:to-[#004A56] text-white py-16">
@@ -88,17 +86,21 @@ export default function GamesPage() {
             <div className="max-w-4xl mx-auto">
               <div className="bg-white dark:bg-[#1F2937] rounded-xl overflow-hidden shadow-lg border border-[#E5E7EB] dark:border-[#374151]">
                 <div className="md:flex">
-                  <div className="md:w-1/3 bg-gradient-to-br from-[#007B8C] to-[#005A68] p-12 flex items-center justify-center">
-                    <Gamepad2 className="w-24 h-24 text-white" aria-hidden="true" />
+                  <div className="md:w-1/3">
+                    <img
+                      src="/project-cohesion-elegant-text.jpg"
+                      alt="Project Cohesion - Text-based identity-driven game"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="md:w-2/3 p-8">
                     <h3 className="font-serif text-2xl font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-4">
                       Project Cohesion
                     </h3>
                     <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed mb-6">
-                      Our flagship game that brings teams together through collaborative challenges and shared
-                      experiences. Project Cohesion helps players understand different communication styles and build
-                      stronger connections.
+                      A text-based identity-driven game where your choices truly matter. Navigate a fragmented reality
+                      using natural language and over 200 verbs that map to nearly 30 core intents. Every decision
+                      shapes who you become in a world that remembers and reacts to your true self.
                     </p>
                     <Button asChild className="bg-[#007B8C] hover:bg-[#006270] text-white">
                       <Link href="/games/project-cohesion">Learn More</Link>

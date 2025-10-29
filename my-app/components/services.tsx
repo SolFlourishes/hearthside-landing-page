@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export function Services() {
   const services = [
@@ -6,9 +7,10 @@ export function Services() {
       category: "Products",
       title: "The Clarity Coach",
       description:
-        "Our flagship AI-powered tool that helps you communicate with clarity and confidence. Transform your written communication and build lasting skills.",
-      features: ["Real-time translation", "Behavioral insights", "Personalized coaching"],
-      image: "/modern-app-interface-showing-communication-coachin.jpg",
+        "Bridge communication gaps with AI-powered translation between different communication styles. Understand what others truly mean and express yourself with clarity across diverse perspectives.",
+      features: ["Style translation", "Intent analysis", "Communication coaching"],
+      image: "/clarity-coach-communication-translation.jpg",
+      link: "/apps/clarity",
     },
     {
       category: "Services",
@@ -17,6 +19,7 @@ export function Services() {
         "Professional development workshops and consulting services designed to foster psychological safety and effective communication in your organization.",
       features: ["Team workshops", "Leadership coaching", "Custom training"],
       image: "/professional-workshop-with-diverse-team-collaborat.jpg",
+      link: "/cultivates",
     },
     {
       category: "Community",
@@ -25,6 +28,7 @@ export function Services() {
         "Be the reason someone else can flourish. Join our community of Elders who support others by sponsoring Clarity Coach subscriptions for those in need.",
       features: ["Support others", "Build community", "Create belonging"],
       image: "/diverse-community-gathering-in-warm-welcoming-circ.jpg",
+      link: "/elder-program",
     },
   ]
 
@@ -87,8 +91,8 @@ export function Services() {
                   ))}
                 </ul>
 
-                <Button size="lg" className="bg-[#007B8C] hover:bg-[#006270] text-white px-6 rounded-xl">
-                  Learn More
+                <Button asChild size="lg" className="bg-[#007B8C] hover:bg-[#006270] text-white px-6 rounded-xl">
+                  <Link href={service.link}>Learn More</Link>
                 </Button>
               </div>
             </article>

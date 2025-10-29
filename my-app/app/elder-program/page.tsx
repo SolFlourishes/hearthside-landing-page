@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -7,8 +6,7 @@ import { Heart, Users, Gift, CheckCircle } from "lucide-react"
 export default function ElderProgramPage() {
   return (
     <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#111827]">
-      <Header />
-      <main>
+      <main className="pt-16">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-[#FFC72C] to-[#e6b028] text-[#1F2937] py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">

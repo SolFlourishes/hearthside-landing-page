@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 
@@ -11,7 +10,6 @@ export const metadata = {
 export default function CommitmentsPage() {
   return (
     <>
-      <Header />
       <main>
         {/* Hero Section */}
         <section className="py-16 bg-gradient-to-br from-[#F9FAFB] via-[#FFF5F0] to-[#F9FAFB]">

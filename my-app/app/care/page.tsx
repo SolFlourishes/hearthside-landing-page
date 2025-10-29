@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -7,7 +6,6 @@ import { Heart, Users, HandHeart, Shield } from "lucide-react"
 export default function CarePage() {
   return (
     <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#111827]">
-      <Header />
       <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-[#FFC72C] to-[#e6b028] text-[#1F2937] py-16">

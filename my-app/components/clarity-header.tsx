@@ -18,8 +18,9 @@ export function ClarityHeader() {
       <div className="container mx-auto px-4">
         <div className="flex h-14 items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/apps/clarity" className="font-serif text-lg font-bold text-primary">
-              Clarity Coach
+            <Link href="/apps/clarity" className="flex items-center gap-2">
+              <span className="font-serif text-lg font-bold text-primary">Clarity Coach</span>
+              <span className="text-xs text-muted-foreground font-mono">Beta 3.1</span>
             </Link>
 
             {/* Desktop Navigation */}

@@ -1,28 +1,34 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { db } from "@/lib/firebase-admin"
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    const { originalResponse, editedResponse, intent, draft, sessionId, timestamp } = body
 
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://clarity.hearthsideworks.com"
-
-    const response = await fetch(`${apiBaseUrl}/api/feedback/edit`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: "Failed to save edit" }))
-      return NextResponse.json(errorData, { status: response.status })
+    // Validate input
+    if (!originalResponse || !editedResponse) {
+      return NextResponse.json({ error: "Missing required fields", success: false }, { status: 400 })
     }
 
-    const data = await response.json()
-    return NextResponse.json(data)
+    const editData = {
+      originalResponse,
+      editedResponse,
+      intent: intent || "",
+      draft: draft || "",
+      sessionId: sessionId || "anonymous",
+      timestamp: timestamp || new Date().toISOString(),
+      createdAt: new Date(),
+    }
+
+    await db.collection("feedback_edits").add(editData)
+
+    return NextResponse.json({
+      success: true,
+      message: "Edit saved successfully",
+    })
   } catch (error) {
-    console.error("[v0] Feedback edit API error:", error)
-    return NextResponse.json({ error: "Failed to save feedback" }, { status: 500 })
+    console.error("[v0] Edit feedback API error:", error)
+    return NextResponse.json({ error: "Failed to save edit", success: false }, { status: 500 })
   }
 }

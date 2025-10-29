@@ -1,28 +1,33 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { db } from "@/lib/firebase-admin"
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    const { editedResponse, newExplanation, newTranslation, sessionId, timestamp } = body
 
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://clarity.hearthsideworks.com"
-
-    const response = await fetch(`${apiBaseUrl}/api/feedback/reanalysis`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: "Failed to save reanalysis" }))
-      return NextResponse.json(errorData, { status: response.status })
+    // Validate input
+    if (!editedResponse || !newExplanation || !newTranslation) {
+      return NextResponse.json({ error: "Missing required fields", success: false }, { status: 400 })
     }
 
-    const data = await response.json()
-    return NextResponse.json(data)
+    const reanalysisData = {
+      editedResponse,
+      newExplanation,
+      newTranslation,
+      sessionId: sessionId || "anonymous",
+      timestamp: timestamp || new Date().toISOString(),
+      createdAt: new Date(),
+    }
+
+    await db.collection("feedback_reanalysis").add(reanalysisData)
+
+    return NextResponse.json({
+      success: true,
+      message: "Reanalysis saved successfully",
+    })
   } catch (error) {
     console.error("[v0] Reanalysis API error:", error)
-    return NextResponse.json({ error: "Failed to save reanalysis" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to save reanalysis", success: false }, { status: 500 })
   }
 }

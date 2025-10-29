@@ -1,15 +1,13 @@
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { PenLine, Search, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Footer } from "@/components/footer"
 
 export default function ClarityCoachPage() {
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5 pt-20">
-        {/* Hero Section */}
+      {/* Hero Section */}
+      <main className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5 pt-32">
         <section className="container mx-auto px-4 py-16 text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="font-serif text-5xl md:text-6xl font-bold mb-6">
