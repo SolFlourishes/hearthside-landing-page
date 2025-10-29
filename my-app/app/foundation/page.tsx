@@ -164,9 +164,7 @@ export default function FoundationPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="bg-[#007B8C] hover:bg-[#006270] text-white">
-                  <a href="http://clarity.hearthsideworks.com" target="_blank" rel="noopener noreferrer">
-                    Become an Elder
-                  </a>
+                  <Link href="/apps/clarity">Become an Elder</Link>
                 </Button>
                 <Button
                   asChild

@@ -51,15 +51,13 @@ export function Header() {
                   className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-[#374151] rounded-lg shadow-lg border border-[#E5E7EB] dark:border-[#4B5563] py-2"
                   role="menu"
                 >
-                  <a
-                    href="http://clarity.hearthsideworks.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    href="/apps/clarity"
                     className="block px-4 py-2 text-sm text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#F9FAFB] dark:hover:bg-[#4B5563] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors"
                     role="menuitem"
                   >
                     Clarity Coach
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
@@ -100,9 +98,7 @@ export function Header() {
             <ThemeToggle />
 
             <Button size="sm" className="bg-[#007B8C] hover:bg-[#006270] text-white rounded-lg" asChild>
-              <a href="http://clarity.hearthsideworks.com" target="_blank" rel="noopener noreferrer">
-                Get Started
-              </a>
+              <Link href="/apps/clarity">Get Started</Link>
             </Button>
           </div>
 
@@ -142,15 +138,13 @@ export function Header() {
                 <div className="text-xs font-semibold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wide px-2">
                   Apps
                 </div>
-                <a
-                  href="http://clarity.hearthsideworks.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/apps/clarity"
                   className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors py-2 px-4 block"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Clarity Coach
-                </a>
+                </Link>
               </div>
               <div className="space-y-2">
                 <div className="text-xs font-semibold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wide px-2">
@@ -175,15 +169,13 @@ export function Header() {
                 <span className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF]">Theme</span>
                 <ThemeToggle />
               </div>
-              <a
-                href="http://clarity.hearthsideworks.com"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/apps/clarity"
                 className="bg-[#007B8C] hover:bg-[#006270] text-white rounded-lg px-4 py-2 text-sm font-medium text-center transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Get Started
-              </a>
+              </Link>
             </div>
           </div>
         )}

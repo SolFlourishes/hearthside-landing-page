@@ -175,9 +175,7 @@ export default function ElderProgramPage() {
                     Support someone's journey to better communication while enjoying all Premium features.
                   </p>
                   <Button asChild size="lg" className="bg-[#007B8C] hover:bg-[#006270] text-white w-full">
-                    <a href="http://clarity.hearthsideworks.com" target="_blank" rel="noopener noreferrer">
-                      Join as an Elder
-                    </a>
+                    <Link href="/apps/clarity">Join as an Elder</Link>
                   </Button>
                 </div>
 
