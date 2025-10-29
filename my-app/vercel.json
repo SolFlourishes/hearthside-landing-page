@@ -4,12 +4,12 @@
     // Rule 1: Proxies the root path for the sub-app
     {
       "source": "/apps/clarity",
-      "destination": "https://clarity-coach-frontend-git-fe-2887ce-sol-roberts-liebs-projects.vercel.app//apps/clarity"
+      "destination": "https://hearthside-landing-page-git-f-f115ae-sol-roberts-liebs-projects.vercel.app/"
     },
     // Rule 2: Proxies all internal routes and assets for the sub-app
     {
       "source": "/apps/clarity/:match*",
-      "destination": "https://clarity-coach-frontend-git-fe-2887ce-sol-roberts-liebs-projects.vercel.app//apps/clarity/:match*"
+      "destination": "https://hearthside-landing-page-git-f-f115ae-sol-roberts-liebs-projects.vercel.app/:match*"
     }
   ]
 }
