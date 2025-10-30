@@ -7,29 +7,29 @@ export default function ClarityCoachPage() {
   return (
     <>
       {/* Hero Section */}
-      <main className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5 pt-32">
-        <section className="container mx-auto px-4 py-16 text-center">
+      <main className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5 pt-24">
+        <section className="container mx-auto px-4 py-8 text-center">
           <div className="max-w-4xl mx-auto">
-            <h1 className="font-serif text-5xl md:text-6xl font-bold mb-6">
+            <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">
               Welcome to the <span className="text-primary">Clarity Coach</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-4">
+            <p className="text-lg text-muted-foreground mb-6">
               A tool by <span className="text-accent font-semibold">Hearthside Works</span> to help you bridge
               communication gaps, say what you mean, and understand what others truly mean.
             </p>
 
             {/* Quote */}
-            <div className="my-12 p-8 border border-border rounded-lg bg-card/50 backdrop-blur">
-              <blockquote className="text-xl italic text-foreground">
+            <div className="mb-8 p-6 border border-border rounded-lg bg-card/50 backdrop-blur">
+              <blockquote className="text-lg italic text-foreground">
                 "The most important thing in communication is hearing what isn't said."
               </blockquote>
-              <cite className="block mt-4 text-muted-foreground">— Peter Drucker</cite>
+              <cite className="block mt-2 text-sm text-muted-foreground">— Peter Drucker</cite>
             </div>
           </div>
         </section>
 
         {/* Three Modes */}
-        <section className="container mx-auto px-4 py-12">
+        <section className="container mx-auto px-4 py-8">
           <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {/* Draft Mode */}
             <Link
@@ -78,10 +78,10 @@ export default function ClarityCoachPage() {
         </section>
 
         {/* Example Scenarios Section */}
-        <section className="container mx-auto px-4 py-12 bg-muted/30">
+        <section className="container mx-auto px-4 py-8 bg-muted/30">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-serif text-3xl font-bold text-center mb-4">Try an Example</h2>
-            <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <h2 className="font-serif text-2xl font-bold text-center mb-3">Try an Example</h2>
+            <p className="text-center text-muted-foreground mb-6 max-w-2xl mx-auto">
               Not sure where to start? Click an example below to see how Clarity Coach works.
             </p>
 
@@ -140,58 +140,49 @@ export default function ClarityCoachPage() {
         </section>
 
         {/* Features Section */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-serif text-3xl font-bold text-center mb-12">How Clarity Coach Helps You Flourish</h2>
+            <h2 className="font-serif text-2xl font-bold text-center mb-8">How Clarity Coach Helps You Flourish</h2>
 
-            <div className="space-y-8">
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold mx-auto mb-3">
                   1
                 </div>
-                <div>
-                  <h3 className="font-serif text-xl font-bold mb-2">Hear Me (The Clarity)</h3>
-                  <p className="text-muted-foreground">
-                    Achieve clarity by ensuring your literal intent is accurately received. No more misunderstandings or
-                    ambiguity in your written communication.
-                  </p>
-                </div>
+                <h3 className="font-serif text-lg font-bold mb-2">Hear Me</h3>
+                <p className="text-sm text-muted-foreground">
+                  Achieve clarity by ensuring your literal intent is accurately received.
+                </p>
               </div>
 
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold mx-auto mb-3">
                   2
                 </div>
-                <div>
-                  <h3 className="font-serif text-xl font-bold mb-2">See Me (The Recognition)</h3>
-                  <p className="text-muted-foreground">
-                    Achieve recognition by validating your unique communication style and strengths. The Coach adapts to
-                    different audiences and contexts.
-                  </p>
-                </div>
+                <h3 className="font-serif text-lg font-bold mb-2">See Me</h3>
+                <p className="text-sm text-muted-foreground">
+                  Achieve recognition by validating your unique communication style and strengths.
+                </p>
               </div>
 
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold mx-auto mb-3">
                   3
                 </div>
-                <div>
-                  <h3 className="font-serif text-xl font-bold mb-2">Know Me (The Belonging)</h3>
-                  <p className="text-muted-foreground">
-                    Foster authentic connection and trust through better understanding. Build psychological safety in
-                    all your relationships.
-                  </p>
-                </div>
+                <h3 className="font-serif text-lg font-bold mb-2">Know Me</h3>
+                <p className="text-sm text-muted-foreground">
+                  Foster authentic connection and trust through better understanding.
+                </p>
               </div>
             </div>
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="container mx-auto px-4 py-16">
-          <div className="max-w-2xl mx-auto text-center bg-card border border-border rounded-lg p-12">
-            <h2 className="font-serif text-3xl font-bold mb-4">Ready to Get Started?</h2>
-            <p className="text-muted-foreground mb-8">
+        <section className="container mx-auto px-4 py-12">
+          <div className="max-w-2xl mx-auto text-center bg-card border border-border rounded-lg p-8">
+            <h2 className="font-serif text-2xl font-bold mb-3">Ready to Get Started?</h2>
+            <p className="text-muted-foreground mb-6">
               Choose a mode above to begin improving your communication today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
