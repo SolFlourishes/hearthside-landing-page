@@ -5,7 +5,6 @@ export async function GET(request: NextRequest) {
   console.log("[v0] === FIREBASE TEST ENDPOINT CALLED ===")
 
   try {
-    // Check environment variables
     const hasServiceAccountKey = !!process.env.FIREBASE_SERVICE_ACCOUNT_KEY
     const hasIndividualKeys = !!(
       process.env.FIREBASE_PROJECT_ID &&
@@ -13,22 +12,25 @@ export async function GET(request: NextRequest) {
       process.env.FIREBASE_CLIENT_EMAIL
     )
 
-    console.log("[v0] Environment check:", {
+    const envDetails = {
       hasServiceAccountKey,
       hasIndividualKeys,
-      projectId: process.env.FIREBASE_PROJECT_ID ? "SET" : "NOT SET",
-      privateKey: process.env.FIREBASE_PRIVATE_KEY ? "SET" : "NOT SET",
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL ? "SET" : "NOT SET",
-    })
+      projectId: process.env.FIREBASE_PROJECT_ID ? `SET (${process.env.FIREBASE_PROJECT_ID})` : "NOT SET",
+      privateKey: process.env.FIREBASE_PRIVATE_KEY
+        ? `SET (${process.env.FIREBASE_PRIVATE_KEY.substring(0, 50)}...)`
+        : "NOT SET",
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL ? `SET (${process.env.FIREBASE_CLIENT_EMAIL})` : "NOT SET",
+    }
+
+    console.log("[v0] Environment check:", envDetails)
 
     if (!hasServiceAccountKey && !hasIndividualKeys) {
       return NextResponse.json({
         success: false,
         error: "Firebase environment variables are not configured",
-        details: {
-          hasServiceAccountKey,
-          hasIndividualKeys,
-        },
+        details: envDetails,
+        instructions:
+          "Set Firebase environment variables in Vercel project settings (Settings → Environment Variables) for Production environment, then redeploy.",
       })
     }
 
