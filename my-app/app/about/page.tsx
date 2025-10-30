@@ -6,11 +6,11 @@ export default function AboutPage() {
     <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#111827]">
       <main>
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-[#007B8C] to-[#005A68] dark:from-[#006270] dark:to-[#004A56] text-white py-16">
+        <section className="bg-gradient-to-br from-[#007B8C] to-[#005A68] dark:from-[#006270] dark:to-[#004A56] text-white py-10">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
-              <h1 className="font-serif text-4xl md:text-5xl font-bold mb-6 text-balance">About Hearthside Works</h1>
-              <p className="text-lg md:text-xl leading-relaxed text-white/90">
+              <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4 text-balance">About Hearthside Works</h1>
+              <p className="text-base md:text-lg leading-relaxed text-white/90">
                 We create a community of belonging—a "Kith" (one's friends, family, and community)—where every
                 individual is actively supported to flourish through connection and understanding.
               </p>
@@ -19,22 +19,22 @@ export default function AboutPage() {
         </section>
 
         {/* Mission Section */}
-        <section className="py-16 bg-white dark:bg-[#1F2937]">
+        <section className="py-10 bg-white dark:bg-[#1F2937]">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
-              <h2 className="font-serif text-3xl font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-6 text-center">
+              <h2 className="font-serif text-2xl font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-4 text-center">
                 Our Purpose
               </h2>
-              <p className="text-lg text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed mb-8 text-center">
+              <p className="text-base text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed mb-6 text-center">
                 Hearthside Works is a human development company that uses technology to create a safe, warm space (the
                 "Hearthside") for mutual understanding. We are built on the belief that emotional safety and
                 professional success are inseparable.
               </p>
-              <div className="bg-[#E28A6D]/10 dark:bg-[#E28A6D]/20 border-l-4 border-[#E28A6D] p-6 rounded-r-lg">
-                <p className="font-serif text-2xl text-[#1F2937] dark:text-[#F9FAFB] font-semibold mb-2">
+              <div className="bg-[#E28A6D]/10 dark:bg-[#E28A6D]/20 border-l-4 border-[#E28A6D] p-5 rounded-r-lg">
+                <p className="font-serif text-xl text-[#1F2937] dark:text-[#F9FAFB] font-semibold mb-2">
                   Hear Me, See Me, Know Me
                 </p>
-                <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed">
+                <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed text-sm">
                   Our motto defines the three ascending levels of connection we aim to facilitate—from clarity in
                   communication, to recognition of unique styles, to authentic belonging and trust.
                 </p>
@@ -44,12 +44,12 @@ export default function AboutPage() {
         </section>
 
         {/* Divisions Section */}
-        <section className="py-16 bg-[#F9FAFB] dark:bg-[#111827]">
+        <section className="py-10 bg-[#F9FAFB] dark:bg-[#111827]">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="font-serif text-3xl font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-12 text-center">
+            <h2 className="font-serif text-2xl font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-8 text-center">
               Our Divisions
             </h2>
-            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
               {/* Hearthside Games */}
               <div className="bg-white dark:bg-[#1F2937] rounded-xl p-8 shadow-sm border border-[#E5E7EB] dark:border-[#374151] hover:shadow-md transition-shadow">
                 <div className="w-12 h-12 bg-[#007B8C]/10 dark:bg-[#007B8C]/20 rounded-lg flex items-center justify-center mb-4">
@@ -110,17 +110,17 @@ export default function AboutPage() {
         </section>
 
         {/* Economic Model Section */}
-        <section className="py-16 bg-white dark:bg-[#1F2937]">
+        <section className="py-10 bg-white dark:bg-[#1F2937]">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
-              <h2 className="font-serif text-3xl font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-6 text-center">
+              <h2 className="font-serif text-2xl font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-4 text-center">
                 Purpose Over Profit
               </h2>
-              <p className="text-lg text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed mb-8 text-center">
+              <p className="text-base text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed mb-6 text-center">
                 Our business model aligns commerce with compassion, ensuring that financial success directly supports
                 our social mission.
               </p>
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="bg-[#F9FAFB] dark:bg-[#111827] rounded-lg p-6 border border-[#E5E7EB] dark:border-[#374151]">
                   <h3 className="font-serif text-xl font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-2">
                     Free Tier: Universal Access

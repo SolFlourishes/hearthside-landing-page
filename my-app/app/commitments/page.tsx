@@ -12,13 +12,13 @@ export default function CommitmentsPage() {
     <>
       <main>
         {/* Hero Section */}
-        <section className="py-16 bg-gradient-to-br from-[#F9FAFB] via-[#FFF5F0] to-[#F9FAFB]">
+        <section className="py-10 bg-gradient-to-br from-[#F9FAFB] via-[#FFF5F0] to-[#F9FAFB]">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#1F2937] mb-4 text-balance">
+              <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#1F2937] mb-3 text-balance">
                 Our Commitments
               </h1>
-              <p className="text-lg text-[#6B7280] leading-relaxed">
+              <p className="text-base text-[#6B7280] leading-relaxed">
                 Trust is the foundation of clear communication. This page outlines our unwavering commitment to your
                 privacy and to making our tools accessible to everyone.
               </p>
@@ -27,13 +27,13 @@ export default function CommitmentsPage() {
         </section>
 
         {/* Privacy Section */}
-        <section className="py-16 bg-white">
+        <section className="py-10 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
-              <div className="mb-12">
-                <h2 className="font-serif text-3xl font-bold text-[#1F2937] mb-6 flex items-center gap-3">
+              <div className="mb-8">
+                <h2 className="font-serif text-2xl font-bold text-[#1F2937] mb-4 flex items-center gap-3">
                   <span
-                    className="w-12 h-12 bg-[#007B8C] rounded-xl flex items-center justify-center text-2xl"
+                    className="w-10 h-10 bg-[#007B8C] rounded-xl flex items-center justify-center text-xl"
                     aria-hidden="true"
                   >
                     🔒
@@ -43,7 +43,7 @@ export default function CommitmentsPage() {
               </div>
 
               {/* Privacy Q&A */}
-              <div className="space-y-8">
+              <div className="space-y-6">
                 <article className="bg-[#F9FAFB] rounded-xl p-6 border border-[#E5E7EB]">
                   <h3 className="font-serif text-xl font-bold text-[#1F2937] mb-3">
                     Can you see what I type into the translator?
@@ -68,13 +68,13 @@ export default function CommitmentsPage() {
         </section>
 
         {/* Accessibility Section */}
-        <section className="py-16 bg-gradient-to-b from-white to-[#F9FAFB]">
+        <section className="py-10 bg-gradient-to-b from-white to-[#F9FAFB]">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
-              <div className="mb-8">
-                <h2 className="font-serif text-3xl font-bold text-[#1F2937] mb-6 flex items-center gap-3">
+              <div className="mb-6">
+                <h2 className="font-serif text-2xl font-bold text-[#1F2937] mb-4 flex items-center gap-3">
                   <span
-                    className="w-12 h-12 bg-[#E28A6D] rounded-xl flex items-center justify-center text-2xl"
+                    className="w-10 h-10 bg-[#E28A6D] rounded-xl flex items-center justify-center text-xl"
                     aria-hidden="true"
                   >
                     ♿
@@ -140,18 +140,18 @@ export default function CommitmentsPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 bg-[#007B8C]">
+        <section className="py-10 bg-[#007B8C]">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto text-center space-y-6">
-              <h2 className="font-serif text-3xl font-bold text-white text-balance">
+            <div className="max-w-3xl mx-auto text-center space-y-4">
+              <h2 className="font-serif text-2xl font-bold text-white text-balance">
                 Questions About Our Commitments?
               </h2>
-              <p className="text-lg text-white/90 leading-relaxed">
+              <p className="text-base text-white/90 leading-relaxed">
                 We're here to help. Reach out to us with any questions or concerns about privacy and accessibility.
               </p>
               <Button
                 size="lg"
-                className="bg-white text-[#007B8C] hover:bg-[#F9FAFB] px-8 py-5 text-base rounded-xl shadow-lg hover:shadow-xl transition-all"
+                className="bg-white text-[#007B8C] hover:bg-[#F9FAFB] px-6 py-4 text-base rounded-xl shadow-lg hover:shadow-xl transition-all"
               >
                 Contact Us
               </Button>

@@ -62,12 +62,12 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-[#1F2937] dark:bg-[#111827] text-white py-16">
+    <footer className="bg-[#1F2937] dark:bg-[#111827] text-white py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 pb-12 border-b border-white/10">
+        <div className="mb-6 pb-6 border-b border-white/10">
           <div className="max-w-2xl mx-auto text-center">
-            <h3 className="font-serif text-2xl font-bold mb-3">Stay Connected</h3>
-            <p className="text-white/70 mb-6">
+            <h3 className="font-serif text-xl font-bold mb-2">Stay Connected</h3>
+            <p className="text-white/70 mb-4 text-sm">
               Get updates on new tools, resources, and insights for meaningful connection.
             </p>
             <form onSubmit={handleSubscribe} className="flex gap-3 max-w-md mx-auto">
@@ -94,24 +94,24 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-12 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-8 mb-6">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <h3 className="font-serif text-2xl font-bold mb-4">Hearthside Works</h3>
-            <p className="text-white/70 leading-relaxed mb-6">
+            <h3 className="font-serif text-xl font-bold mb-3">Hearthside Works</h3>
+            <p className="text-white/70 leading-relaxed mb-4 text-sm">
               Creating communities of belonging where everyone can flourish through meaningful connection.
             </p>
-            <p className="font-serif text-[#FFC72C] italic">Hear Me, See Me, Know Me.</p>
+            <p className="font-serif text-[#FFC72C] italic text-sm">Hear Me, See Me, Know Me.</p>
           </div>
 
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="font-semibold text-white mb-4">{category}</h4>
-              <ul className="space-y-3">
+              <h4 className="font-semibold text-white mb-3 text-sm">{category}</h4>
+              <ul className="space-y-2">
                 {links.map((link) => (
                   <li key={link.name}>
-                    <Link href={link.href} className="text-white/70 hover:text-[#FFC72C] transition-colors">
+                    <Link href={link.href} className="text-white/70 hover:text-[#FFC72C] transition-colors text-sm">
                       {link.name}
                     </Link>
                   </li>
@@ -122,7 +122,7 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="pt-4 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-2">
           <p className="text-white/60 text-sm">
             © {new Date().getFullYear()} Hearthside Works, LLC. All rights reserved.
           </p>

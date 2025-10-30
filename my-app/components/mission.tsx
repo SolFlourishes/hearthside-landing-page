@@ -27,36 +27,36 @@ export function Mission() {
   ]
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-8 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1F2937] mb-4 text-balance">
+        <div className="text-center max-w-3xl mx-auto mb-8">
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1F2937] mb-3 text-balance">
             Our Guiding Compass
           </h2>
-          <p className="text-base text-[#6B7280] leading-relaxed">
+          <p className="text-sm text-[#6B7280] leading-relaxed">
             Every product and service we create follows three ascending levels of connection, designed to help you
             flourish through meaningful relationships.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4">
           {phases.map((phase, index) => (
             <article
               key={index}
-              className="group relative bg-[#F9FAFB] rounded-xl p-6 hover:shadow-xl transition-all duration-300 border border-[#E5E7EB] hover:border-transparent"
+              className="group relative bg-[#F9FAFB] rounded-xl p-5 hover:shadow-xl transition-all duration-300 border border-[#E5E7EB] hover:border-transparent"
               aria-label={phase.ariaLabel}
             >
               {/* Icon */}
               <div
-                className={`w-14 h-14 ${phase.color} rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}
+                className={`w-12 h-12 ${phase.color} rounded-xl flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform`}
                 aria-hidden="true"
               >
                 {phase.icon}
               </div>
 
               {/* Content */}
-              <h3 className="font-serif text-xl font-bold text-[#1F2937] mb-2">{phase.title}</h3>
-              <p className="text-xs font-semibold text-[#007B8C] mb-3 uppercase tracking-wide">{phase.subtitle}</p>
+              <h3 className="font-serif text-lg font-bold text-[#1F2937] mb-1">{phase.title}</h3>
+              <p className="text-xs font-semibold text-[#007B8C] mb-2 uppercase tracking-wide">{phase.subtitle}</p>
               <p className="text-[#6B7280] leading-relaxed text-sm">{phase.description}</p>
 
               {/* Decorative element */}
