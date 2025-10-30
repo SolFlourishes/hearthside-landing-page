@@ -19,6 +19,31 @@ const loadingTips = [
   "Considering how different neurotypes might perceive this message...",
 ]
 
+const EXAMPLE_SCENARIOS = {
+  promotion: {
+    intent:
+      "I want to ask for a promotion. I've been here for three years, consistently exceeded my goals, and taken on additional responsibilities. I deserve recognition for my contributions.",
+    draft:
+      "Hey, I wanted to talk about my role. I've been doing a lot of extra work and think I should be promoted. Can we discuss this?",
+    senderStyle: "direct",
+    receiverStyle: "indirect",
+  },
+  feedback: {
+    intent:
+      "I need to give constructive feedback to a team member who keeps missing deadlines. I want them to improve without feeling attacked.",
+    draft: "You've been missing a lot of deadlines lately and it's affecting the team. You need to do better.",
+    senderStyle: "direct",
+    receiverStyle: "indirect",
+  },
+  request: {
+    intent:
+      "I need to ask my manager for time off during a busy period. I want to be respectful of the team's needs while also taking care of my own.",
+    draft: "I know we're busy, but I really need some time off next month. Is that okay?",
+    senderStyle: "indirect",
+    receiverStyle: "direct",
+  },
+}
+
 export default function DraftModePage() {
   const [intent, setIntent] = useState("")
   const [draft, setDraft] = useState("")
@@ -60,6 +85,18 @@ export default function DraftModePage() {
     }
     return () => clearInterval(interval)
   }, [isLoading])
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const example = params.get("example") as keyof typeof EXAMPLE_SCENARIOS
+    if (example && EXAMPLE_SCENARIOS[example]) {
+      const scenario = EXAMPLE_SCENARIOS[example]
+      setIntent(scenario.intent)
+      setDraft(scenario.draft)
+      setSenderStyle(scenario.senderStyle)
+      setReceiverStyle(scenario.receiverStyle)
+    }
+  }, [])
 
   const handleTranslate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -247,21 +284,52 @@ export default function DraftModePage() {
         <div className="text-center mb-8">
           <h1 className="font-serif text-4xl font-bold text-foreground mb-3">Draft a Message</h1>
           <p className="text-muted-foreground max-w-3xl mx-auto">
-            Clearly defining your intent helps the AI create a more accurate translation.
+            Transform your thoughts into clear, effective communication. Start by describing your goal, then share what
+            you want to say.
           </p>
         </div>
+
+        {!aiResponse && (
+          <Card className="mb-6 p-4 bg-primary/5 border-primary/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-sm">
+                <span className="font-semibold">Need inspiration?</span> Try an example:
+              </div>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {Object.entries(EXAMPLE_SCENARIOS).map(([key, scenario]) => (
+                  <Button
+                    key={key}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setIntent(scenario.intent)
+                      setDraft(scenario.draft)
+                      setSenderStyle(scenario.senderStyle)
+                      setReceiverStyle(scenario.receiverStyle)
+                    }}
+                    className="capitalize"
+                  >
+                    {key}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </Card>
+        )}
 
         <form onSubmit={handleTranslate} className="space-y-8">
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="p-6">
               <Label htmlFor="intent" className="text-base font-semibold mb-2 block">
-                What I Mean (Intent) <span className="text-destructive">*</span>
+                Your Goal <span className="text-destructive">*</span>
               </Label>
+              <p className="text-sm text-muted-foreground mb-3">What do you want to achieve with this message?</p>
               <Textarea
                 id="intent"
                 value={intent}
                 onChange={(e) => setIntent(e.target.value)}
-                placeholder="What is the goal of your message?"
+                placeholder="Example: I want to ask for a promotion because I've exceeded my goals for 3 years and taken on leadership responsibilities."
                 required
                 className="min-h-[150px]"
               />
@@ -269,13 +337,16 @@ export default function DraftModePage() {
 
             <Card className="p-6">
               <Label htmlFor="draft" className="text-base font-semibold mb-2 block">
-                What I Want to Say <span className="text-destructive">*</span>
+                Your Draft <span className="text-destructive">*</span>
               </Label>
+              <p className="text-sm text-muted-foreground mb-3">
+                What are you thinking of saying? (Don't worry, we'll help refine it)
+              </p>
               <Textarea
                 id="draft"
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
-                placeholder="What are your key points or raw thoughts?"
+                placeholder="Example: Hey boss, I think I deserve a promotion. I've been working really hard."
                 required
                 className="min-h-[150px]"
               />
@@ -283,92 +354,107 @@ export default function DraftModePage() {
           </div>
 
           <Card className="p-6 bg-muted/50">
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div>
-                <Label className="text-sm font-medium mb-2 flex items-center gap-2">
-                  My Communication Style
-                  <TooltipIcon text="Direct: You say what you mean. Indirect: You use context and subtext." />
-                </Label>
-                <RadioPillGroup
-                  name="sender"
-                  value={senderStyle}
-                  onChange={setSenderStyle}
-                  options={["direct", "indirect", "let-ai-decide"]}
-                />
-              </div>
-
-              <div>
-                <Label className="text-sm font-medium mb-2 block">Audience's Style</Label>
-                <RadioPillGroup
-                  name="receiver"
-                  value={receiverStyle}
-                  onChange={setReceiverStyle}
-                  options={["direct", "indirect"]}
-                />
-              </div>
-            </div>
-
-            <div className="text-center mb-4">
-              <label className="flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isAdvancedMode}
-                  onChange={() => setIsAdvancedMode(!isAdvancedMode)}
-                  className="w-4 h-4"
-                />
-                Show Advanced Options
-              </label>
-            </div>
-
-            {isAdvancedMode && (
-              <div className="grid md:grid-cols-2 gap-6 pt-4 border-t">
+            <div className="mb-6">
+              <h3 className="font-serif text-lg font-bold mb-4 text-center">Communication Styles</h3>
+              <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label className="text-sm font-medium mb-2 flex items-center gap-2">
-                    My Neurotype
-                    <TooltipIcon text="Autism: May prefer direct, literal language. ADHD: May communicate in non-linear ways." />
+                    Your Style
+                    <TooltipIcon text="Direct: Say exactly what you mean. Indirect: Use context, hints, and softer language." />
                   </Label>
                   <RadioPillGroup
-                    name="sender-nt"
-                    value={senderNeurotype}
-                    onChange={setSenderNeurotype}
-                    options={neurotypes}
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">Audience's Neurotype</Label>
-                  <RadioPillGroup
-                    name="receiver-nt"
-                    value={receiverNeurotype}
-                    onChange={setReceiverNeurotype}
-                    options={neurotypes}
+                    name="sender"
+                    value={senderStyle}
+                    onChange={setSenderStyle}
+                    options={["direct", "indirect", "let-ai-decide"]}
                   />
                 </div>
 
                 <div>
                   <Label className="text-sm font-medium mb-2 flex items-center gap-2">
-                    My Generation
-                    <TooltipIcon text="Gen Z: ~1997-2012, Millennial: ~1981-1996, Gen X: ~1965-1980, Boomer: ~1946-1964" />
+                    Their Style
+                    <TooltipIcon text="How does your audience typically communicate?" />
                   </Label>
                   <RadioPillGroup
-                    name="sender-gen"
-                    value={senderGeneration}
-                    onChange={setSenderGeneration}
-                    options={generations}
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">Audience's Generation</Label>
-                  <RadioPillGroup
-                    name="receiver-gen"
-                    value={receiverGeneration}
-                    onChange={setReceiverGeneration}
-                    options={generations}
+                    name="receiver"
+                    value={receiverStyle}
+                    onChange={setReceiverStyle}
+                    options={["direct", "indirect"]}
                   />
                 </div>
               </div>
-            )}
+            </div>
+
+            <div className="border-t pt-6">
+              <div className="text-center mb-4">
+                <h4 className="font-semibold mb-2">Additional Context (Optional)</h4>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Help us tailor the message even better by sharing more about you and your audience
+                </p>
+                <label className="flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isAdvancedMode}
+                    onChange={() => setIsAdvancedMode(!isAdvancedMode)}
+                    className="w-4 h-4"
+                  />
+                  {isAdvancedMode ? "Hide" : "Show"} Additional Options
+                </label>
+              </div>
+
+              {isAdvancedMode && (
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <Label className="text-sm font-medium mb-2 flex items-center gap-2">
+                      Your Neurotype
+                      <TooltipIcon text="Different neurotypes process communication differently. This helps us adapt the message." />
+                    </Label>
+                    <RadioPillGroup
+                      name="sender-nt"
+                      value={senderNeurotype}
+                      onChange={setSenderNeurotype}
+                      options={neurotypes}
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium mb-2 flex items-center gap-2">
+                      Their Neurotype
+                      <TooltipIcon text="If you know their neurotype, we can tailor the message accordingly." />
+                    </Label>
+                    <RadioPillGroup
+                      name="receiver-nt"
+                      value={receiverNeurotype}
+                      onChange={setReceiverNeurotype}
+                      options={neurotypes}
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium mb-2 flex items-center gap-2">
+                      Your Generation
+                      <TooltipIcon text="Generational differences affect communication norms and expectations." />
+                    </Label>
+                    <RadioPillGroup
+                      name="sender-gen"
+                      value={senderGeneration}
+                      onChange={setSenderGeneration}
+                      options={generations}
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Their Generation</Label>
+                    <RadioPillGroup
+                      name="receiver-gen"
+                      value={receiverGeneration}
+                      onChange={setReceiverGeneration}
+                      options={generations}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </Card>
 
           <div className="flex justify-center items-center gap-4">

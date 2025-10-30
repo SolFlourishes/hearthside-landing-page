@@ -88,17 +88,39 @@ ${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}`
     })
 
     console.log("[v0] AI response received, length:", aiText.length)
+    console.log("[v0] Raw AI response:", aiText)
 
     let cleanedText = aiText.trim()
+
+    // Remove markdown code blocks
     if (cleanedText.startsWith("```json")) {
       cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "")
     } else if (cleanedText.startsWith("```")) {
       cleanedText = cleanedText.replace(/^```\s*/, "").replace(/\s*```$/, "")
     }
 
-    console.log("[v0] Cleaned text:", cleanedText.substring(0, 100))
+    // Try to extract JSON object if there's extra text
+    const jsonMatch = cleanedText.match(/\{[\s\S]*\}/)
+    if (jsonMatch) {
+      cleanedText = jsonMatch[0]
+    }
 
-    const parsed = JSON.parse(cleanedText)
+    console.log("[v0] Cleaned text for parsing:", cleanedText)
+
+    let parsed
+    try {
+      parsed = JSON.parse(cleanedText)
+    } catch (parseError) {
+      console.error("[v0] JSON parse error:", parseError)
+      console.error("[v0] Failed to parse text:", cleanedText)
+      throw new Error(`Invalid JSON response: ${parseError instanceof Error ? parseError.message : String(parseError)}`)
+    }
+
+    // Validate the response has required fields
+    if (!parsed.explanation || !parsed.translation) {
+      console.error("[v0] Missing required fields in response:", parsed)
+      throw new Error("Response missing required fields (explanation or translation)")
+    }
 
     return NextResponse.json({
       explanation: parsed.explanation,

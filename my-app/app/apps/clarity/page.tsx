@@ -77,6 +77,68 @@ export default function ClarityCoachPage() {
           </div>
         </section>
 
+        {/* Example Scenarios Section */}
+        <section className="container mx-auto px-4 py-12 bg-muted/30">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="font-serif text-3xl font-bold text-center mb-4">Try an Example</h2>
+            <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Not sure where to start? Click an example below to see how Clarity Coach works.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-4">
+              {/* Draft Example */}
+              <a
+                href="/apps/clarity/draft?example=promotion"
+                className="group bg-card border border-border rounded-lg p-6 hover:border-[#E28A6D] hover:shadow-lg transition-all"
+              >
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="p-2 bg-[#E28A6D]/10 rounded-lg">
+                    <PenLine className="w-5 h-5 text-[#E28A6D]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[#E28A6D] mb-1">Asking for a Promotion</h3>
+                    <p className="text-sm text-muted-foreground">
+                      See how to turn your thoughts into a professional request
+                    </p>
+                  </div>
+                </div>
+              </a>
+
+              {/* Analyze Example */}
+              <a
+                href="/apps/clarity/analyze?example=feedback"
+                className="group bg-card border border-border rounded-lg p-6 hover:border-primary hover:shadow-lg transition-all"
+              >
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Search className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-primary mb-1">Understanding Feedback</h3>
+                    <p className="text-sm text-muted-foreground">Decode what your manager really means</p>
+                  </div>
+                </div>
+              </a>
+
+              {/* Chat Example */}
+              <a
+                href="/apps/clarity/chat?example=conflict"
+                className="group bg-card border border-border rounded-lg p-6 hover:border-[#FFC72C] hover:shadow-lg transition-all"
+              >
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="p-2 bg-[#FFC72C]/10 rounded-lg">
+                    <MessageCircle className="w-5 h-5 text-[#FFC72C]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[#FFC72C] mb-1">Resolving Conflict</h3>
+                    <p className="text-sm text-muted-foreground">Get advice on handling a difficult conversation</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </section>
+
         {/* Features Section */}
         <section className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto">
