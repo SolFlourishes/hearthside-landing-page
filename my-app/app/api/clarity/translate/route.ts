@@ -79,7 +79,7 @@ ${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}`
     }
 
     const { text: aiText } = await generateText({
-      model: google("gemini-pro-latest"),
+      model: google("gemini-1.5-pro-latest"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
