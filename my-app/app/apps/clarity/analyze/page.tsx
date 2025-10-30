@@ -148,177 +148,197 @@ export default function AnalyzeModePage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="text-center mb-8">
-          <h1 className="font-serif text-4xl font-bold text-foreground mb-3">Analyze a Message</h1>
-          <p className="text-muted-foreground max-w-3xl mx-auto">
-            Explaining the situation and your interpretation helps the AI understand the communication gap.
+      <div className="container mx-auto px-4 py-4 max-w-7xl">
+        <div className="text-center mb-4">
+          <h1 className="font-serif text-3xl font-bold text-foreground mb-2">Analyze a Message</h1>
+          <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
+            Understand what they really meant and how to respond.
           </p>
         </div>
 
-        <form onSubmit={handleAnalyze} className="space-y-8">
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="p-6">
-              <Label htmlFor="message" className="text-base font-semibold mb-2 block">
-                What They Wrote <span className="text-destructive">*</span>
-              </Label>
-              <Textarea
-                id="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Paste the message you received."
-                required
-                className="min-h-[150px]"
-              />
-            </Card>
-
-            <Card className="p-6">
-              <Label htmlFor="context" className="text-base font-semibold mb-2 block">
-                What's the Situation? (Context)
-              </Label>
-              <Textarea
-                id="context"
-                value={situationContext}
-                onChange={(e) => setSituationContext(e.target.value)}
-                placeholder="e.g., This is my boss, the project is late..."
-                className="min-h-[150px]"
-              />
-            </Card>
-
-            <Card className="p-6">
-              <Label htmlFor="interpretation" className="text-base font-semibold mb-2 block">
-                How I Heard It <span className="text-destructive">*</span>
-              </Label>
-              <Textarea
-                id="interpretation"
-                value={interpretation}
-                onChange={(e) => setInterpretation(e.target.value)}
-                placeholder="How did this message make you feel or what do you think it means?"
-                required
-                className="min-h-[150px]"
-              />
-            </Card>
-          </div>
-
-          <Card className="p-6 bg-muted/50">
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div>
-                <Label className="text-sm font-medium mb-2 flex items-center gap-2">
-                  Their Communication Style
-                  <TooltipIcon text="Direct: They say what they mean. Indirect: They use context and subtext." />
-                </Label>
-                <RadioPillGroup
-                  name="sender"
-                  value={senderStyle}
-                  onChange={setSenderStyle}
-                  options={["direct", "indirect"]}
-                />
+        {aiResponse && (
+          <Card className="mb-4 p-4 bg-muted/30">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-sm font-medium">Analyzing:</p>
+                <p className="text-xs text-muted-foreground line-clamp-2">{message}</p>
               </div>
-
-              <div>
-                <Label className="text-sm font-medium mb-2 block">My Style</Label>
-                <RadioPillGroup
-                  name="receiver"
-                  value={receiverStyle}
-                  onChange={setReceiverStyle}
-                  options={["direct", "indirect", "let-ai-decide"]}
-                />
-              </div>
+              <Button onClick={handleReset} variant="outline" size="sm">
+                New Analysis
+              </Button>
             </div>
-
-            <div className="text-center mb-4">
-              <label className="flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isAdvancedMode}
-                  onChange={() => setIsAdvancedMode(!isAdvancedMode)}
-                  className="w-4 h-4"
-                />
-                Show Advanced Options
-              </label>
-            </div>
-
-            {isAdvancedMode && (
-              <div className="grid md:grid-cols-2 gap-6 pt-4 border-t">
-                <div>
-                  <Label className="text-sm font-medium mb-2 flex items-center gap-2">
-                    Their Neurotype
-                    <TooltipIcon text="Autism: May prefer direct, literal language. ADHD: May communicate in non-linear ways." />
-                  </Label>
-                  <RadioPillGroup
-                    name="sender-nt"
-                    value={senderNeurotype}
-                    onChange={setSenderNeurotype}
-                    options={neurotypes}
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">My Neurotype</Label>
-                  <RadioPillGroup
-                    name="receiver-nt"
-                    value={receiverNeurotype}
-                    onChange={setReceiverNeurotype}
-                    options={neurotypes}
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium mb-2 flex items-center gap-2">
-                    Their Generation
-                    <TooltipIcon text="Gen Z: ~1997-2012, Millennial: ~1981-1996, Gen X: ~1965-1980, Boomer: ~1946-1964" />
-                  </Label>
-                  <RadioPillGroup
-                    name="sender-gen"
-                    value={senderGeneration}
-                    onChange={setSenderGeneration}
-                    options={generations}
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">My Generation</Label>
-                  <RadioPillGroup
-                    name="receiver-gen"
-                    value={receiverGeneration}
-                    onChange={setReceiverGeneration}
-                    options={generations}
-                  />
-                </div>
-              </div>
-            )}
-          </Card>
-
-          <div className="flex justify-center items-center gap-4">
-            <Button type="submit" size="lg" disabled={isLoading || !message || !interpretation}>
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                  {loadingMessage}
-                </span>
-              ) : (
-                "Analyze"
-              )}
-            </Button>
-            <Button type="button" onClick={handleReset} variant="outline" size="lg">
-              Reset
-            </Button>
-          </div>
-        </form>
-
-        {error && (
-          <Card className="mt-6 p-4 bg-destructive/10 border-destructive">
-            <p className="text-destructive text-center">{error}</p>
           </Card>
         )}
 
-        {aiResponse && (
-          <div className="mt-12 pt-8 border-t grid md:grid-cols-2 gap-6">
-            <Card className="p-6 relative">
+        {!aiResponse && (
+          <form onSubmit={handleAnalyze} className="space-y-4">
+            <div className="grid md:grid-cols-3 gap-4">
+              <Card className="p-4">
+                <Label htmlFor="message" className="text-sm font-semibold mb-1 block">
+                  What They Wrote <span className="text-destructive">*</span>
+                </Label>
+                <Textarea
+                  id="message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Paste the message..."
+                  required
+                  className="min-h-[120px]"
+                />
+              </Card>
+
+              <Card className="p-4">
+                <Label htmlFor="context" className="text-sm font-semibold mb-1 block">
+                  Situation Context
+                </Label>
+                <Textarea
+                  id="context"
+                  value={situationContext}
+                  onChange={(e) => setSituationContext(e.target.value)}
+                  placeholder="e.g., This is my boss..."
+                  className="min-h-[120px]"
+                />
+              </Card>
+
+              <Card className="p-4">
+                <Label htmlFor="interpretation" className="text-sm font-semibold mb-1 block">
+                  How I Heard It <span className="text-destructive">*</span>
+                </Label>
+                <Textarea
+                  id="interpretation"
+                  value={interpretation}
+                  onChange={(e) => setInterpretation(e.target.value)}
+                  placeholder="How did this make you feel?"
+                  required
+                  className="min-h-[120px]"
+                />
+              </Card>
+            </div>
+
+            <Card className="p-4 bg-muted/50">
+              <div className="grid md:grid-cols-2 gap-4 mb-3">
+                <div>
+                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">
+                    Their Style
+                    <TooltipIcon text="Direct: They say what they mean. Indirect: They use context." />
+                  </Label>
+                  <RadioPillGroup
+                    name="sender"
+                    value={senderStyle}
+                    onChange={setSenderStyle}
+                    options={["direct", "indirect"]}
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-xs font-medium mb-2 block">My Style</Label>
+                  <RadioPillGroup
+                    name="receiver"
+                    value={receiverStyle}
+                    onChange={setReceiverStyle}
+                    options={["direct", "indirect", "let-ai-decide"]}
+                  />
+                </div>
+              </div>
+
+              <div className="text-center mb-3">
+                <label className="flex items-center justify-center gap-2 text-xs text-muted-foreground cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isAdvancedMode}
+                    onChange={() => setIsAdvancedMode(!isAdvancedMode)}
+                    className="w-4 h-4"
+                  />
+                  Show Advanced Options
+                </label>
+              </div>
+
+              {isAdvancedMode && (
+                <div className="grid md:grid-cols-2 gap-4 pt-3 border-t">
+                  <div>
+                    <Label className="text-xs font-medium mb-2 flex items-center gap-2">
+                      Their Neurotype
+                      <TooltipIcon text="Autism: May prefer direct language. ADHD: May communicate non-linearly." />
+                    </Label>
+                    <RadioPillGroup
+                      name="sender-nt"
+                      value={senderNeurotype}
+                      onChange={setSenderNeurotype}
+                      options={neurotypes}
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-medium mb-2 block">My Neurotype</Label>
+                    <RadioPillGroup
+                      name="receiver-nt"
+                      value={receiverNeurotype}
+                      onChange={setReceiverNeurotype}
+                      options={neurotypes}
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-medium mb-2 flex items-center gap-2">
+                      Their Generation
+                      <TooltipIcon text="Gen Z: ~1997-2012, Millennial: ~1981-1996, Gen X: ~1965-1980" />
+                    </Label>
+                    <RadioPillGroup
+                      name="sender-gen"
+                      value={senderGeneration}
+                      onChange={setSenderGeneration}
+                      options={generations}
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-medium mb-2 block">My Generation</Label>
+                    <RadioPillGroup
+                      name="receiver-gen"
+                      value={receiverGeneration}
+                      onChange={setReceiverGeneration}
+                      options={generations}
+                    />
+                  </div>
+                </div>
+              )}
+            </Card>
+
+            <div className="flex justify-center items-center gap-4">
+              <Button type="submit" size="lg" disabled={isLoading || !message || !interpretation}>
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    Analyzing...
+                  </span>
+                ) : (
+                  "Analyze"
+                )}
+              </Button>
+            </div>
+          </form>
+        )}
+
+        {isLoading && (
+          <Card className="mt-6 p-8 text-center">
+            <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-sm text-muted-foreground">{loadingMessage}</p>
+          </Card>
+        )}
+
+        {error && (
+          <Card className="mt-6 p-4 bg-destructive/10 border-destructive">
+            <p className="text-destructive text-center text-sm">{error}</p>
+          </Card>
+        )}
+
+        {aiResponse && !isLoading && (
+          <div className="mt-6 grid md:grid-cols-2 gap-4">
+            <Card className="p-4 relative">
               <CopyButton text={aiResponse.explanation} />
-              <h3 className="text-lg font-bold font-serif text-primary mb-4">What They Likely Meant (Explanation)</h3>
+              <h3 className="text-base font-bold font-serif text-primary mb-3">What They Likely Meant</h3>
               <div
-                className="prose prose-sm dark:prose-invert max-w-none"
+                className="prose prose-sm dark:prose-invert max-w-none text-sm"
                 dangerouslySetInnerHTML={{ __html: aiResponse.explanation }}
               />
               <FeedbackWidget
@@ -331,11 +351,11 @@ export default function AnalyzeModePage() {
               />
             </Card>
 
-            <Card className="p-6 relative">
+            <Card className="p-4 relative">
               <CopyButton text={aiResponse.response} />
-              <h3 className="text-lg font-bold font-serif text-primary mb-4">The Translation (Suggested Response)</h3>
+              <h3 className="text-base font-bold font-serif text-primary mb-3">Suggested Response</h3>
               <div
-                className="prose prose-sm dark:prose-invert max-w-none"
+                className="prose prose-sm dark:prose-invert max-w-none text-sm"
                 dangerouslySetInnerHTML={{ __html: aiResponse.response }}
               />
               <FeedbackWidget
@@ -354,7 +374,6 @@ export default function AnalyzeModePage() {
   )
 }
 
-// Helper components (same as draft page)
 function RadioPillGroup({
   name,
   value,
@@ -446,15 +465,15 @@ function FeedbackWidget({
   isSuccess: boolean
 }) {
   return (
-    <div className="mt-4 pt-4 border-t space-y-2">
-      <p className="text-sm font-medium">Rate this:</p>
+    <div className="mt-3 pt-3 border-t space-y-2">
+      <p className="text-xs font-medium">Rate this:</p>
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
             type="button"
             onClick={() => onRatingChange(star)}
-            className={`text-2xl ${star <= rating ? "text-yellow-500" : "text-gray-300 dark:text-gray-600"}`}
+            className={`text-xl ${star <= rating ? "text-yellow-500" : "text-gray-300 dark:text-gray-600"}`}
           >
             ★
           </button>
@@ -464,7 +483,7 @@ function FeedbackWidget({
         value={comment}
         onChange={(e) => onCommentChange(e.target.value)}
         placeholder="Optional: Tell us more..."
-        className="min-h-[60px] text-sm"
+        className="min-h-[50px] text-xs"
       />
       <Button onClick={onSubmit} disabled={rating === 0 || isSuccess} size="sm" className="w-full">
         {isSuccess ? "Thank you!" : "Submit Feedback"}

@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
-import { Send } from "lucide-react"
+import { Send, Lightbulb } from "lucide-react"
 
 interface Message {
   role: "user" | "model"
@@ -31,6 +31,7 @@ export default function ChatModePage() {
   ])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [showStarters, setShowStarters] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -59,6 +60,7 @@ export default function ChatModePage() {
     setMessages(newHistory)
     setInput("")
     setIsLoading(true)
+    setShowStarters(false)
 
     try {
       const response = await fetch(`/api/clarity/chat`, {
@@ -95,68 +97,78 @@ export default function ChatModePage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="font-serif text-4xl font-bold text-foreground mb-3">Chat with the Coach</h1>
-            <p className="text-muted-foreground">
-              Get real-time advice on navigating tricky conversations and communication challenges.
-            </p>
-          </div>
+    <main className="fixed inset-0 top-16 bg-background">
+      <div className="h-full flex flex-col max-w-4xl mx-auto px-4">
+        <div className="py-4 border-b border-border">
+          <h1 className="font-serif text-2xl font-bold text-foreground">Chat with the Coach</h1>
+          <p className="text-sm text-muted-foreground">Get real-time advice on communication challenges</p>
+        </div>
 
-          {messages.length === 1 && !isLoading && (
-            <Card className="mb-6 p-6 bg-primary/5 border-primary/20">
-              <h3 className="font-semibold mb-3 text-center">Try asking about:</h3>
-              <div className="grid gap-2">
-                {CONVERSATION_STARTERS.map((starter, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setInput(starter)}
-                    className="text-left p-3 rounded-lg bg-card border border-border hover:border-primary hover:bg-primary/5 transition-all text-sm"
-                  >
-                    {starter}
-                  </button>
-                ))}
+        <div className="flex-1 flex flex-col min-h-0 py-4">
+          {/* Messages - scrollable area */}
+          <div className="flex-1 overflow-y-auto mb-4 space-y-4 pr-2" role="log" aria-live="polite" aria-atomic="false">
+            {messages.map((message, index) => (
+              <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-[80%] rounded-lg p-4 prose prose-sm dark:prose-invert break-words ${
+                    message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                  }`}
+                  dangerouslySetInnerHTML={{ __html: message.content }}
+                />
               </div>
-            </Card>
-          )}
+            ))}
 
-          {/* Chat Container */}
-          <Card className="p-6 h-[600px] flex flex-col">
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto mb-4 space-y-4" role="log" aria-live="polite" aria-atomic="false">
-              {messages.map((message, index) => (
-                <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div
-                    className={`max-w-[80%] rounded-lg p-4 prose prose-sm dark:prose-invert break-words ${
-                      message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
-                    }`}
-                    dangerouslySetInnerHTML={{ __html: message.content }}
-                  />
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-muted rounded-lg p-4">
-                    <div className="flex gap-2">
-                      <div
-                        className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce"
-                        style={{ animationDelay: "-0.3s" }}
-                      />
-                      <div
-                        className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce"
-                        style={{ animationDelay: "-0.15s" }}
-                      />
-                      <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce" />
+            {messages.length === 1 && !isLoading && (
+              <div className="flex justify-start">
+                <Card className="max-w-[80%] p-4 bg-primary/5 border-primary/20">
+                  <button
+                    onClick={() => setShowStarters(!showStarters)}
+                    className="flex items-center gap-2 text-sm font-semibold mb-2 hover:text-primary transition-colors"
+                  >
+                    <Lightbulb className="w-4 h-4" />
+                    {showStarters ? "Hide suggestions" : "Show conversation starters"}
+                  </button>
+                  {showStarters && (
+                    <div className="space-y-2 mt-3">
+                      {CONVERSATION_STARTERS.map((starter, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setInput(starter)
+                            setShowStarters(false)
+                          }}
+                          className="block w-full text-left p-2 rounded bg-card border border-border hover:border-primary hover:bg-primary/5 transition-all text-xs"
+                        >
+                          {starter}
+                        </button>
+                      ))}
                     </div>
+                  )}
+                </Card>
+              </div>
+            )}
+
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="flex gap-2">
+                    <div
+                      className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce"
+                      style={{ animationDelay: "-0.3s" }}
+                    />
+                    <div
+                      className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce"
+                      style={{ animationDelay: "-0.15s" }}
+                    />
+                    <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce" />
                   </div>
                 </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
 
-            {/* Input */}
+          <div className="border-t border-border pt-4">
             <form
               onSubmit={(e) => {
                 e.preventDefault()
@@ -170,30 +182,22 @@ export default function ChatModePage() {
               </label>
               <Textarea
                 id="chat-input"
-                placeholder="Describe your situation... (Press Enter to send, Shift+Enter for new line)"
+                placeholder="Describe your situation... (Enter to send, Shift+Enter for new line)"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={isLoading}
-                className="min-h-[60px] resize-none"
+                className="min-h-[80px] max-h-[120px] resize-none"
                 aria-label="Describe your situation"
               />
               <Button onClick={handleSend} disabled={!input.trim() || isLoading} size="lg" aria-label="Send message">
                 <Send className="w-4 h-4" />
               </Button>
             </form>
-          </Card>
-
-          {/* Info Box */}
-          <Card className="mt-6 p-6 bg-primary/5 border-primary/20">
-            <h3 className="font-semibold mb-2">💬 Tips for Better Conversations</h3>
-            <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-              <li>Share specific details about your situation for more tailored advice</li>
-              <li>Mention the relationship context (manager, colleague, client, etc.)</li>
-              <li>Describe what you've already tried, if anything</li>
-              <li>Ask follow-up questions to dive deeper into strategies</li>
-            </ul>
-          </Card>
+            <p className="text-xs text-muted-foreground mt-2">
+              💡 Tip: Share specific details and relationship context for better advice
+            </p>
+          </div>
         </div>
       </div>
     </main>
