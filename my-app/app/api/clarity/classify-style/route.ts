@@ -26,7 +26,7 @@ Indirect style characteristics:
 Respond with ONLY a JSON object: {"style": "direct"} or {"style": "indirect"}`
 
     const { text: aiResponse } = await generateText({
-      model: google("gemini-1.5-flash-latest"),
+      model: google("gemini-pro-latest"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: text },
