@@ -11,6 +11,9 @@ export function ClarityHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const pathname = usePathname()
 
+  const isSubdomain = typeof window !== "undefined" && window.location.hostname.startsWith("clarity.")
+  const basePath = isSubdomain ? "" : "/apps/clarity"
+
   const isActive = (path: string) => pathname === path
 
   return (
@@ -18,50 +21,50 @@ export function ClarityHeader() {
       <div className="container mx-auto px-4">
         <div className="flex h-14 items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/apps/clarity" className="flex items-center gap-2">
+            <Link href={`${basePath}`} className="flex items-center gap-2">
               <span className="font-serif text-lg font-bold text-primary">Clarity Coach</span>
               <span className="text-xs text-muted-foreground font-mono">Beta 3.1</span>
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-1">
-              <Link href="/apps/clarity/draft">
-                <Button variant={isActive("/apps/clarity/draft") ? "default" : "ghost"} size="sm">
+              <Link href={`${basePath}/draft`}>
+                <Button variant={isActive(`${basePath}/draft`) ? "default" : "ghost"} size="sm">
                   Draft Mode
                 </Button>
               </Link>
-              <Link href="/apps/clarity/analyze">
-                <Button variant={isActive("/apps/clarity/analyze") ? "default" : "ghost"} size="sm">
+              <Link href={`${basePath}/analyze`}>
+                <Button variant={isActive(`${basePath}/analyze`) ? "default" : "ghost"} size="sm">
                   Analyze
                 </Button>
               </Link>
-              <Link href="/apps/clarity/chat">
-                <Button variant={isActive("/apps/clarity/chat") ? "default" : "ghost"} size="sm">
+              <Link href={`${basePath}/chat`}>
+                <Button variant={isActive(`${basePath}/chat`) ? "default" : "ghost"} size="sm">
                   Chat
                 </Button>
               </Link>
-              <Link href="/apps/clarity/about">
-                <Button variant={isActive("/apps/clarity/about") ? "default" : "ghost"} size="sm">
+              <Link href={`${basePath}/about`}>
+                <Button variant={isActive(`${basePath}/about`) ? "default" : "ghost"} size="sm">
                   About
                 </Button>
               </Link>
-              <Link href="/apps/clarity/how-to-use">
-                <Button variant={isActive("/apps/clarity/how-to-use") ? "default" : "ghost"} size="sm">
+              <Link href={`${basePath}/how-to-use`}>
+                <Button variant={isActive(`${basePath}/how-to-use`) ? "default" : "ghost"} size="sm">
                   How to Use
                 </Button>
               </Link>
-              <Link href="/apps/clarity/roadmap">
-                <Button variant={isActive("/apps/clarity/roadmap") ? "default" : "ghost"} size="sm">
+              <Link href={`${basePath}/roadmap`}>
+                <Button variant={isActive(`${basePath}/roadmap`) ? "default" : "ghost"} size="sm">
                   Roadmap
                 </Button>
               </Link>
-              <Link href="/apps/clarity/changelog">
-                <Button variant={isActive("/apps/clarity/changelog") ? "default" : "ghost"} size="sm">
+              <Link href={`${basePath}/changelog`}>
+                <Button variant={isActive(`${basePath}/changelog`) ? "default" : "ghost"} size="sm">
                   Changelog
                 </Button>
               </Link>
-              <Link href="/apps/clarity/credits">
-                <Button variant={isActive("/apps/clarity/credits") ? "default" : "ghost"} size="sm">
+              <Link href={`${basePath}/credits`}>
+                <Button variant={isActive(`${basePath}/credits`) ? "default" : "ghost"} size="sm">
                   Credits
                 </Button>
               </Link>
@@ -85,27 +88,27 @@ export function ClarityHeader() {
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <nav className="md:hidden py-4 space-y-2 border-t">
-            <Link href="/apps/clarity/draft" className="block">
+            <Link href={`${basePath}/draft`} className="block">
               <Button
-                variant={isActive("/apps/clarity/draft") ? "default" : "ghost"}
+                variant={isActive(`${basePath}/draft`) ? "default" : "ghost"}
                 size="sm"
                 className="w-full justify-start"
               >
                 Draft Mode
               </Button>
             </Link>
-            <Link href="/apps/clarity/analyze" className="block">
+            <Link href={`${basePath}/analyze`} className="block">
               <Button
-                variant={isActive("/apps/clarity/analyze") ? "default" : "ghost"}
+                variant={isActive(`${basePath}/analyze`) ? "default" : "ghost"}
                 size="sm"
                 className="w-full justify-start"
               >
                 Analyze
               </Button>
             </Link>
-            <Link href="/apps/clarity/chat" className="block">
+            <Link href={`${basePath}/chat`} className="block">
               <Button
-                variant={isActive("/apps/clarity/chat") ? "default" : "ghost"}
+                variant={isActive(`${basePath}/chat`) ? "default" : "ghost"}
                 size="sm"
                 className="w-full justify-start"
               >
@@ -113,27 +116,27 @@ export function ClarityHeader() {
               </Button>
             </Link>
             <div className="pt-2 border-t space-y-2">
-              <Link href="/apps/clarity/about" className="block">
+              <Link href={`${basePath}/about`} className="block">
                 <Button variant="ghost" size="sm" className="w-full justify-start">
                   About
                 </Button>
               </Link>
-              <Link href="/apps/clarity/how-to-use" className="block">
+              <Link href={`${basePath}/how-to-use`} className="block">
                 <Button variant="ghost" size="sm" className="w-full justify-start">
                   How to Use
                 </Button>
               </Link>
-              <Link href="/apps/clarity/roadmap" className="block">
+              <Link href={`${basePath}/roadmap`} className="block">
                 <Button variant="ghost" size="sm" className="w-full justify-start">
                   Roadmap
                 </Button>
               </Link>
-              <Link href="/apps/clarity/changelog" className="block">
+              <Link href={`${basePath}/changelog`} className="block">
                 <Button variant="ghost" size="sm" className="w-full justify-start">
                   Changelog
                 </Button>
               </Link>
-              <Link href="/apps/clarity/credits" className="block">
+              <Link href={`${basePath}/credits`} className="block">
                 <Button variant="ghost" size="sm" className="w-full justify-start">
                   Credits
                 </Button>
