@@ -8,10 +8,20 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get("type") // "ai-generated" | "player-submitted" | null (all)
 
     const db = getDb()
-    let query = db.collection("stories").where("status", "==", "published").orderBy("publishedAt", "desc").limit(limit)
+
+    // Build query based on whether type filter is present
+    let query = db.collection("stories")
 
     if (type) {
-      query = query.where("type", "==", type)
+      // When filtering by type, we need both status and type filters
+      query = query
+        .where("status", "==", "published")
+        .where("type", "==", type)
+        .orderBy("publishedAt", "desc")
+        .limit(limit)
+    } else {
+      // When not filtering by type, just use status
+      query = query.where("status", "==", "published").orderBy("publishedAt", "desc").limit(limit)
     }
 
     const snapshot = await query.get()
