@@ -16,6 +16,18 @@
 import { getDb } from "../lib/firebase-admin"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
+import * as dotenv from "dotenv"
+import { fileURLToPath } from "url"
+import { dirname, join } from "path"
+
+// Load environment variables from .env.local
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+dotenv.config({ path: join(__dirname, "../.env.local") })
+
+console.log("[Story Generator] Environment check:")
+console.log(`- FIREBASE_PROJECT_ID: ${process.env.FIREBASE_PROJECT_ID ? "✓" : "✗"}`)
+console.log(`- GOOGLE_GENERATIVE_AI_API_KEY: ${process.env.GOOGLE_GENERATIVE_AI_API_KEY ? "✓" : "✗"}`)
 
 const INTENT_NAMES: Record<number, string> = {
   0: "ATTACK",
@@ -50,47 +62,50 @@ const INTENT_NAMES: Record<number, string> = {
 }
 
 async function generateStoryFromSimulation(docId: string) {
-  console.log(`[Story Generator] Starting story generation for: ${docId}`)
+  try {
+    console.log(`[Story Generator] Starting story generation for: ${docId}`)
 
-  const db = getDb()
+    const db = getDb()
+    console.log(`[Story Generator] Database connection established`)
 
-  const simDoc = await db.collection("master_compendium_v12").doc(docId).get()
+    const simDoc = await db.collection("master_compendium_v12").doc(docId).get()
+    console.log(`[Story Generator] Fetched simulation document`)
 
-  if (!simDoc.exists) {
-    throw new Error(`Simulation ${docId} not found in master_compendium_v12`)
-  }
+    if (!simDoc.exists) {
+      throw new Error(`Simulation ${docId} not found in master_compendium_v12`)
+    }
 
-  const simulation = simDoc.data()
-  console.log(`[Story Generator] Found simulation for persona: ${simulation?.persona_name}`)
+    const simulation = simDoc.data()
+    console.log(`[Story Generator] Found simulation for persona: ${simulation?.persona_name}`)
 
-  const personaName = simulation?.persona_name || "Unknown"
-  const constraint = simulation?.constraint || "Unknown"
-  const origin = simulation?.simulation_report?.origin || "Unknown"
+    const personaName = simulation?.persona_name || "Unknown"
+    const constraint = simulation?.constraint || "Unknown"
+    const origin = simulation?.simulation_report?.origin || "Unknown"
 
-  // Extract Part I data
-  const partIData = simulation?.part_i_data || {}
-  const narrativeLog = partIData.narrative_log || ""
-  const partIEvents = partIData.simulation_report?.events || []
+    // Extract Part I data
+    const partIData = simulation?.part_i_data || {}
+    const narrativeLog = partIData.narrative_log || ""
+    const partIEvents = partIData.simulation_report?.events || []
 
-  // Extract Part II data
-  const p2Log = simulation?.p2_log || ""
+    // Extract Part II data
+    const p2Log = simulation?.p2_log || ""
 
-  // Get final state
-  const simulationReport = simulation?.simulation_report || {}
-  const endState = simulationReport.end_state || "Unknown"
-  const identityCohesion = simulationReport.identity_cohesion || 0
-  const reputationalField = simulationReport.reputational_field || {}
-  const allEvents = simulationReport.events || []
+    // Get final state
+    const simulationReport = simulation?.simulation_report || {}
+    const endState = simulationReport.end_state || "Unknown"
+    const identityCohesion = simulationReport.identity_cohesion || 0
+    const reputationalField = simulationReport.reputational_field || {}
+    const allEvents = simulationReport.events || []
 
-  const eventsWithIntents = allEvents.map((event: any) => ({
-    text: event.event_text || event.text || "",
-    intent: INTENT_NAMES[event.recovered_intent_id] || "UNKNOWN",
-    intentId: event.recovered_intent_id,
-  }))
+    const eventsWithIntents = allEvents.map((event: any) => ({
+      text: event.event_text || event.text || "",
+      intent: INTENT_NAMES[event.recovered_intent_id] || "UNKNOWN",
+      intentId: event.recovered_intent_id,
+    }))
 
-  console.log(`[Story Generator] Parsed ${eventsWithIntents.length} events`)
+    console.log(`[Story Generator] Parsed ${eventsWithIntents.length} events`)
 
-  const storyPrompt = `You are a master storyteller crafting an immersive, engaging narrative from a Project Cohesion playthrough.
+    const storyPrompt = `You are a master storyteller crafting an immersive, engaging narrative from a Project Cohesion playthrough.
 
 PROJECT COHESION is a text-based RPG where players navigate a fragmenting reality. Their identity and choices shape the world around them. The "White Room" is where consciousness and reality intersect.
 
@@ -135,16 +150,16 @@ STYLE GUIDELINES:
 
 Write ONLY the story. No meta-commentary, no explanations, no titles.`
 
-  console.log(`[Story Generator] Generating story content...`)
+    console.log(`[Story Generator] Generating story content...`)
 
-  const { text: storyContent } = await generateText({
-    model: google("gemini-pro-latest"),
-    prompt: storyPrompt,
-    temperature: 0.85,
-    maxTokens: 2500,
-  })
+    const { text: storyContent } = await generateText({
+      model: google("gemini-pro-latest"),
+      prompt: storyPrompt,
+      temperature: 0.85,
+      maxTokens: 2500,
+    })
 
-  const titlePrompt = `Based on this story about ${personaName}, create a compelling, mysterious title (4-7 words) that captures the essence of their journey:
+    const titlePrompt = `Based on this story about ${personaName}, create a compelling, mysterious title (4-7 words) that captures the essence of their journey:
 
 ${storyContent.substring(0, 600)}...
 
@@ -152,51 +167,55 @@ The title should evoke the themes of identity, choice, and fragmented reality. M
 
 Respond with ONLY the title, nothing else.`
 
-  const { text: title } = await generateText({
-    model: google("gemini-pro-latest"),
-    prompt: titlePrompt,
-    temperature: 0.8,
-  })
+    const { text: title } = await generateText({
+      model: google("gemini-pro-latest"),
+      prompt: titlePrompt,
+      temperature: 0.8,
+    })
 
-  console.log(`[Story Generator] Generated title: ${title}`)
+    console.log(`[Story Generator] Generated title: ${title}`)
 
-  // Create excerpt from first paragraph
-  const firstParagraph = storyContent.split("\n\n")[0]
-  const excerpt = firstParagraph.length > 250 ? firstParagraph.substring(0, 247) + "..." : firstParagraph
+    // Create excerpt from first paragraph
+    const firstParagraph = storyContent.split("\n\n")[0]
+    const excerpt = firstParagraph.length > 250 ? firstParagraph.substring(0, 247) + "..." : firstParagraph
 
-  const storyData = {
-    title: title.trim().replace(/^["']|["']$/g, ""), // Remove quotes if present
-    content: storyContent,
-    excerpt,
-    imageUrl: `/placeholder.svg?height=600&width=800&query=white+room+fragmented+reality+${personaName}`,
-    type: "ai-generated",
-    status: "published",
-    simulationId: docId,
-    metadata: {
+    const storyData = {
+      title: title.trim().replace(/^["']|["']$/g, ""), // Remove quotes if present
+      content: storyContent,
+      excerpt,
+      imageUrl: `/placeholder.svg?height=600&width=800&query=white+room+fragmented+reality+${personaName}`,
+      type: "ai-generated",
+      status: "published",
+      simulationId: docId,
+      metadata: {
+        personaName,
+        origin,
+        constraint,
+        endState,
+        identityCohesion,
+        totalEvents: eventsWithIntents.length,
+        keyIntents: eventsWithIntents.slice(0, 10).map((e: any) => e.intent),
+        reputationalField,
+      },
+      createdAt: new Date(),
+      publishedAt: new Date(),
+      views: 0,
+      likes: 0,
+    }
+
+    const docRef = await db.collection("stories").add(storyData)
+    console.log(`[Story Generator] Story saved with ID: ${docRef.id}`)
+
+    console.log(`[Story Generator] ✅ Story generation complete!`)
+
+    return {
+      storyId: docRef.id,
+      title: title.trim(),
       personaName,
-      origin,
-      constraint,
-      endState,
-      identityCohesion,
-      totalEvents: eventsWithIntents.length,
-      keyIntents: eventsWithIntents.slice(0, 10).map((e: any) => e.intent),
-      reputationalField,
-    },
-    createdAt: new Date(),
-    publishedAt: new Date(),
-    views: 0,
-    likes: 0,
-  }
-
-  const docRef = await db.collection("stories").add(storyData)
-  console.log(`[Story Generator] Story saved with ID: ${docRef.id}`)
-
-  console.log(`[Story Generator] ✅ Story generation complete!`)
-
-  return {
-    storyId: docRef.id,
-    title: title.trim(),
-    personaName,
+    }
+  } catch (error) {
+    console.error(`[Story Generator] Error in generateStoryFromSimulation:`, error)
+    throw error
   }
 }
 
