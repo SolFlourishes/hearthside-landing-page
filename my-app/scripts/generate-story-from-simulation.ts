@@ -205,6 +205,12 @@ ${Object.entries(reputationalField)
   .map(([key, value]) => `${key}: ${value}`)
   .join(", ")}
 
+IMPORTANT: The narrative logs above may contain technical metadata like "P1 State Post-R016 Trigger" or rule references. DO NOT include any of this technical metadata in your story. Focus only on the narrative content and character actions. Filter out anything that looks like:
+- Rule triggers (e.g., "Post-R016 Trigger", "R001", etc.)
+- State markers (e.g., "P1 State", "P2 State")
+- System messages or technical annotations
+- Any text in brackets or parentheses that looks like metadata
+
 YOUR TASK:
 Write a compelling 1000-1500 word story titled "Tales from the White Room" that:
 
@@ -249,6 +255,44 @@ Respond with ONLY the title, nothing else.`
 
     console.log(`[Story Generator] Generated title: ${title}`)
 
+    console.log(`[Story Generator] Generating story image...`)
+
+    const imagePrompt = `A haunting, atmospheric scene representing "${title.trim()}". 
+The White Room: a liminal space where reality fragments and consciousness shifts. 
+Persona: ${personaName}, ${origin}
+Mood: mysterious, introspective, slightly unsettling
+Style: cinematic, dreamlike, with soft lighting and ethereal quality
+No text, no UI elements, just pure atmospheric storytelling.`
+
+    let imageUrl = `/placeholder.svg?height=600&width=800&query=white+room+fragmented+reality+${personaName}`
+
+    try {
+      // Try to generate image using Google's Imagen model
+      const imageResponse = await generateText({
+        model: google("gemini-2.0-flash-exp"),
+        prompt: `Generate a detailed image prompt for an AI image generator based on this story concept:
+
+Title: ${title.trim()}
+Persona: ${personaName}
+Story excerpt: ${storyContent.substring(0, 300)}
+
+Create a vivid, detailed prompt (2-3 sentences) for generating a cinematic, atmospheric image that captures the essence of this story. Focus on mood, lighting, and symbolic elements. No text or UI elements.
+
+Respond with ONLY the image prompt, nothing else.`,
+      })
+
+      console.log(`[Story Generator] Image prompt generated: ${imageResponse.text.substring(0, 100)}...`)
+      console.log(
+        `[Story Generator] Note: Using placeholder for now. To enable image generation, integrate with an image API like fal.ai or DALL-E`,
+      )
+
+      // For now, use an enhanced placeholder with the generated prompt
+      imageUrl = `/placeholder.svg?height=600&width=800&query=${encodeURIComponent(imageResponse.text.substring(0, 100))}`
+    } catch (error) {
+      console.error(`[Story Generator] Error generating image:`, error)
+      console.log(`[Story Generator] Falling back to default placeholder`)
+    }
+
     // Create excerpt from first paragraph
     const firstParagraph = storyContent.split("\n\n")[0]
     const excerpt = firstParagraph.length > 250 ? firstParagraph.substring(0, 247) + "..." : firstParagraph
@@ -257,7 +301,7 @@ Respond with ONLY the title, nothing else.`
       title: title.trim().replace(/^["']|["']$/g, ""), // Remove quotes if present
       content: storyContent,
       excerpt,
-      imageUrl: `/placeholder.svg?height=600&width=800&query=white+room+fragmented+reality+${personaName}`,
+      imageUrl,
       type: "ai-generated",
       status: "published",
       simulationId: docId,

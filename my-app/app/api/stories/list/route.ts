@@ -9,33 +9,64 @@ export async function GET(request: NextRequest) {
 
     const db = getDb()
 
-    // Build query based on whether type filter is present
-    let query = db.collection("stories")
+    try {
+      let query = db.collection("stories")
 
-    if (type) {
-      // When filtering by type, we need both status and type filters
-      query = query
-        .where("status", "==", "published")
-        .where("type", "==", type)
-        .orderBy("publishedAt", "desc")
-        .limit(limit)
-    } else {
-      // When not filtering by type, just use status
-      query = query.where("status", "==", "published").orderBy("publishedAt", "desc").limit(limit)
+      if (type) {
+        query = query
+          .where("status", "==", "published")
+          .where("type", "==", type)
+          .orderBy("publishedAt", "desc")
+          .limit(limit)
+      } else {
+        query = query.where("status", "==", "published").orderBy("publishedAt", "desc").limit(limit)
+      }
+
+      const snapshot = await query.get()
+
+      const stories = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+
+      return NextResponse.json({
+        success: true,
+        stories,
+        count: stories.length,
+      })
+    } catch (indexError) {
+      console.log("[v0] Index not found, using fallback query")
+
+      let query = db.collection("stories").where("status", "==", "published")
+
+      if (type) {
+        query = query.where("type", "==", type)
+      }
+
+      const snapshot = await query.get()
+
+      let stories = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+
+      // Sort in memory by publishedAt
+      stories.sort((a: any, b: any) => {
+        const aTime = a.publishedAt?.seconds || 0
+        const bTime = b.publishedAt?.seconds || 0
+        return bTime - aTime
+      })
+
+      // Apply limit
+      stories = stories.slice(0, limit)
+
+      return NextResponse.json({
+        success: true,
+        stories,
+        count: stories.length,
+        usingFallback: true,
+      })
     }
-
-    const snapshot = await query.get()
-
-    const stories = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }))
-
-    return NextResponse.json({
-      success: true,
-      stories,
-      count: stories.length,
-    })
   } catch (error) {
     console.error("[v0] Error fetching stories:", error)
     return NextResponse.json(
