@@ -1,7 +1,14 @@
+"use client"
+
+import { useEffect } from "react"
 import { Footer } from "@/components/footer"
 import { Gamepad2, BookOpen, Heart, Users } from "lucide-react"
 
 export default function AboutPage() {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#111827]">
       <main>

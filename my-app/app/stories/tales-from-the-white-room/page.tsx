@@ -1,0 +1,238 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Footer } from "@/components/footer"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { BookOpen, Sparkles, Users, Eye } from "lucide-react"
+import Link from "next/link"
+
+interface Story {
+  id: string
+  title: string
+  excerpt: string
+  imageUrl: string
+  type: "ai-generated" | "player-submitted"
+  metadata: {
+    characterName?: string
+    outcome?: string
+  }
+  publishedAt: { seconds: number }
+  views: number
+}
+
+export default function TalesFromTheWhiteRoomPage() {
+  const [stories, setStories] = useState<Story[]>([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState<"all" | "ai-generated" | "player-submitted">("all")
+
+  useEffect(() => {
+    fetchStories()
+  }, [filter])
+
+  const fetchStories = async () => {
+    setLoading(true)
+    try {
+      const url = filter === "all" ? "/api/stories/list" : `/api/stories/list?type=${filter}`
+      const response = await fetch(url)
+      const data = await response.json()
+
+      if (data.success) {
+        setStories(data.stories)
+      }
+    } catch (error) {
+      console.error("Error fetching stories:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+      <main>
+        {/* Hero Section */}
+        <section className="relative py-16 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-slate-900/20" />
+
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <Badge className="mb-4 bg-purple-500/20 text-purple-300 border-purple-500/30">Hearthside Stories</Badge>
+              <h1 className="font-serif text-4xl md:text-5xl font-bold text-white mb-4 text-balance">
+                Tales from the White Room
+              </h1>
+              <p className="text-lg md:text-xl text-slate-300 mb-6 leading-relaxed">
+                Stories born from the fragmenting reality of Project: Cohesion. Each tale captures a unique journey
+                through identity, choice, and consequence.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+                <Link href="/stories/tales-from-the-white-room/submit">
+                  <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-white">
+                    <Users className="w-4 h-4 mr-2" />
+                    Submit Your Story
+                  </Button>
+                </Link>
+                <Link href="/games/project-cohesion">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-slate-600 text-slate-200 hover:bg-slate-800 bg-transparent"
+                  >
+                    Learn About Project: Cohesion
+                  </Button>
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-400 mb-1">{stories.length}</div>
+                  <div className="text-sm text-slate-400">Stories</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-400 mb-1">Free</div>
+                  <div className="text-sm text-slate-400">To Read</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-teal-400 mb-1">Open</div>
+                  <div className="text-sm text-slate-400">Submissions</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Filter Section */}
+        <section className="py-6 bg-slate-900/50">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Button
+                variant={filter === "all" ? "default" : "outline"}
+                onClick={() => setFilter("all")}
+                className={
+                  filter === "all"
+                    ? "bg-purple-600 hover:bg-purple-700"
+                    : "border-slate-600 text-slate-300 hover:bg-slate-800 bg-transparent"
+                }
+              >
+                All Stories
+              </Button>
+              <Button
+                variant={filter === "ai-generated" ? "default" : "outline"}
+                onClick={() => setFilter("ai-generated")}
+                className={
+                  filter === "ai-generated"
+                    ? "bg-purple-600 hover:bg-purple-700"
+                    : "border-slate-600 text-slate-300 hover:bg-slate-800 bg-transparent"
+                }
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                AI-Generated
+              </Button>
+              <Button
+                variant={filter === "player-submitted" ? "default" : "outline"}
+                onClick={() => setFilter("player-submitted")}
+                className={
+                  filter === "player-submitted"
+                    ? "bg-purple-600 hover:bg-purple-700"
+                    : "border-slate-600 text-slate-300 hover:bg-slate-800 bg-transparent"
+                }
+              >
+                <Users className="w-4 h-4 mr-2" />
+                Player-Submitted
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Stories Grid */}
+        <section className="py-12 bg-slate-900/30">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {loading ? (
+              <div className="text-center text-slate-400 py-12">Loading stories...</div>
+            ) : stories.length === 0 ? (
+              <div className="text-center py-12">
+                <BookOpen className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                <p className="text-slate-400 text-lg mb-4">No stories yet in this category.</p>
+                <p className="text-slate-500">Be the first to submit a story from your playthrough!</p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                {stories.map((story) => (
+                  <Link key={story.id} href={`/stories/tales-from-the-white-room/${story.id}`}>
+                    <Card className="bg-slate-800/50 border-slate-700 hover:border-purple-500/50 transition-all h-full cursor-pointer">
+                      <div className="aspect-video w-full overflow-hidden rounded-t-lg">
+                        <img
+                          src={story.imageUrl || "/placeholder.svg"}
+                          alt={story.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <CardHeader>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge
+                            variant="outline"
+                            className={
+                              story.type === "ai-generated"
+                                ? "border-purple-500/50 text-purple-300"
+                                : "border-blue-500/50 text-blue-300"
+                            }
+                          >
+                            {story.type === "ai-generated" ? (
+                              <>
+                                <Sparkles className="w-3 h-3 mr-1" />
+                                AI-Generated
+                              </>
+                            ) : (
+                              <>
+                                <Users className="w-3 h-3 mr-1" />
+                                Player Story
+                              </>
+                            )}
+                          </Badge>
+                          <div className="flex items-center gap-1 text-slate-400 text-xs">
+                            <Eye className="w-3 h-3" />
+                            {story.views}
+                          </div>
+                        </div>
+                        <CardTitle className="text-white text-lg line-clamp-2">{story.title}</CardTitle>
+                        {story.metadata?.characterName && (
+                          <CardDescription className="text-slate-400 text-sm">
+                            Character: {story.metadata.characterName}
+                          </CardDescription>
+                        )}
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-slate-300 text-sm line-clamp-3">{story.excerpt}</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* About Section */}
+        <section className="py-12 bg-slate-900/50">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="font-serif text-3xl font-bold text-white mb-4">What Are These Stories?</h2>
+              <p className="text-slate-300 leading-relaxed mb-6">
+                Tales from the White Room are narratives generated from actual and simulated playthroughs of Project:
+                Cohesion. Each story captures the unique choices, consequences, and identity evolution of a character
+                navigating the fragmenting reality.
+              </p>
+              <p className="text-slate-300 leading-relaxed">
+                Whether AI-generated from simulation data or submitted by players themselves, these stories showcase the
+                infinite possibilities within the world of Cohesion and help build a community of players sharing their
+                experiences.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  )
+}

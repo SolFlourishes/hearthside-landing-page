@@ -87,6 +87,13 @@ export function Header() {
             </div>
 
             <Link
+              href="/stories"
+              className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors"
+            >
+              Stories
+            </Link>
+
+            <Link
               href="/commitments"
               className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors"
             >
@@ -156,6 +163,13 @@ export function Header() {
                   Project Cohesion
                 </Link>
               </div>
+              <Link
+                href="/stories"
+                className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Stories
+              </Link>
               <Link
                 href="/commitments"
                 className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors py-2"

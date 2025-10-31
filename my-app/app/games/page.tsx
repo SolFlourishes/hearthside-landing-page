@@ -1,9 +1,16 @@
+"use client"
+
+import { useEffect } from "react"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Gamepad2, Users, Heart, Sparkles } from "lucide-react"
 
 export default function GamesPage() {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#111827]">
       <main>
