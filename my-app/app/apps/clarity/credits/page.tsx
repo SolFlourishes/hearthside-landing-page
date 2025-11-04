@@ -26,14 +26,9 @@ export default function CreditsPage() {
               language. Our AI is enhanced with a curated knowledge base of expert research through Retrieval-Augmented
               Generation (RAG).
             </p>
-
-            <h3 className="font-semibold text-foreground mb-3 mt-6">
-            Our AI draws from the following expert sources to provide evidence-based guidance:
-          </h3>
           <p className="text-sm text-muted-foreground mb-3">
             RAG Knowledge Base - Phase 1: Neurodiversity and Empathy
           </p>
-
           <h3 className="font-semibold text-foreground mb-3 mt-6">Key Theoretical Influences</h3>
           <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
             <li><strong>The Double Empathy Problem:</strong> The foundational theory that communication difficulties between autistic and non-autistic people are a bi-directional, mutual misunderstanding, not a deficit in the autistic person.</li>
@@ -44,7 +39,6 @@ export default function CreditsPage() {
             <li><strong>The Dialogue & Safety Framework:</strong> The principle that successful high-stakes conversations depend on creating and maintaining psychological safety (through Mutual Purpose and Mutual Respect) to build a "Pool of Shared Meaning".</li>
             <li><strong>The Neurobiological Model of ADHD:</strong> The reframing of ADHD not as a "deficit" but as a neurological condition of "attention inconsistency," often managed best with external structure.</li>
           </ul>
-
           <h3 className="font-semibold text-foreground mb-3 mt-6">Journal Articles</h3>
           <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
             <li>Crompton, C. J., Sharp, M., Axbey, H., Fletcher-Watson, S., Flynn, E. G., & Ropar, D. (2020). Neurotype-matching, but not being autistic, influences self and observer ratings of interpersonal rapport. <i>Frontiers in Psychology</i>, <i>11</i>, 586171. https://doi.org/10.3389/fpsyg.2020.586171</li>
@@ -52,7 +46,6 @@ export default function CreditsPage() {
             <li>Norris, J. E., Lei, J., & Maras, K. (2024). Adapting communication with autistic service users: Co-produced adaptations for medical services, employers, and the third sector. <i>Neurodiversity</i>, <i>2</i>. https://doi.org/10.1177/27546330241266723</li>
             <li>Silver, K., & Parsons, S. (2022). Perspectives of autistic adults on the strategies that help or hinder successful conversations. <i>Autism & Developmental Language Impairments</i>, <i>7</i>. https://doi.org/10.1177/23969415221101113</li>
           </ul>
-
           <h3 className="font-semibold text-foreground mb-3 mt-6">Books</h3>
           <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
             <li>Hallowell, E. M., & Ratey, J. J. (1994). <i>Driven to distraction: Recognizing and coping with Attention Deficit Disorder</i>. Pantheon Books.</li>
