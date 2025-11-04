@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
+import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +32,16 @@ export async function POST(request: NextRequest) {
 
     console.log("[v0] Chat request received with", history.length, "messages")
 
-    const systemPrompt = `You are the Clarity Coach, a supportive communication expert who helps people navigate difficult conversations.
+    const lastUserMessage = history.filter((msg: any) => msg.role === "user").pop()?.content || ""
+
+    console.log("[v0] Retrieving relevant expert knowledge for query:", lastUserMessage.substring(0, 100))
+
+    const relevantDocs = await retrieveRelevantDocuments(lastUserMessage, 3)
+    const expertContext = formatContextForPrompt(relevantDocs)
+
+    console.log("[v0] Retrieved", relevantDocs.length, "relevant documents")
+
+    const systemPrompt = `You are the Clarity Coach, a supportive communication expert who helps people navigate difficult conversations and build identity cohesion.
 
 Your communication style:
 - Keep responses SHORT and conversational (150-200 words max)
@@ -41,9 +51,11 @@ Your communication style:
 - Be direct and actionable - no long explanations or multiple numbered sections
 - Use simple language and short paragraphs
 
+When relevant expert knowledge is provided below, use it to inform your responses, but maintain your conversational style. Don't cite sources or say "according to the documents" - just naturally incorporate the insights.
+
 Remember: You're having a conversation, not writing a manual. Keep it brief, focused, and engaging. Users can always ask follow-up questions if they want more detail.
 
-Format your responses in HTML with proper paragraph tags for readability.`
+Format your responses in HTML with proper paragraph tags for readability.${expertContext}`
 
     console.log("[v0] Calling Google AI with model: gemini-pro-latest")
 

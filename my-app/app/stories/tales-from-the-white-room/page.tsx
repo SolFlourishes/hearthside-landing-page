@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, Sparkles, Users, Eye } from "lucide-react"
 import Link from "next/link"
@@ -157,25 +157,23 @@ export default function TalesFromTheWhiteRoomPage() {
                 <p className="text-slate-500">Be the first to submit a story from your playthrough!</p>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                 {stories.map((story) => (
                   <Link key={story.id} href={`/stories/tales-from-the-white-room/${story.id}`}>
-                    <Card className="bg-slate-800/50 border-slate-700 hover:border-purple-500/50 transition-all h-full cursor-pointer">
-                      <div className="aspect-video w-full overflow-hidden rounded-t-lg">
+                    <Card className="group bg-slate-800/50 border-slate-700 hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 h-full cursor-pointer overflow-hidden">
+                      <div className="relative aspect-[16/10] w-full overflow-hidden">
                         <img
                           src={story.imageUrl || "/placeholder.svg"}
                           alt={story.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                      </div>
-                      <CardHeader>
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent opacity-60" />
+                        <div className="absolute top-4 left-4 flex items-center gap-2">
                           <Badge
-                            variant="outline"
                             className={
                               story.type === "ai-generated"
-                                ? "border-purple-500/50 text-purple-300"
-                                : "border-blue-500/50 text-blue-300"
+                                ? "bg-purple-500/90 text-white border-0"
+                                : "bg-blue-500/90 text-white border-0"
                             }
                           >
                             {story.type === "ai-generated" ? (
@@ -190,20 +188,37 @@ export default function TalesFromTheWhiteRoomPage() {
                               </>
                             )}
                           </Badge>
-                          <div className="flex items-center gap-1 text-slate-400 text-xs">
-                            <Eye className="w-3 h-3" />
-                            {story.views}
-                          </div>
                         </div>
-                        <CardTitle className="text-white text-lg line-clamp-2">{story.title}</CardTitle>
+                        <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-sm px-2.5 py-1.5 rounded-full">
+                          <Eye className="w-3.5 h-3.5 text-slate-300" />
+                          <span className="text-slate-200 text-sm font-medium">{story.views}</span>
+                        </div>
+                      </div>
+                      <CardHeader className="space-y-3">
+                        <CardTitle className="text-white text-2xl font-serif line-clamp-2 group-hover:text-purple-300 transition-colors">
+                          {story.title}
+                        </CardTitle>
                         {story.metadata?.characterName && (
-                          <CardDescription className="text-slate-400 text-sm">
-                            Character: {story.metadata.characterName}
-                          </CardDescription>
+                          <div className="flex items-center gap-2 text-sm">
+                            <span className="text-slate-500">Persona:</span>
+                            <span className="text-purple-300 font-medium">{story.metadata.characterName}</span>
+                          </div>
                         )}
                       </CardHeader>
-                      <CardContent>
-                        <p className="text-slate-300 text-sm line-clamp-3">{story.excerpt}</p>
+                      <CardContent className="space-y-4">
+                        <p className="text-slate-300 leading-relaxed line-clamp-3">{story.excerpt}</p>
+                        {story.metadata?.outcome && (
+                          <div className="flex items-center gap-2 pt-2 border-t border-slate-700/50">
+                            <span className="text-slate-500 text-sm">Outcome:</span>
+                            <Badge variant="outline" className="border-slate-600 text-slate-300">
+                              {story.metadata.outcome}
+                            </Badge>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2 text-purple-400 text-sm font-medium group-hover:gap-3 transition-all">
+                          <span>Read Story</span>
+                          <BookOpen className="w-4 h-4" />
+                        </div>
                       </CardContent>
                     </Card>
                   </Link>
