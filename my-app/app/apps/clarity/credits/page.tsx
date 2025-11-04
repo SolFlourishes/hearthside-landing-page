@@ -28,32 +28,39 @@ export default function CreditsPage() {
             </p>
 
             <h3 className="font-semibold text-foreground mb-3 mt-6">
-              RAG Knowledge Base - Phase 1: Neurodiversity and Empathy
-            </h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              Our AI draws from the following expert sources to provide evidence-based guidance:
-            </p>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
-              <li>The Double Empathy Problem and autistic communication patterns</li>
-              <li>ADHD communication characteristics and challenges</li>
-              <li>Neurodiversity frameworks and inclusive communication practices</li>
-              <li>Pragmatic language differences across neurotypes</li>
-              <li>Evidence-based strategies for bridging communication gaps</li>
-              <li>Research on direct vs. indirect communication styles</li>
-              <li>Sensory processing and communication preferences</li>
-              <li>Executive function impacts on communication</li>
-              <li>Masking, camouflaging, and authentic communication</li>
-              <li>Mutual understanding and reciprocal accommodation</li>
-            </ul>
+            Our AI draws from the following expert sources to provide evidence-based guidance:
+          </h3>
+          <p className="text-sm text-muted-foreground mb-3">
+            RAG Knowledge Base - Phase 1: Neurodiversity and Empathy
+          </p>
 
-            <h3 className="font-semibold text-foreground mb-3 mt-6">Key Theoretical Influences</h3>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
-              <li>The Double Empathy Problem (Milton, 2012)</li>
-              <li>Grice's Cooperative Principle and Conversational Maxims</li>
-              <li>High-Context vs. Low-Context Communication (Hall, 1976)</li>
-              <li>Neurodiversity paradigm and social model of disability</li>
-              <li>Generational communication differences and workplace dynamics</li>
-            </ul>
+          <h3 className="font-semibold text-foreground mb-3 mt-6">Key Theoretical Influences</h3>
+          <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
+            <li><strong>The Double Empathy Problem:</strong> The foundational theory that communication difficulties between autistic and non-autistic people are a bi-directional, mutual misunderstanding, not a deficit in the autistic person.</li>
+            <li><strong>Client-Centered Therapy:</strong> The core empathetic framework holding that constructive change requires three conditions: Congruence (genuineness), Unconditional Positive Regard, and Empathic Understanding.</li>
+            <li><strong>Nonviolent Communication (NVC):</strong> The practical 4-step method for practicing empathy by identifying and expressing Observations, Feelings, Needs, and Requests, which separates one's observations from evaluations.</li>
+            <li><strong>Autistic-Led Metacognition:</strong> The strengths-based finding that autistic individuals possess existing, useful knowledge about communication, such as using physical sensations as self-prompts and "trait knowledge" of partners to reduce uncertainty.</li>
+            <li><strong>The Cost of Masking:</strong> The concept that "masking" (hiding autistic traits) is an exhausting, high-cost strategy, and that unmasking is central to authentic autistic identity.</li>
+            <li><strong>The Dialogue & Safety Framework:</strong> The principle that successful high-stakes conversations depend on creating and maintaining psychological safety (through Mutual Purpose and Mutual Respect) to build a "Pool of Shared Meaning".</li>
+            <li><strong>The Neurobiological Model of ADHD:</strong> The reframing of ADHD not as a "deficit" but as a neurological condition of "attention inconsistency," often managed best with external structure.</li>
+          </ul>
+
+          <h3 className="font-semibold text-foreground mb-3 mt-6">Journal Articles</h3>
+          <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
+            <li>Crompton, C. J., Sharp, M., Axbey, H., Fletcher-Watson, S., Flynn, E. G., & Ropar, D. (2020). Neurotype-matching, but not being autistic, influences self and observer ratings of interpersonal rapport. <i>Frontiers in Psychology</i>, <i>11</i>, 586171. https://doi.org/10.3389/fpsyg.2020.586171</li>
+            <li>Milton, D. (2012). On the ontological status of autism: The ‘double empathy problem’. <i>Disability & Society</i>, <i>27</i>(6), 883-887. https://doi.org/10.1080/09687599.2012.710008</li>
+            <li>Norris, J. E., Lei, J., & Maras, K. (2024). Adapting communication with autistic service users: Co-produced adaptations for medical services, employers, and the third sector. <i>Neurodiversity</i>, <i>2</i>. https://doi.org/10.1177/27546330241266723</li>
+            <li>Silver, K., & Parsons, S. (2022). Perspectives of autistic adults on the strategies that help or hinder successful conversations. <i>Autism & Developmental Language Impairments</i>, <i>7</i>. https://doi.org/10.1177/23969415221101113</li>
+          </ul>
+
+          <h3 className="font-semibold text-foreground mb-3 mt-6">Books</h3>
+          <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
+            <li>Hallowell, E. M., & Ratey, J. J. (1994). <i>Driven to distraction: Recognizing and coping with Attention Deficit Disorder</i>. Pantheon Books.</li>
+            <li>Patterson, K., Grenny, J., McMillan, R., & Switzler, A. (2002). <i>Crucial conversations: Tools for talking when stakes are high</i>. McGraw-Hill.</li>
+            <li>Price, D. (2022). <i>Unmasking autism: Discovering the new faces of neurodiversity</i>. Harmony Books.</li>
+            <li>Rogers, C. R. (1961). <i>On becoming a person: A therapist's view of psychotherapy</i>. Houghton Mifflin.</li>
+            <li>Rosenberg, M. B. (1999). <i>Nonviolent communication: A language of life</i>. PuddleDancer Press.</li>
+          </ul>
           </Card>
 
           <Card className="p-6">
