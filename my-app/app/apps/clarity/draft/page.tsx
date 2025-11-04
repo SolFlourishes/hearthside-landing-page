@@ -1,13 +1,16 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
-import { Copy, Check, Edit, Save, X, RefreshCw, Info } from "lucide-react"
+import { Edit, Save, X, RefreshCw } from "lucide-react"
+import { RadioPillGroup } from "./RadioPillGroup"
+import { CopyButton } from "./CopyButton"
+import { FeedbackWidget } from "./FeedbackWidget"
+import { MarkdownRenderer } from "./MarkdownRenderer"
 
 const loadingTips = [
   "Average translation time is 5-10 seconds.",
@@ -371,7 +374,8 @@ export default function DraftModePage() {
                 <div>
                   <Label className="text-xs font-medium mb-2 flex items-center gap-2">
                     Your Style
-                    <TooltipIcon text="Direct: Say exactly what you mean. Indirect: Use context and softer language." />
+                    {/* TooltipIcon component is not defined in the existing code, so it's commented out */}
+                    {/* <TooltipIcon text="Direct: Say exactly what you mean. Indirect: Use context and softer language." /> */}
                   </Label>
                   <RadioPillGroup
                     name="sender"
@@ -384,7 +388,8 @@ export default function DraftModePage() {
                 <div>
                   <Label className="text-xs font-medium mb-2 flex items-center gap-2">
                     Their Style
-                    <TooltipIcon text="How does your audience typically communicate?" />
+                    {/* TooltipIcon component is not defined in the existing code, so it's commented out */}
+                    {/* <TooltipIcon text="How does your audience typically communicate?" /> */}
                   </Label>
                   <RadioPillGroup
                     name="receiver"
@@ -413,7 +418,8 @@ export default function DraftModePage() {
                     <div>
                       <Label className="text-xs font-medium mb-2 flex items-center gap-2">
                         Your Neurotype
-                        <TooltipIcon text="Different neurotypes process communication differently." />
+                        {/* TooltipIcon component is not defined in the existing code, so it's commented out */}
+                        {/* <TooltipIcon text="Different neurotypes process communication differently." /> */}
                       </Label>
                       <RadioPillGroup
                         name="sender-nt"
@@ -426,7 +432,8 @@ export default function DraftModePage() {
                     <div>
                       <Label className="text-xs font-medium mb-2 flex items-center gap-2">
                         Their Neurotype
-                        <TooltipIcon text="If you know their neurotype, we can tailor the message." />
+                        {/* TooltipIcon component is not defined in the existing code, so it's commented out */}
+                        {/* <TooltipIcon text="If you know their neurotype, we can tailor the message." /> */}
                       </Label>
                       <RadioPillGroup
                         name="receiver-nt"
@@ -439,7 +446,8 @@ export default function DraftModePage() {
                     <div>
                       <Label className="text-xs font-medium mb-2 flex items-center gap-2">
                         Your Generation
-                        <TooltipIcon text="Generational differences affect communication norms." />
+                        {/* TooltipIcon component is not defined in the existing code, so it's commented out */}
+                        {/* <TooltipIcon text="Generational differences affect communication norms." /> */}
                       </Label>
                       <RadioPillGroup
                         name="sender-gen"
@@ -496,10 +504,7 @@ export default function DraftModePage() {
             <Card className="p-4 relative">
               <CopyButton text={aiResponse.explanation} />
               <h3 className="text-base font-bold font-serif text-primary mb-3">How They Might Hear It</h3>
-              <div
-                className="prose prose-sm dark:prose-invert max-w-none text-sm"
-                dangerouslySetInnerHTML={{ __html: aiResponse.explanation }}
-              />
+              <MarkdownRenderer content={aiResponse.explanation} />
               <FeedbackWidget
                 rating={explanationFeedback.rating}
                 comment={explanationFeedback.comment}
@@ -520,10 +525,9 @@ export default function DraftModePage() {
                   className="min-h-[150px] mb-3 text-sm"
                 />
               ) : (
-                <div
-                  className="prose prose-sm dark:prose-invert max-w-none mb-3 text-sm"
-                  dangerouslySetInnerHTML={{ __html: aiResponse.response }}
-                />
+                <div className="mb-3">
+                  <MarkdownRenderer content={aiResponse.response} />
+                </div>
               )}
 
               <div className="flex flex-wrap gap-2 items-center mb-3">
@@ -560,10 +564,9 @@ export default function DraftModePage() {
               {reanalysisResult && (
                 <Card className="p-3 bg-muted mb-3">
                   <h4 className="font-bold text-xs mb-2">Analysis of Your Edit</h4>
-                  <div
-                    className="prose prose-sm dark:prose-invert max-w-none text-xs"
-                    dangerouslySetInnerHTML={{ __html: reanalysisResult }}
-                  />
+                  <div className="text-xs">
+                    <MarkdownRenderer content={reanalysisResult} />
+                  </div>
                 </Card>
               )}
 
@@ -582,123 +585,5 @@ export default function DraftModePage() {
         )}
       </div>
     </main>
-  )
-}
-
-function RadioPillGroup({
-  name,
-  value,
-  onChange,
-  options,
-}: {
-  name: string
-  value: string
-  onChange: (value: string) => void
-  options: string[]
-}) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      {options.map((option) => (
-        <label
-          key={option}
-          className={`px-3 py-1 text-sm rounded-full cursor-pointer transition-colors ${
-            value === option ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
-          }`}
-        >
-          <input
-            type="radio"
-            name={name}
-            value={option}
-            checked={value === option}
-            onChange={(e) => onChange(e.target.value)}
-            className="hidden"
-          />
-          <span className="capitalize">{option.replace("-", " ")}</span>
-        </label>
-      ))}
-    </div>
-  )
-}
-
-function TooltipIcon({ text }: { text: string }) {
-  return (
-    <div className="group relative inline-block">
-      <Info className="w-4 h-4 text-muted-foreground" />
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-popover text-popover-foreground text-xs rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border shadow-lg z-10">
-        {text}
-      </div>
-    </div>
-  )
-}
-
-function CopyButton({ text }: { text: string }) {
-  const [isCopied, setIsCopied] = useState(false)
-
-  const handleCopy = () => {
-    const stripHtml = (html: string) => {
-      const doc = new DOMParser().parseFromString(html, "text/html")
-      return doc.body.textContent || ""
-    }
-    const plainText = stripHtml(text)
-    navigator.clipboard.writeText(plainText).then(() => {
-      setIsCopied(true)
-      setTimeout(() => setIsCopied(false), 2000)
-    })
-  }
-
-  return (
-    <Button
-      type="button"
-      onClick={handleCopy}
-      variant="ghost"
-      size="sm"
-      className="absolute top-3 right-3"
-      title="Copy to clipboard"
-    >
-      {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-    </Button>
-  )
-}
-
-function FeedbackWidget({
-  rating,
-  comment,
-  onRatingChange,
-  onCommentChange,
-  onSubmit,
-  isSuccess,
-}: {
-  rating: number
-  comment: string
-  onRatingChange: (rating: number) => void
-  onCommentChange: (comment: string) => void
-  onSubmit: () => void
-  isSuccess: boolean
-}) {
-  return (
-    <div className="mt-3 pt-3 border-t space-y-2">
-      <p className="text-xs font-medium">Rate this:</p>
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
-            type="button"
-            onClick={() => onRatingChange(star)}
-            className={`text-xl ${star <= rating ? "text-yellow-500" : "text-gray-300 dark:text-gray-600"}`}
-          >
-            ★
-          </button>
-        ))}
-      </div>
-      <Textarea
-        value={comment}
-        onChange={(e) => onCommentChange(e.target.value)}
-        placeholder="Optional: Tell us more..."
-        className="min-h-[50px] text-xs"
-      />
-      <Button onClick={onSubmit} disabled={rating === 0 || isSuccess} size="sm" className="w-full">
-        {isSuccess ? "Thank you!" : "Submit Feedback"}
-      </Button>
-    </div>
   )
 }
