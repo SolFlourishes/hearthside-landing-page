@@ -10,8 +10,24 @@ export default function ChangelogPage() {
         <div className="space-y-6">
           <Card className="p-6">
             <div className="flex items-start justify-between mb-4">
-              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.0.2</h2>
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.2</h2>
               <span className="text-sm text-muted-foreground">Current Version</span>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-3">RAG Phase 1: Neurodiversity and Empathy</h3>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>Integrated Retrieval-Augmented Generation (RAG) system with expert knowledge base</li>
+              <li>Added 10 expert documents covering autism, ADHD, communication, and the Double Empathy Problem</li>
+              <li>Enhanced chat responses with evidence-based, scholarly research</li>
+              <li>Improved translation quality with context-aware expert knowledge retrieval</li>
+              <li>Implemented semantic search for relevant document retrieval</li>
+              <li>Fixed markdown rendering in explanations and translations</li>
+            </ul>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.0.2</h2>
+              <span className="text-sm text-muted-foreground">January 2025</span>
             </div>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
               <li>Integrated Clarity Coach into main Hearthside Works website</li>

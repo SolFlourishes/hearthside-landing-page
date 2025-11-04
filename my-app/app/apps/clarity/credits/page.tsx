@@ -23,13 +23,35 @@ export default function CreditsPage() {
             <h2 className="font-serif text-2xl font-bold text-primary mb-4">Research Foundation</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
               The Clarity Coach is built on decades of research in communication theory, neurodiversity, and pragmatic
-              language. Key influences include:
+              language. Our AI is enhanced with a curated knowledge base of expert research through Retrieval-Augmented
+              Generation (RAG).
             </p>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+
+            <h3 className="font-semibold text-foreground mb-3 mt-6">
+              RAG Knowledge Base - Phase 1: Neurodiversity and Empathy
+            </h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              Our AI draws from the following expert sources to provide evidence-based guidance:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
+              <li>The Double Empathy Problem and autistic communication patterns</li>
+              <li>ADHD communication characteristics and challenges</li>
+              <li>Neurodiversity frameworks and inclusive communication practices</li>
+              <li>Pragmatic language differences across neurotypes</li>
+              <li>Evidence-based strategies for bridging communication gaps</li>
+              <li>Research on direct vs. indirect communication styles</li>
+              <li>Sensory processing and communication preferences</li>
+              <li>Executive function impacts on communication</li>
+              <li>Masking, camouflaging, and authentic communication</li>
+              <li>Mutual understanding and reciprocal accommodation</li>
+            </ul>
+
+            <h3 className="font-semibold text-foreground mb-3 mt-6">Key Theoretical Influences</h3>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
               <li>The Double Empathy Problem (Milton, 2012)</li>
               <li>Grice's Cooperative Principle and Conversational Maxims</li>
               <li>High-Context vs. Low-Context Communication (Hall, 1976)</li>
-              <li>Neurodiversity research on autistic and ADHD communication patterns</li>
+              <li>Neurodiversity paradigm and social model of disability</li>
               <li>Generational communication differences and workplace dynamics</li>
             </ul>
           </Card>

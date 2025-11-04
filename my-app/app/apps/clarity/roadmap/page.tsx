@@ -56,23 +56,69 @@ export default function RoadmapPage() {
             </div>
           </Card>
 
-          {/* Beta 3.2 - Planning (formerly 3.1) */}
+          {/* Beta 3.2 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.2</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">RAG Phase 1: Neurodiversity and Empathy</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Integration of Retrieval-Augmented Generation (RAG)</li>
+                  <li>Ground AI advice in factual, evidence-based knowledge base</li>
+                  <li>Expert documents on autism, ADHD, and the Double Empathy Problem</li>
+                  <li>Enhanced accuracy and reliability of translations</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Beta 3.3 - Planning */}
           <Card className="p-6">
             <div className="flex items-start gap-3 mb-4">
               <Clock className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.2</h2>
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.3</h2>
                   <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
                     Planning
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-primary mb-3">A Smarter AI Brain (RAG)</h3>
+                <h3 className="text-lg font-semibold text-primary mb-3">RAG Phase 2: Social Dynamics and Learning</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Integration of Retrieval-Augmented Generation (RAG)</li>
-                  <li>Ground AI advice in factual, evidence-based knowledge base</li>
-                  <li>Enhanced accuracy and reliability of translations</li>
-                  <li>Scholarly research integration from Zotero library</li>
+                  <li>Expand knowledge base with social dynamics research</li>
+                  <li>Learning styles and educational communication patterns</li>
+                  <li>Group dynamics and team communication</li>
+                  <li>Conflict resolution and collaborative communication</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Beta 3.4 - Planning */}
+          <Card className="p-6">
+            <div className="flex items-start gap-3 mb-4">
+              <Clock className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.4</h2>
+                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
+                    Planning
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">
+                  RAG Phase 3: Advanced Frameworks - Power, Culture & Cognition
+                </h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Power dynamics and hierarchical communication</li>
+                  <li>Cultural communication patterns and cross-cultural understanding</li>
+                  <li>Cognitive diversity and thinking styles</li>
+                  <li>Organizational and institutional communication frameworks</li>
                 </ul>
               </div>
             </div>
