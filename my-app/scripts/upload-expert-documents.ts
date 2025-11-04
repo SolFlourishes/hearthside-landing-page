@@ -3,16 +3,32 @@ dotenv.config({ path: ".env.local" })
 
 import * as fs from "fs"
 import * as path from "path"
-import { generateEmbedding } from "../lib/rag-system"
 
-// Load Firebase Admin dynamically after env vars are loaded
 async function main() {
   console.log("============================================================")
   console.log("EXPERT DOCUMENTS UPLOADER")
   console.log("============================================================\n")
 
-  // Dynamically import Firebase after env vars are loaded
+  // Check environment variables
+  const hasServiceAccountKey = !!process.env.FIREBASE_SERVICE_ACCOUNT_KEY
+  const hasIndividualKeys =
+    !!process.env.FIREBASE_PROJECT_ID && !!process.env.FIREBASE_PRIVATE_KEY && !!process.env.FIREBASE_CLIENT_EMAIL
+
+  if (!hasServiceAccountKey && !hasIndividualKeys) {
+    console.error("Error: Firebase credentials not found in .env.local")
+    console.error("Please set FIREBASE_SERVICE_ACCOUNT_KEY or individual Firebase credentials")
+    process.exit(1)
+  }
+
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error("Error: GOOGLE_GENERATIVE_AI_API_KEY not found in .env.local")
+    process.exit(1)
+  }
+
+  console.log("[Upload] Environment variables loaded successfully\n")
+
   const { getDb } = await import("../lib/firebase-admin.js")
+  const { generateEmbedding } = await import("../lib/rag-system.js")
   const db = getDb()
 
   const documentsPath = "D:\\Projects\\clarity_coach_brain\\RAG_Documents"

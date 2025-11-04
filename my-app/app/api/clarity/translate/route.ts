@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
+import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,6 +23,17 @@ export async function POST(request: NextRequest) {
 
     console.log("[v0] Translation request received:", { mode, text, context, sender, receiver })
 
+    const queryText = mode === "draft" ? `${context || ""} ${text}` : `${analyzeContext || ""} ${text}`
+    console.log("[v0] Retrieving expert knowledge for translation:", queryText.substring(0, 100))
+
+    const relevantDocs = await retrieveRelevantDocuments(queryText, 2)
+    const expertContext = formatContextForPrompt(relevantDocs)
+
+    console.log("[v0] Retrieved", relevantDocs.length, "relevant documents for translation:")
+    relevantDocs.forEach((doc, i) => {
+      console.log(`  ${i + 1}. ${doc.title} (similarity: ${doc.similarity?.toFixed(3) || "N/A"})`)
+    })
+
     let systemPrompt = ""
     let userPrompt = ""
 
@@ -37,6 +49,10 @@ Your task:
 2. Consider the communication styles, neurotypes, and generational differences
 3. Provide a detailed translation that bridges the gap
 4. Explain thoroughly how the original might be misinterpreted and why the translation is better
+
+When relevant expert knowledge is provided below, use it to inform your translations and explanations. Don't cite sources - just naturally incorporate the insights.
+
+${expertContext}
 
 IMPORTANT: Respond with ONLY a valid JSON object in this exact format (no markdown, no code blocks):
 {"explanation": "your detailed explanation here", "translation": "your improved message here"}`
@@ -61,6 +77,10 @@ Your task:
 2. Consider communication styles, neurotypes, and generational differences
 3. Explain potential misinterpretations
 4. Provide a suggested response that bridges the gap
+
+When relevant expert knowledge is provided below, use it to inform your analysis and suggestions. Don't cite sources - just naturally incorporate the insights.
+
+${expertContext}
 
 IMPORTANT: Respond with ONLY a valid JSON object in this exact format (no markdown, no code blocks):
 {"explanation": "what they likely meant and why", "translation": "suggested response"}`

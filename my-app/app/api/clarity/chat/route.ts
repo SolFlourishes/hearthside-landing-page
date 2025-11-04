@@ -39,7 +39,10 @@ export async function POST(request: NextRequest) {
     const relevantDocs = await retrieveRelevantDocuments(lastUserMessage, 3)
     const expertContext = formatContextForPrompt(relevantDocs)
 
-    console.log("[v0] Retrieved", relevantDocs.length, "relevant documents")
+    console.log("[v0] Retrieved", relevantDocs.length, "relevant documents:")
+    relevantDocs.forEach((doc, i) => {
+      console.log(`  ${i + 1}. ${doc.title} (similarity: ${doc.similarity?.toFixed(3) || "N/A"})`)
+    })
 
     const systemPrompt = `You are the Clarity Coach, a supportive communication expert who helps people navigate difficult conversations and build identity cohesion.
 
