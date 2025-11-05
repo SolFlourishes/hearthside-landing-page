@@ -1,21 +1,20 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef, useCallback } from "react" // Added useCallback, useRef
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
-import { Edit, Save, X, RefreshCw, Upload, Loader2, FileText } from "lucide-react" // Added Upload, Loader2, FileText
+import { Edit, Save, X, RefreshCw, Upload, Loader2, FileText } from "lucide-react"
 import { RadioPillGroup } from "./RadioPillGroup"
 import { CopyButton } from "./CopyButton"
 import { FeedbackWidget } from "./FeedbackWidget"
 import { MarkdownRenderer } from "./MarkdownRenderer"
 
-// --- FILE PARSING IMPORTS ---
-// NOTE: You must run 'npm install pdf-parse mammoth --legacy-peer-deps' for these to work.
-import mammoth from 'mammoth'
-import pdf from 'pdf-parse'
+// --- FILE PARSING DEPENDENCIES ---
+import * as mammoth from 'mammoth' // --- FIX: Changed to namespace import ---
+import * as pdf from 'pdf-parse'   // --- FIX: Changed to namespace import ---
 // --- END FILE PARSING IMPORTS ---
 
 
@@ -54,6 +53,29 @@ const EXAMPLE_SCENARIOS = {
   },
 }
 
+// --- NEW HELPER COMPONENT FOR EDITING (FROM PREVIOUS FIXES) ---
+const EditableContent = ({ html, onChange }: { html: string, onChange: (newHtml: string) => void }) => {
+    const elementRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (elementRef.current && html !== elementRef.current.innerHTML) {
+            elementRef.current.innerHTML = html;
+        }
+    }, [html]);
+    const handleInput = (event: React.FormEvent<HTMLDivElement>) => {
+        onChange(event.currentTarget.innerHTML);
+    };
+    return (
+        <div 
+            ref={elementRef} 
+            contentEditable={true} 
+            suppressContentEditableWarning={true} 
+            onInput={handleInput} 
+            className="prose prose-sm dark:prose-invert max-w-none flex-grow p-2 ring-2 ring-primary rounded-md bg-background"
+        />
+    );
+};
+
+
 export default function DraftModePage() {
   const [intent, setIntent] = useState("")
   const [draft, setDraft] = useState("")
@@ -87,6 +109,59 @@ export default function DraftModePage() {
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
 
+  // --- FILE HANDLER LOGIC ---
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile = event.target.files?.[0]
+    if (!uploadedFile) return
+
+    setFile(uploadedFile)
+    setIsExtracting(true)
+    setExtractionError(null)
+    setDraft('') // Clear existing text input
+
+    const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase()
+
+    try {
+      const fileReader = new FileReader()
+
+      if (fileExtension === 'docx') {
+        fileReader.onload = async (e) => {
+          const arrayBuffer = e.target?.result as ArrayBuffer;
+          if (!arrayBuffer) {
+              setExtractionError('Could not read file content.');
+              setIsExtracting(false);
+              return;
+          }
+          // Mammoth.js expects ArrayBuffer for DOCX
+          const { value } = await mammoth.extractRawText({ arrayBuffer });
+          setDraft(value); 
+          setIsExtracting(false);
+        };
+        fileReader.readAsArrayBuffer(uploadedFile);
+      } 
+      else if (fileExtension === 'pdf') {
+        fileReader.onload = async (e) => {
+          // pdf-parse expects a Uint8Array of the ArrayBuffer
+          const data = new Uint8Array(e.target?.result as ArrayBuffer);
+          const { text } = await pdf(data);
+          setDraft(text);
+          setIsExtracting(false);
+        };
+        fileReader.readAsArrayBuffer(uploadedFile);
+      } 
+      else {
+        setExtractionError('Unsupported file type. Please upload a .docx or .pdf.');
+        setIsExtracting(false);
+      }
+
+    } catch (err) {
+      console.error("Extraction failed:", err);
+      setExtractionError("Failed to read file content. Ensure libraries are installed.");
+      setIsExtracting(false);
+    }
+  }
+
+
   useEffect(() => {
     let interval: NodeJS.Timeout
     if (isLoading) {
@@ -112,56 +187,6 @@ export default function DraftModePage() {
       setReceiverStyle(scenario.receiverStyle)
     }
   }, [])
-  
-  // --- NEW FILE HANDLER LOGIC (CITED FROM PREVIOUS CONVERSATION) ---
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadedFile = event.target.files?.[0]
-    if (!uploadedFile) return
-
-    setFile(uploadedFile)
-    setIsExtracting(true)
-    setExtractionError(null)
-    setDraft('') // Clear existing text input
-    
-    const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase()
-
-    try {
-      const fileReader = new FileReader()
-
-      if (fileExtension === 'docx') {
-        fileReader.onload = async (e) => {
-          const arrayBuffer = e.target?.result as ArrayBuffer;
-          if (!arrayBuffer) {
-              setExtractionError('Could not read file content.');
-              setIsExtracting(false);
-              return;
-          }
-          const { value } = await mammoth.extractRawText({ arrayBuffer });
-          setDraft(value); 
-          setIsExtracting(false);
-        };
-        fileReader.readAsArrayBuffer(uploadedFile);
-      } 
-      else if (fileExtension === 'pdf') {
-        fileReader.onload = async (e) => {
-          const data = new Uint8Array(e.target?.result as ArrayBuffer);
-          const { text } = await pdf(data);
-          setDraft(text);
-          setIsExtracting(false);
-        };
-        fileReader.readAsArrayBuffer(uploadedFile);
-      } 
-      else {
-        setExtractionError('Unsupported file type. Please upload a .docx or .pdf.');
-        setIsExtracting(false);
-      }
-
-    } catch (err) {
-      console.error("Extraction failed:", err);
-      setExtractionError("Failed to read file content.");
-      setIsExtracting(false);
-    }
-  }
 
   const handleTranslate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -176,11 +201,16 @@ export default function DraftModePage() {
     setFeedbackDocId(null)
     setIsLoading(true)
 
-    // NEW GUARD CLAUSE
-    if (!draft && !intent) {
-      setError("Please provide a goal and a draft message (or upload a file).")
+    if (!draft || !intent) {
+      setError("Please provide a goal and a draft message.")
       setIsLoading(false)
       return
+    }
+    
+    if (isExtracting) {
+        setError("Please wait for text extraction to finish before translating.")
+        setIsLoading(false)
+        return
     }
 
     try {
@@ -380,7 +410,7 @@ export default function DraftModePage() {
                       setDraft(scenario.draft)
                       setSenderStyle(scenario.senderStyle)
                       setReceiverStyle(scenario.receiverStyle)
-                      setFile(null) // NEW: Clear file on example load
+                      setFile(null) // Clear file on example load
                       setExtractionError(null)
                     }}
                     className="capitalize text-xs"
@@ -425,7 +455,7 @@ export default function DraftModePage() {
                 />
               </Card>
 
-              <Card className="p-4 relative"> {/* Added relative for positioning */}
+              <Card className="p-4 relative">
                 <Label htmlFor="draft" className="text-sm font-semibold mb-1 block">
                   Your Draft <span className="text-destructive">*</span>
                 </Label>
@@ -435,7 +465,7 @@ export default function DraftModePage() {
                   value={draft}
                   onChange={(e) => {
                     setDraft(e.target.value)
-                    setFile(null) // NEW: Clear file if user starts typing
+                    setFile(null) // Clear file if user starts typing
                   }}
                   placeholder="Example: Hey boss, I think I deserve a promotion..."
                   required
@@ -443,7 +473,7 @@ export default function DraftModePage() {
                   disabled={isExtracting}
                 />
                 
-                {/* --- NEW FILE UPLOAD UI --- */}
+                {/* --- FILE UPLOAD UI INTEGRATION --- */}
                 <div className="mt-3 pt-3 border-t flex flex-col items-center justify-center space-y-2">
                     {file && (
                         <div className="flex items-center text-xs text-primary/80">
@@ -577,7 +607,7 @@ export default function DraftModePage() {
             </Card>
 
             <div className="flex justify-center items-center gap-4">
-              <Button type="submit" size="lg" disabled={isLoading || !intent || !draft || isExtracting}> {/* Disabled while extracting */}
+              <Button type="submit" size="lg" disabled={isLoading || !intent || !draft || isExtracting}>
                 {isLoading || isExtracting ? (
                   <span className="flex items-center gap-2">
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -624,11 +654,7 @@ export default function DraftModePage() {
               <CopyButton text={isEditing ? editedResponse : aiResponse.response} />
               <h3 className="text-base font-bold font-serif text-primary mb-3">The Translation</h3>
               {isEditing ? (
-                <Textarea
-                  value={editedResponse}
-                  onChange={(e) => setEditedResponse(e.target.value)}
-                  className="min-h-[150px] mb-3 text-sm"
-                />
+                <EditableContent html={editedResponse} onChange={setEditedResponse} />
               ) : (
                 <div className="mb-3">
                   <MarkdownRenderer content={aiResponse.response} />
