@@ -1,16 +1,23 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useCallback } from "react" // Added useCallback, useRef
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
-import { Edit, Save, X, RefreshCw } from "lucide-react"
+import { Edit, Save, X, RefreshCw, Upload, Loader2, FileText } from "lucide-react" // Added Upload, Loader2, FileText
 import { RadioPillGroup } from "./RadioPillGroup"
 import { CopyButton } from "./CopyButton"
 import { FeedbackWidget } from "./FeedbackWidget"
 import { MarkdownRenderer } from "./MarkdownRenderer"
+
+// --- FILE PARSING IMPORTS ---
+// NOTE: You must run 'npm install pdf-parse mammoth --legacy-peer-deps' for these to work.
+import mammoth from 'mammoth'
+import pdf from 'pdf-parse'
+// --- END FILE PARSING IMPORTS ---
+
 
 const loadingTips = [
   "Average translation time is 5-10 seconds.",
@@ -72,6 +79,11 @@ export default function DraftModePage() {
   const [responseFeedback, setResponseFeedback] = useState({ rating: 0, comment: "" })
   const [feedbackSuccess, setFeedbackSuccess] = useState({ explanation: false, response: false })
 
+  // --- NEW STATE FOR FILE UPLOAD ---
+  const [file, setFile] = useState<File | null>(null)
+  const [isExtracting, setIsExtracting] = useState(false)
+  const [extractionError, setExtractionError] = useState<string | null>(null)
+
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
 
@@ -100,6 +112,56 @@ export default function DraftModePage() {
       setReceiverStyle(scenario.receiverStyle)
     }
   }, [])
+  
+  // --- NEW FILE HANDLER LOGIC (CITED FROM PREVIOUS CONVERSATION) ---
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile = event.target.files?.[0]
+    if (!uploadedFile) return
+
+    setFile(uploadedFile)
+    setIsExtracting(true)
+    setExtractionError(null)
+    setDraft('') // Clear existing text input
+    
+    const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase()
+
+    try {
+      const fileReader = new FileReader()
+
+      if (fileExtension === 'docx') {
+        fileReader.onload = async (e) => {
+          const arrayBuffer = e.target?.result as ArrayBuffer;
+          if (!arrayBuffer) {
+              setExtractionError('Could not read file content.');
+              setIsExtracting(false);
+              return;
+          }
+          const { value } = await mammoth.extractRawText({ arrayBuffer });
+          setDraft(value); 
+          setIsExtracting(false);
+        };
+        fileReader.readAsArrayBuffer(uploadedFile);
+      } 
+      else if (fileExtension === 'pdf') {
+        fileReader.onload = async (e) => {
+          const data = new Uint8Array(e.target?.result as ArrayBuffer);
+          const { text } = await pdf(data);
+          setDraft(text);
+          setIsExtracting(false);
+        };
+        fileReader.readAsArrayBuffer(uploadedFile);
+      } 
+      else {
+        setExtractionError('Unsupported file type. Please upload a .docx or .pdf.');
+        setIsExtracting(false);
+      }
+
+    } catch (err) {
+      console.error("Extraction failed:", err);
+      setExtractionError("Failed to read file content.");
+      setIsExtracting(false);
+    }
+  }
 
   const handleTranslate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -113,6 +175,13 @@ export default function DraftModePage() {
     setReanalysisResult(null)
     setFeedbackDocId(null)
     setIsLoading(true)
+
+    // NEW GUARD CLAUSE
+    if (!draft && !intent) {
+      setError("Please provide a goal and a draft message (or upload a file).")
+      setIsLoading(false)
+      return
+    }
 
     try {
       let finalSenderStyle = senderStyle
@@ -279,6 +348,8 @@ export default function DraftModePage() {
     setIsReanalyzing(false)
     setReanalysisResult(null)
     setFeedbackDocId(null)
+    setFile(null) // NEW: Reset file state
+    setExtractionError(null) // NEW: Reset extraction error
   }
 
   return (
@@ -309,6 +380,8 @@ export default function DraftModePage() {
                       setDraft(scenario.draft)
                       setSenderStyle(scenario.senderStyle)
                       setReceiverStyle(scenario.receiverStyle)
+                      setFile(null) // NEW: Clear file on example load
+                      setExtractionError(null)
                     }}
                     className="capitalize text-xs"
                   >
@@ -352,7 +425,7 @@ export default function DraftModePage() {
                 />
               </Card>
 
-              <Card className="p-4">
+              <Card className="p-4 relative"> {/* Added relative for positioning */}
                 <Label htmlFor="draft" className="text-sm font-semibold mb-1 block">
                   Your Draft <span className="text-destructive">*</span>
                 </Label>
@@ -360,11 +433,53 @@ export default function DraftModePage() {
                 <Textarea
                   id="draft"
                   value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
+                  onChange={(e) => {
+                    setDraft(e.target.value)
+                    setFile(null) // NEW: Clear file if user starts typing
+                  }}
                   placeholder="Example: Hey boss, I think I deserve a promotion..."
                   required
                   className="min-h-[120px]"
+                  disabled={isExtracting}
                 />
+                
+                {/* --- NEW FILE UPLOAD UI --- */}
+                <div className="mt-3 pt-3 border-t flex flex-col items-center justify-center space-y-2">
+                    {file && (
+                        <div className="flex items-center text-xs text-primary/80">
+                            <FileText className="w-4 h-4 mr-1" />
+                            {file.name}
+                            <X className="w-3 h-3 ml-2 cursor-pointer hover:text-destructive" onClick={() => handleReset()} />
+                        </div>
+                    )}
+                    
+                    {isExtracting && (
+                        <p className="flex items-center text-sm text-primary">
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Extracting text...
+                        </p>
+                    )}
+                    
+                    {extractionError && (
+                        <p className="text-sm text-destructive">{extractionError}</p>
+                    )}
+
+                    {!file && !isExtracting && (
+                      <Label htmlFor="file-upload" className="flex items-center gap-1 text-sm text-primary cursor-pointer hover:underline">
+                        <Upload className="w-4 h-4" />
+                        Upload .docx or .pdf
+                        <input
+                          id="file-upload"
+                          type="file"
+                          accept=".docx, .pdf"
+                          onChange={handleFileChange}
+                          className="hidden"
+                          disabled={isExtracting}
+                        />
+                      </Label>
+                    )}
+                </div>
+                {/* --- END FILE UPLOAD UI --- */}
               </Card>
             </div>
 
@@ -374,8 +489,6 @@ export default function DraftModePage() {
                 <div>
                   <Label className="text-xs font-medium mb-2 flex items-center gap-2">
                     Your Style
-                    {/* TooltipIcon component is not defined in the existing code, so it's commented out */}
-                    {/* <TooltipIcon text="Direct: Say exactly what you mean. Indirect: Use context and softer language." /> */}
                   </Label>
                   <RadioPillGroup
                     name="sender"
@@ -388,8 +501,6 @@ export default function DraftModePage() {
                 <div>
                   <Label className="text-xs font-medium mb-2 flex items-center gap-2">
                     Their Style
-                    {/* TooltipIcon component is not defined in the existing code, so it's commented out */}
-                    {/* <TooltipIcon text="How does your audience typically communicate?" /> */}
                   </Label>
                   <RadioPillGroup
                     name="receiver"
@@ -418,8 +529,6 @@ export default function DraftModePage() {
                     <div>
                       <Label className="text-xs font-medium mb-2 flex items-center gap-2">
                         Your Neurotype
-                        {/* TooltipIcon component is not defined in the existing code, so it's commented out */}
-                        {/* <TooltipIcon text="Different neurotypes process communication differently." /> */}
                       </Label>
                       <RadioPillGroup
                         name="sender-nt"
@@ -432,8 +541,6 @@ export default function DraftModePage() {
                     <div>
                       <Label className="text-xs font-medium mb-2 flex items-center gap-2">
                         Their Neurotype
-                        {/* TooltipIcon component is not defined in the existing code, so it's commented out */}
-                        {/* <TooltipIcon text="If you know their neurotype, we can tailor the message." /> */}
                       </Label>
                       <RadioPillGroup
                         name="receiver-nt"
@@ -446,8 +553,6 @@ export default function DraftModePage() {
                     <div>
                       <Label className="text-xs font-medium mb-2 flex items-center gap-2">
                         Your Generation
-                        {/* TooltipIcon component is not defined in the existing code, so it's commented out */}
-                        {/* <TooltipIcon text="Generational differences affect communication norms." /> */}
                       </Label>
                       <RadioPillGroup
                         name="sender-gen"
@@ -472,11 +577,11 @@ export default function DraftModePage() {
             </Card>
 
             <div className="flex justify-center items-center gap-4">
-              <Button type="submit" size="lg" disabled={isLoading || !intent || !draft}>
-                {isLoading ? (
+              <Button type="submit" size="lg" disabled={isLoading || !intent || !draft || isExtracting}> {/* Disabled while extracting */}
+                {isLoading || isExtracting ? (
                   <span className="flex items-center gap-2">
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    Translating...
+                    {isExtracting ? "Extracting..." : "Translating..."}
                   </span>
                 ) : (
                   "Translate"
