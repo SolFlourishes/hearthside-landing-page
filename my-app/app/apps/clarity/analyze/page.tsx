@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
 import { RefreshCw } from "lucide-react"
 import { FileUpload } from "@/components/file-upload"
+import { AudienceSelector } from "@/components/audience-selector"
 
 const loadingTips = [
   "Average analysis time is 5-10 seconds.",
@@ -25,6 +26,7 @@ export default function AnalyzeModePage() {
   const [situationContext, setSituationContext] = useState("")
   const [interpretation, setInterpretation] = useState("")
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
+  const [audience, setAudience] = useState("adult-to-adult")
   const [senderStyle, setSenderStyle] = useState("indirect")
   const [receiverStyle, setReceiverStyle] = useState("let-ai-decide")
   const [isAdvancedMode, setIsAdvancedMode] = useState(false)
@@ -89,6 +91,7 @@ export default function AnalyzeModePage() {
         senderGeneration,
         receiverGeneration,
         attachedFiles: uploadedFiles,
+        audience,
       }
 
       const transRes = await fetch(`/api/clarity/translate`, {
@@ -138,6 +141,7 @@ export default function AnalyzeModePage() {
     setSituationContext("")
     setInterpretation("")
     setUploadedFiles([])
+    setAudience("adult-to-adult")
     setError(null)
     setAiResponse(null)
     setFeedbackSuccess({ explanation: false, response: false })
@@ -176,6 +180,10 @@ export default function AnalyzeModePage() {
 
         {!aiResponse && (
           <form onSubmit={handleAnalyze} className="space-y-4">
+            <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
+              <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
+            </Card>
+
             <div className="grid md:grid-cols-3 gap-4">
               <Card className="p-4">
                 <Label htmlFor="message" className="text-sm font-semibold mb-1 block">
@@ -230,26 +238,11 @@ export default function AnalyzeModePage() {
             <Card className="p-4 bg-muted/50">
               <div className="grid md:grid-cols-2 gap-4 mb-3">
                 <div>
-                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">
-                    Their Style
-                    {/* TooltipIcon text="Direct: They say what they mean. Indirect: They use context." /> */}
-                  </Label>
-                  {/* RadioPillGroup
-                    name="sender"
-                    value={senderStyle}
-                    onChange={setSenderStyle}
-                    options={["direct", "indirect"]}
-                  /> */}
+                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Style</Label>
                 </div>
 
                 <div>
                   <Label className="text-xs font-medium mb-2 block">My Style</Label>
-                  {/* RadioPillGroup
-                    name="receiver"
-                    value={receiverStyle}
-                    onChange={setReceiverStyle}
-                    options={["direct", "indirect", "let-ai-decide"]}
-                  /> */}
                 </div>
               </div>
 
@@ -268,49 +261,19 @@ export default function AnalyzeModePage() {
               {isAdvancedMode && (
                 <div className="grid md:grid-cols-2 gap-4 pt-3 border-t">
                   <div>
-                    <Label className="text-xs font-medium mb-2 flex items-center gap-2">
-                      Their Neurotype
-                      {/* TooltipIcon text="Autism: May prefer direct language. ADHD: May communicate non-linearly." /> */}
-                    </Label>
-                    {/* RadioPillGroup
-                      name="sender-nt"
-                      value={senderNeurotype}
-                      onChange={setSenderNeurotype}
-                      options={neurotypes}
-                    /> */}
+                    <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Neurotype</Label>
                   </div>
 
                   <div>
                     <Label className="text-xs font-medium mb-2 block">My Neurotype</Label>
-                    {/* RadioPillGroup
-                      name="receiver-nt"
-                      value={receiverNeurotype}
-                      onChange={setReceiverNeurotype}
-                      options={neurotypes}
-                    /> */}
                   </div>
 
                   <div>
-                    <Label className="text-xs font-medium mb-2 flex items-center gap-2">
-                      Their Generation
-                      {/* TooltipIcon text="Gen Z: ~1997-2012, Millennial: ~1981-1996, Gen X: ~1965-1980" /> */}
-                    </Label>
-                    {/* RadioPillGroup
-                      name="sender-gen"
-                      value={senderGeneration}
-                      onChange={setSenderGeneration}
-                      options={generations}
-                    /> */}
+                    <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Generation</Label>
                   </div>
 
                   <div>
                     <Label className="text-xs font-medium mb-2 block">My Generation</Label>
-                    {/* RadioPillGroup
-                      name="receiver-gen"
-                      value={receiverGeneration}
-                      onChange={setReceiverGeneration}
-                      options={generations}
-                    /> */}
                   </div>
                 </div>
               )}
@@ -371,37 +334,19 @@ export default function AnalyzeModePage() {
 
             <div className="grid md:grid-cols-2 gap-4">
               <Card className="p-4 relative">
-                {/* CopyButton text={aiResponse.explanation} */}
                 <h3 className="text-base font-bold font-serif text-primary mb-3">What They Likely Meant</h3>
                 <div
                   className="prose prose-sm dark:prose-invert max-w-none text-sm"
                   dangerouslySetInnerHTML={{ __html: aiResponse.explanation }}
                 />
-                {/* FeedbackWidget
-                  rating={explanationFeedback.rating}
-                  comment={explanationFeedback.comment}
-                  onRatingChange={(rating) => setExplanationFeedback({ ...explanationFeedback, rating })}
-                  onCommentChange={(comment) => setExplanationFeedback({ ...explanationFeedback, comment })}
-                  onSubmit={() => handleFeedbackSubmit("explanation")}
-                  isSuccess={feedbackSuccess.explanation}
-                /> */}
               </Card>
 
               <Card className="p-4 relative">
-                {/* CopyButton text={aiResponse.response} */}
                 <h3 className="text-base font-bold font-serif text-primary mb-3">Suggested Response</h3>
                 <div
                   className="prose prose-sm dark:prose-invert max-w-none text-sm"
                   dangerouslySetInnerHTML={{ __html: aiResponse.response }}
                 />
-                {/* FeedbackWidget
-                  rating={responseFeedback.rating}
-                  comment={responseFeedback.comment}
-                  onRatingChange={(rating) => setResponseFeedback({ ...responseFeedback, rating })}
-                  onCommentChange={(comment) => setResponseFeedback({ ...responseFeedback, comment })}
-                  onSubmit={() => handleFeedbackSubmit("response")}
-                  isSuccess={feedbackSuccess.response}
-                /> */}
               </Card>
             </div>
           </div>
@@ -410,121 +355,3 @@ export default function AnalyzeModePage() {
     </main>
   )
 }
-
-// function RadioPillGroup({
-//   name,
-//   value,
-//   onChange,
-//   options,
-// }: {
-//   name: string
-//   value: string
-//   onChange: (value: string) => void
-//   options: string[]
-// }) {
-//   return (
-//     <div className="flex flex-wrap gap-2">
-//       {options.map((option) => (
-//         <label
-//           key={option}
-//           className={`px-3 py-1 text-sm rounded-full cursor-pointer transition-colors ${
-//             value === option ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
-//           }`}
-//         >
-//           <input
-//             type="radio"
-//             name={name}
-//             value={option}
-//             checked={value === option}
-//             onChange={(e) => onChange(e.target.value)}
-//             className="hidden"
-//           />
-//           <span className="capitalize">{option.replace("-", " ")}</span>
-//         </label>
-//       ))}
-//     </div>
-//   )
-// }
-
-// function TooltipIcon({ text }: { text: string }) {
-//   return (
-//     <div className="group relative inline-block">
-//       <Info className="w-4 h-4 text-muted-foreground" />
-//       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-popover text-popover-foreground text-xs rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border shadow-lg z-10">
-//         {text}
-//       </div>
-//     </div>
-//   )
-// }
-
-// function CopyButton({ text }: { text: string }) {
-//   const [isCopied, setIsCopied] = useState(false)
-
-//   const handleCopy = () => {
-//     const stripHtml = (html: string) => {
-//       const doc = new DOMParser().parseFromString(html, "text/html")
-//       return doc.body.textContent || ""
-//     }
-//     const plainText = stripHtml(text)
-//     navigator.clipboard.writeText(plainText).then(() => {
-//       setIsCopied(true)
-//       setTimeout(() => setIsCopied(false), 2000)
-//     })
-//   }
-
-//   return (
-//     <Button
-//       type="button"
-//       onClick={handleCopy}
-//       variant="ghost"
-//       size="sm"
-//       className="absolute top-3 right-3"
-//       title="Copy to clipboard"
-//     >
-//       {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-//     </Button>
-//   )
-// }
-
-// function FeedbackWidget({
-//   rating,
-//   comment,
-//   onRatingChange,
-//   onCommentChange,
-//   onSubmit,
-//   isSuccess,
-// }: {
-//   rating: number
-//   comment: string
-//   onRatingChange: (rating: number) => void
-//   onCommentChange: (comment: string) => void
-//   onSubmit: () => void
-//   isSuccess: boolean
-// }) {
-//   return (
-//     <div className="mt-3 pt-3 border-t space-y-2">
-//       <p className="text-xs font-medium">Rate this:</p>
-//       <div className="flex gap-1">
-//         {[1, 2, 3, 4, 5].map((star) => (
-//           <button
-//             key={star}
-//             type="button"
-//             onClick={() => onRatingChange(star)}
-//             className={`text-xl ${star <= rating ? "text-yellow-500" : "text-gray-300 dark:text-gray-600"}`}
-//           >
-//             ★
-//           </button>
-//         ))}
-//       </div>
-//       <Textarea
-//         value={comment}
-//         onChange={(e) => onCommentChange(e.target.value)}
-//         placeholder="Optional: Tell us more..."
-//         className="min-h-[50px] text-xs"
-//       />
-//       <Button onClick={onSubmit} disabled={rating === 0 || isSuccess} size="sm" className="w-full">
-//         {isSuccess ? "Thank you!" : "Submit Feedback"}
-//       </Button>
-//     </div>
-//   )
-// }

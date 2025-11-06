@@ -12,6 +12,7 @@ import { CopyButton } from "./CopyButton"
 import { FeedbackWidget } from "./FeedbackWidget"
 import { MarkdownRenderer } from "./MarkdownRenderer"
 import { FileUpload } from "@/components/file-upload"
+import { AudienceSelector } from "@/components/audience-selector"
 
 const loadingTips = [
   "Average translation time is 5-10 seconds.",
@@ -52,6 +53,7 @@ export default function DraftModePage() {
   const [intent, setIntent] = useState("")
   const [draft, setDraft] = useState("")
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
+  const [audience, setAudience] = useState("adult-to-adult")
   const [senderStyle, setSenderStyle] = useState("let-ai-decide")
   const [receiverStyle, setReceiverStyle] = useState("indirect")
   const [isAdvancedMode, setIsAdvancedMode] = useState(false)
@@ -143,6 +145,7 @@ export default function DraftModePage() {
         senderGeneration,
         receiverGeneration,
         attachedFiles: uploadedFiles,
+        audience,
       }
 
       const transRes = await fetch(`/api/clarity/translate`, {
@@ -267,6 +270,7 @@ export default function DraftModePage() {
     setIntent("")
     setDraft("")
     setUploadedFiles([])
+    setAudience("adult-to-adult")
     setError(null)
     setAiResponse(null)
     setFeedbackSuccess({ explanation: false, response: false })
@@ -340,6 +344,10 @@ export default function DraftModePage() {
 
         {!aiResponse && (
           <form onSubmit={handleTranslate} className="space-y-4">
+            <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
+              <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
+            </Card>
+
             <div className="grid md:grid-cols-2 gap-4">
               <Card className="p-4">
                 <Label htmlFor="intent" className="text-sm font-semibold mb-1 block">

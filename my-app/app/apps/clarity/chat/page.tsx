@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
 import { Send, Lightbulb, Paperclip } from "lucide-react"
 import { FileUpload } from "@/components/file-upload"
+import { AudienceSelector } from "@/components/audience-selector"
 
 interface Message {
   role: "user" | "model"
@@ -33,6 +34,7 @@ export default function ChatModePage() {
   ])
   const [input, setInput] = useState("")
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
+  const [audience, setAudience] = useState("adult-to-adult")
   const [isLoading, setIsLoading] = useState(false)
   const [showStarters, setShowStarters] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -74,7 +76,7 @@ export default function ChatModePage() {
       const response = await fetch(`/api/clarity/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ history: newHistory }),
+        body: JSON.stringify({ history: newHistory, audience }),
       })
 
       if (!response.ok) {
@@ -113,7 +115,12 @@ export default function ChatModePage() {
         </div>
 
         <div className="flex-1 flex flex-col min-h-0 py-4">
-          {/* Messages - scrollable area */}
+          <div className="mb-4">
+            <Card className="p-3 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
+              <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
+            </Card>
+          </div>
+
           <div className="flex-1 overflow-y-auto mb-4 space-y-4 pr-2" role="log" aria-live="polite" aria-atomic="false">
             {messages.map((message, index) => (
               <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>

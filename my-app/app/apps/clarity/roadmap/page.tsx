@@ -104,13 +104,42 @@ export default function RoadmapPage() {
             </div>
           </Card>
 
-          {/* Beta 3.4 - Planning */}
+          {/* Beta 3.4 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.4</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Clarity Coach Junior</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Audience selector for kid-friendly communication (Parent-to-Kid, Kid-to-Parent, Kid-to-Kid)</li>
+                  <li>Age-appropriate language and explanations tailored for children</li>
+                  <li>Integrated 8 new expert documents on child development and communication</li>
+                  <li>Emotion regulation strategies for children with autism (whole-brain integration)</li>
+                  <li>Comprehensive neurodiversity resources for families and educators</li>
+                  <li>Social Stories intervention framework for explaining social situations</li>
+                  <li>Parent-child communication strategies (How to Talk So Kids Will Listen)</li>
+                  <li>Understanding autism characteristics, strengths, and support needs</li>
+                  <li>Explaining ADHD to kids using relatable analogies and strengths-based language</li>
+                  <li>Parent-mediated early intervention evidence and best practices</li>
+                  <li>Enhanced support for family communication across all neurotypes</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Beta 3.5 - Planning */}
           <Card className="p-6">
             <div className="flex items-start gap-3 mb-4">
               <Clock className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.4</h2>
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.5</h2>
                   <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
                     Planning
                   </span>

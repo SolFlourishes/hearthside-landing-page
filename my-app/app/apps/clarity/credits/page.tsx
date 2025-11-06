@@ -92,6 +92,26 @@ export default function CreditsPage() {
                 Boomers, Gen X, Millennials, Gen Z) have distinct communication preferences, work values, and
                 expectations shaped by their socio-historical contexts.
               </li>
+              <li>
+                <strong>Whole-Brain Integration:</strong> The developmental framework that mental health and resilience
+                depend on integrating distinct parts of the brain (left/right, upstairs/downstairs, implicit/explicit
+                memories) to work together as a cohesive whole.
+              </li>
+              <li>
+                <strong>Parent-Mediated Early Intervention:</strong> The evidence-based approach where parents are
+                trained as therapists to enhance parent-child interaction, communication skills, and synchronous
+                engagement in young children with autism.
+              </li>
+              <li>
+                <strong>Social Stories Framework:</strong> The structured intervention using perspective sentences and
+                directive guidance to help individuals with autism understand social situations and appropriate
+                responses.
+              </li>
+              <li>
+                <strong>Emotion Regulation in Neurodevelopmental Conditions:</strong> The understanding that emotional
+                dysregulation in autism and ADHD involves physiological hyperarousal, cognitive rigidity, and sensory
+                processing differences requiring targeted support strategies.
+              </li>
             </ul>
 
             <h3 className="font-semibold text-foreground mb-3 mt-6">Journal Articles</h3>
@@ -140,6 +160,21 @@ export default function CreditsPage() {
                 successful conversations. <em>Autism & Developmental Language Impairments</em>, <em>7</em>.
                 https://doi.org/10.1177/23969415221101113
               </li>
+              <li className="pl-6 -indent-6">
+                Oono, I. P., Honey, E. J., & McConachie, H. (2013). Parent-mediated early intervention for young
+                children with autism spectrum disorders (ASD). <em>Cochrane Database of Systematic Reviews</em>,{" "}
+                <em>2013</em>(4), CD009774. https://doi.org/10.1002/14651858.CD009774.pub2
+              </li>
+              <li className="pl-6 -indent-6">
+                Mazefsky, C. A., & White, S. W. (2014). Emotion regulation: Concepts & practice in autism spectrum
+                disorder. <em>Child and Adolescent Psychiatric Clinics of North America</em>, <em>23</em>(1), 15-24.
+                https://doi.org/10.1016/j.chc.2013.07.002
+              </li>
+              <li className="pl-6 -indent-6">
+                Kokina, A., & Kern, L. (2010). Social Story interventions for students with autism spectrum disorders: A
+                meta-analysis. <em>Journal of Autism and Developmental Disorders</em>, <em>40</em>(7), 812-826.
+                https://doi.org/10.1007/s10803-009-0931-0
+              </li>
             </ul>
 
             <h3 className="font-semibold text-foreground mb-3 mt-6">Books</h3>
@@ -181,6 +216,18 @@ export default function CreditsPage() {
               </li>
               <li className="pl-6 -indent-6">
                 Tannen, D. (1990). <em>You just don't understand: Women and men in conversation</em>. William Morrow.
+              </li>
+              <li className="pl-6 -indent-6">
+                Faber, A., & Mazlish, E. (2012). <em>How to talk so kids will listen & listen so kids will talk</em>.
+                Scribner.
+              </li>
+              <li className="pl-6 -indent-6">
+                Gray, C. (2010). <em>The new social story book</em> (10th anniversary ed.). Future Horizons.
+              </li>
+              <li className="pl-6 -indent-6">
+                Siegel, D. J., & Bryson, T. P. (2011).{" "}
+                <em>The whole-brain child: 12 revolutionary strategies to nurture your child's developing mind</em>.
+                Delacorte Press.
               </li>
             </ul>
           </Card>

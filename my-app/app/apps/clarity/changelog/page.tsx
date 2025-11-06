@@ -10,8 +10,46 @@ export default function ChangelogPage() {
         <div className="space-y-6">
           <Card className="p-6">
             <div className="flex items-start justify-between mb-4">
-              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.3</h2>
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.4</h2>
               <span className="text-sm text-muted-foreground">Current Version</span>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-3">Clarity Coach Junior</h3>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Introduced Audience Selector across all modes (Draft, Analyze, Chat) with options for Adult-to-Adult,
+                Parent-to-Kid, Kid-to-Parent, and Kid-to-Kid communication
+              </li>
+              <li>
+                AI now adjusts language complexity, tone, and examples based on selected audience for age-appropriate
+                communication
+              </li>
+              <li>Added visual indicators (sparkle icon and amber accent) when using kid-friendly modes</li>
+              <li>
+                Integrated 8 new expert documents focused on child development, neurodiversity, and family communication
+              </li>
+              <li>
+                Added emotion regulation strategies for children with autism, including whole-brain integration
+                techniques (The Whole-Brain Child)
+              </li>
+              <li>
+                Added comprehensive neurodiversity resources including books, organizations, and support materials for
+                families
+              </li>
+              <li>Added Social Stories framework for explaining social situations to children with autism</li>
+              <li>Added evidence-based parent-child communication strategies (How to Talk So Kids Will Listen)</li>
+              <li>Added detailed autism characteristics, strengths, and understanding resources (What is Autism)</li>
+              <li>Added ADHD explanation guide using relatable analogies and strengths-based language for kids</li>
+              <li>
+                Added parent-mediated early intervention research and best practices for families with young children
+              </li>
+              <li>Enhanced AI responses to support family communication across all neurotypes and age groups</li>
+            </ul>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.3</h2>
+              <span className="text-sm text-muted-foreground">January 2025</span>
             </div>
             <h3 className="text-lg font-semibold text-primary mb-3">RAG Phase 2: Social Dynamics and Learning</h3>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
