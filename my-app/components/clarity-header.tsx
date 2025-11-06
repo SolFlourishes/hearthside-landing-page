@@ -23,7 +23,7 @@ export function ClarityHeader() {
           <div className="flex items-center gap-3">
             <Link href={`${basePath}`} className="flex items-center gap-1.5">
               <span className="font-serif text-xs font-bold text-primary">Clarity Coach</span>
-              <span className="text-[9px] text-muted-foreground font-mono">Beta 3.2</span>
+              <span className="text-[9px] text-muted-foreground font-mono">Beta 3.1</span>
             </Link>
 
             {/* Desktop Navigation */}

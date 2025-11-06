@@ -34,6 +34,8 @@ export async function POST(request: NextRequest) {
 
     const lastUserMessage = history.filter((msg: any) => msg.role === "user").pop()?.content || ""
 
+    const lastUserFiles = history.filter((msg: any) => msg.role === "user").pop()?.files || []
+
     console.log("[v0] Retrieving relevant expert knowledge for query:", lastUserMessage.substring(0, 100))
 
     const relevantDocs = await retrieveRelevantDocuments(lastUserMessage, 3)
@@ -43,6 +45,25 @@ export async function POST(request: NextRequest) {
     relevantDocs.forEach((doc, i) => {
       console.log(`  ${i + 1}. ${doc.title} (similarity: ${doc.similarity?.toFixed(3) || "N/A"})`)
     })
+
+    let filesContext = ""
+    if (lastUserFiles.length > 0) {
+      console.log("[v0] Processing", lastUserFiles.length, "attached files in chat")
+      filesContext = "\n\nThe user has attached the following documents for context:\n"
+
+      for (const file of lastUserFiles) {
+        filesContext += `\n--- ${file.name} ---\n`
+
+        if (file.type === "text/plain") {
+          filesContext += file.content + "\n"
+        } else if (file.type === "application/pdf" || file.type.includes("word")) {
+          filesContext += `[${file.type} document - ${(file.size / 1024).toFixed(1)}KB]\n`
+          filesContext += "Note: This document contains additional context.\n"
+        } else if (file.type.startsWith("image/")) {
+          filesContext += `[Image file - ${(file.size / 1024).toFixed(1)}KB]\n`
+        }
+      }
+    }
 
     const systemPrompt = `You are the Clarity Coach, a supportive communication expert who helps people navigate difficult conversations and build identity cohesion.
 
@@ -56,9 +77,11 @@ Your communication style:
 
 When relevant expert knowledge is provided below, use it to inform your responses, but maintain your conversational style. Don't cite sources or say "according to the documents" - just naturally incorporate the insights.
 
+If the user has attached documents, acknowledge them and incorporate their content into your advice.
+
 Remember: You're having a conversation, not writing a manual. Keep it brief, focused, and engaging. Users can always ask follow-up questions if they want more detail.
 
-Format your responses in HTML with proper paragraph tags for readability.${expertContext}`
+Format your responses in HTML with proper paragraph tags for readability.${expertContext}${filesContext}`
 
     console.log("[v0] Calling Google AI with model: gemini-pro-latest")
 

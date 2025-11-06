@@ -6,11 +6,13 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
-import { Send, Lightbulb } from "lucide-react"
+import { Send, Lightbulb, Paperclip } from "lucide-react"
+import { FileUpload } from "@/components/file-upload"
 
 interface Message {
   role: "user" | "model"
   content: string
+  files?: any[]
 }
 
 const CONVERSATION_STARTERS = [
@@ -30,6 +32,7 @@ export default function ChatModePage() {
     },
   ])
   const [input, setInput] = useState("")
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [showStarters, setShowStarters] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -55,10 +58,15 @@ export default function ChatModePage() {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
 
-    const userMessage: Message = { role: "user", content: input }
+    const userMessage: Message = {
+      role: "user",
+      content: input,
+      files: uploadedFiles.length > 0 ? uploadedFiles : undefined,
+    }
     const newHistory = [...messages, userMessage]
     setMessages(newHistory)
     setInput("")
+    setUploadedFiles([])
     setIsLoading(true)
     setShowStarters(false)
 
@@ -110,11 +118,25 @@ export default function ChatModePage() {
             {messages.map((message, index) => (
               <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`max-w-[80%] rounded-lg p-4 prose prose-sm dark:prose-invert break-words ${
+                  className={`max-w-[80%] rounded-lg p-4 ${
                     message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
                   }`}
-                  dangerouslySetInnerHTML={{ __html: message.content }}
-                />
+                >
+                  {message.files && message.files.length > 0 && (
+                    <div className="mb-2 pb-2 border-b border-current/20">
+                      <p className="text-xs opacity-70 mb-1">Attached files:</p>
+                      {message.files.map((file, i) => (
+                        <p key={i} className="text-xs opacity-90">
+                          📎 {file.name}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                  <div
+                    className="prose prose-sm dark:prose-invert break-words"
+                    dangerouslySetInnerHTML={{ __html: message.content }}
+                  />
+                </div>
               </div>
             ))}
 
@@ -168,7 +190,13 @@ export default function ChatModePage() {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="border-t border-border pt-4">
+          <div className="border-t border-border pt-4 space-y-3">
+            {uploadedFiles.length > 0 && (
+              <div className="px-2">
+                <FileUpload onFilesChange={setUploadedFiles} maxFiles={2} disabled={isLoading} />
+              </div>
+            )}
+
             <form
               onSubmit={(e) => {
                 e.preventDefault()
@@ -190,11 +218,28 @@ export default function ChatModePage() {
                 className="min-h-[80px] max-h-[120px] resize-none"
                 aria-label="Describe your situation"
               />
-              <Button onClick={handleSend} disabled={!input.trim() || isLoading} size="lg" aria-label="Send message">
-                <Send className="w-4 h-4" />
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button
+                  type="button"
+                  onClick={() => {
+                    if (uploadedFiles.length === 0) {
+                      setUploadedFiles([{ name: "", size: 0, type: "", content: "" }])
+                    }
+                  }}
+                  variant="outline"
+                  size="lg"
+                  disabled={isLoading}
+                  aria-label="Attach files"
+                  title="Attach files"
+                >
+                  <Paperclip className="w-4 h-4" />
+                </Button>
+                <Button onClick={handleSend} disabled={!input.trim() || isLoading} size="lg" aria-label="Send message">
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
             </form>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-xs text-muted-foreground">
               💡 Tip: Share specific details and relationship context for better advice
             </p>
           </div>

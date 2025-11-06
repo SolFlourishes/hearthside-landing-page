@@ -73,7 +73,6 @@ export default function RoadmapPage() {
                   <li>Ground AI advice in factual, evidence-based knowledge base</li>
                   <li>Expert documents on autism, ADHD, and the Double Empathy Problem</li>
                   <li>Enhanced accuracy and reliability of translations</li>
-                  <li> Added file upload feature for drafting a message</li>
                 </ul>
               </div>
             </div>

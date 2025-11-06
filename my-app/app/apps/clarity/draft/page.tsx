@@ -1,22 +1,17 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
-import { Edit, Save, X, RefreshCw, Upload, Loader2, FileText } from "lucide-react"
+import { Edit, Save, X, RefreshCw } from "lucide-react"
 import { RadioPillGroup } from "./RadioPillGroup"
 import { CopyButton } from "./CopyButton"
 import { FeedbackWidget } from "./FeedbackWidget"
 import { MarkdownRenderer } from "./MarkdownRenderer"
-
-// --- FILE PARSING DEPENDENCIES ---
-import * as mammoth from 'mammoth' // --- FIX: Changed to namespace import ---
-import * as pdf from 'pdf-parse'   // --- FIX: Changed to namespace import ---
-// --- END FILE PARSING IMPORTS ---
-
+import { FileUpload } from "@/components/file-upload"
 
 const loadingTips = [
   "Average translation time is 5-10 seconds.",
@@ -53,32 +48,10 @@ const EXAMPLE_SCENARIOS = {
   },
 }
 
-// --- NEW HELPER COMPONENT FOR EDITING (FROM PREVIOUS FIXES) ---
-const EditableContent = ({ html, onChange }: { html: string, onChange: (newHtml: string) => void }) => {
-    const elementRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        if (elementRef.current && html !== elementRef.current.innerHTML) {
-            elementRef.current.innerHTML = html;
-        }
-    }, [html]);
-    const handleInput = (event: React.FormEvent<HTMLDivElement>) => {
-        onChange(event.currentTarget.innerHTML);
-    };
-    return (
-        <div 
-            ref={elementRef} 
-            contentEditable={true} 
-            suppressContentEditableWarning={true} 
-            onInput={handleInput} 
-            className="prose prose-sm dark:prose-invert max-w-none flex-grow p-2 ring-2 ring-primary rounded-md bg-background"
-        />
-    );
-};
-
-
 export default function DraftModePage() {
   const [intent, setIntent] = useState("")
   const [draft, setDraft] = useState("")
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
   const [senderStyle, setSenderStyle] = useState("let-ai-decide")
   const [receiverStyle, setReceiverStyle] = useState("indirect")
   const [isAdvancedMode, setIsAdvancedMode] = useState(false)
@@ -101,79 +74,8 @@ export default function DraftModePage() {
   const [responseFeedback, setResponseFeedback] = useState({ rating: 0, comment: "" })
   const [feedbackSuccess, setFeedbackSuccess] = useState({ explanation: false, response: false })
 
-  // --- NEW STATE FOR FILE UPLOAD ---
-  const [file, setFile] = useState<File | null>(null)
-  const [isExtracting, setIsExtracting] = useState(false)
-  const [extractionError, setExtractionError] = useState<string | null>(null)
-
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
-
-  // --- FILE HANDLER LOGIC ---
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadedFile = event.target.files?.[0]
-    if (!uploadedFile) return
-
-    setFile(uploadedFile)
-    setIsExtracting(true)
-    setExtractionError(null)
-
-    // --- FIX: Capture the current content before clearing or extracting ---
-    const currentDraft = draft;
-    setDraft(currentDraft.trim()); // Clean up existing content slightly
-
-    const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase()
-
-   try {
-      const fileReader = new FileReader()
-
-      // Function to append and format the text clearly for the AI
-      const appendExtractedText = (extractedText: string) => {
-          const separator = `\n\n--- [ATTACHMENT CONTENT: ${uploadedFile.name}] ---\n\n`;
-          // If the draft was empty, just use the extracted text. Otherwise, append with separator.
-          const newDraft = currentDraft.trim() 
-            ? currentDraft.trim() + separator + extractedText 
-            : extractedText;
-          setDraft(newDraft);
-      }
-
-      if (fileExtension === 'docx') {
-        fileReader.onload = async (e) => {
-          const arrayBuffer = e.target?.result as ArrayBuffer;
-          if (!arrayBuffer) {
-              setExtractionError('Could not read file content.');
-              setIsExtracting(false);
-              return;
-          }
-          // Mammoth.js expects ArrayBuffer for DOCX
-          const { value } = await mammoth.extractRawText({ arrayBuffer });
-          setDraft(value); 
-          setIsExtracting(false);
-        };
-        fileReader.readAsArrayBuffer(uploadedFile);
-      } 
-      else if (fileExtension === 'pdf') {
-        fileReader.onload = async (e) => {
-          // pdf-parse expects a Uint8Array of the ArrayBuffer
-          const data = new Uint8Array(e.target?.result as ArrayBuffer);
-          const { text } = await pdf(data);
-          setDraft(text);
-          setIsExtracting(false);
-        };
-        fileReader.readAsArrayBuffer(uploadedFile);
-      } 
-      else {
-        setExtractionError('Unsupported file type. Please upload a .docx or .pdf.');
-        setIsExtracting(false);
-      }
-
-    } catch (err) {
-      console.error("Extraction failed:", err);
-      setExtractionError("Failed to read file content. Ensure libraries are installed.");
-      setIsExtracting(false);
-    }
-  }
-
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -214,18 +116,6 @@ export default function DraftModePage() {
     setFeedbackDocId(null)
     setIsLoading(true)
 
-    if (!draft || !intent) {
-      setError("Please provide a goal and a draft message.")
-      setIsLoading(false)
-      return
-    }
-    
-    if (isExtracting) {
-        setError("Please wait for text extraction to finish before translating.")
-        setIsLoading(false)
-        return
-    }
-
     try {
       let finalSenderStyle = senderStyle
       if (senderStyle === "let-ai-decide") {
@@ -252,6 +142,7 @@ export default function DraftModePage() {
         receiverNeurotype,
         senderGeneration,
         receiverGeneration,
+        attachedFiles: uploadedFiles,
       }
 
       const transRes = await fetch(`/api/clarity/translate`, {
@@ -375,6 +266,7 @@ export default function DraftModePage() {
   const handleReset = () => {
     setIntent("")
     setDraft("")
+    setUploadedFiles([])
     setError(null)
     setAiResponse(null)
     setFeedbackSuccess({ explanation: false, response: false })
@@ -391,8 +283,6 @@ export default function DraftModePage() {
     setIsReanalyzing(false)
     setReanalysisResult(null)
     setFeedbackDocId(null)
-    setFile(null) // NEW: Reset file state
-    setExtractionError(null) // NEW: Reset extraction error
   }
 
   return (
@@ -423,8 +313,6 @@ export default function DraftModePage() {
                       setDraft(scenario.draft)
                       setSenderStyle(scenario.senderStyle)
                       setReceiverStyle(scenario.receiverStyle)
-                      setFile(null) // Clear file on example load
-                      setExtractionError(null)
                     }}
                     className="capitalize text-xs"
                   >
@@ -468,7 +356,7 @@ export default function DraftModePage() {
                 />
               </Card>
 
-              <Card className="p-4 relative">
+              <Card className="p-4">
                 <Label htmlFor="draft" className="text-sm font-semibold mb-1 block">
                   Your Draft <span className="text-destructive">*</span>
                 </Label>
@@ -476,63 +364,27 @@ export default function DraftModePage() {
                 <Textarea
                   id="draft"
                   value={draft}
-                  onChange={(e) => {
-                    setDraft(e.target.value)
-                    setFile(null) // Clear file if user starts typing
-                  }}
+                  onChange={(e) => setDraft(e.target.value)}
                   placeholder="Example: Hey boss, I think I deserve a promotion..."
                   required
                   className="min-h-[120px]"
-                  disabled={isExtracting}
                 />
-                
-                {/* --- FILE UPLOAD UI INTEGRATION --- */}
-                <div className="mt-3 pt-3 border-t flex flex-col items-center justify-center space-y-2">
-                    {file && (
-                        <div className="flex items-center text-xs text-primary/80">
-                            <FileText className="w-4 h-4 mr-1" />
-                            {file.name}
-                            <X className="w-3 h-3 ml-2 cursor-pointer hover:text-destructive" onClick={() => handleReset()} />
-                        </div>
-                    )}
-                    
-                    {isExtracting && (
-                        <p className="flex items-center text-sm text-primary">
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Extracting text...
-                        </p>
-                    )}
-                    
-                    {extractionError && (
-                        <p className="text-sm text-destructive">{extractionError}</p>
-                    )}
-
-                    {!file && !isExtracting && (
-                      <Label htmlFor="file-upload" className="flex items-center gap-1 text-sm text-primary cursor-pointer hover:underline">
-                        <Upload className="w-4 h-4" />
-                        Upload .docx or .pdf
-                        <input
-                          id="file-upload"
-                          type="file"
-                          accept=".docx, .pdf"
-                          onChange={handleFileChange}
-                          className="hidden"
-                          disabled={isExtracting}
-                        />
-                      </Label>
-                    )}
-                </div>
-                {/* --- END FILE UPLOAD UI --- */}
               </Card>
             </div>
+
+            <Card className="p-4">
+              <Label className="text-sm font-semibold mb-2 block">Additional Context (Optional)</Label>
+              <p className="text-xs text-muted-foreground mb-3">
+                Attach documents for additional context (e.g., previous email threads, background information)
+              </p>
+              <FileUpload onFilesChange={setUploadedFiles} maxFiles={3} disabled={isLoading} />
+            </Card>
 
             <Card className="p-4 bg-muted/50">
               <h3 className="font-serif text-base font-bold mb-3 text-center">Communication Styles</h3>
               <div className="grid md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">
-                    Your Style
-                  </Label>
+                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Style</Label>
                   <RadioPillGroup
                     name="sender"
                     value={senderStyle}
@@ -542,9 +394,7 @@ export default function DraftModePage() {
                 </div>
 
                 <div>
-                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">
-                    Their Style
-                  </Label>
+                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Style</Label>
                   <RadioPillGroup
                     name="receiver"
                     value={receiverStyle}
@@ -570,9 +420,7 @@ export default function DraftModePage() {
                 {isAdvancedMode && (
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">
-                        Your Neurotype
-                      </Label>
+                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Neurotype</Label>
                       <RadioPillGroup
                         name="sender-nt"
                         value={senderNeurotype}
@@ -582,9 +430,7 @@ export default function DraftModePage() {
                     </div>
 
                     <div>
-                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">
-                        Their Neurotype
-                      </Label>
+                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Neurotype</Label>
                       <RadioPillGroup
                         name="receiver-nt"
                         value={receiverNeurotype}
@@ -594,9 +440,7 @@ export default function DraftModePage() {
                     </div>
 
                     <div>
-                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">
-                        Your Generation
-                      </Label>
+                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Generation</Label>
                       <RadioPillGroup
                         name="sender-gen"
                         value={senderGeneration}
@@ -620,11 +464,11 @@ export default function DraftModePage() {
             </Card>
 
             <div className="flex justify-center items-center gap-4">
-              <Button type="submit" size="lg" disabled={isLoading || !intent || !draft || isExtracting}>
-                {isLoading || isExtracting ? (
+              <Button type="submit" size="lg" disabled={isLoading || !intent || !draft}>
+                {isLoading ? (
                   <span className="flex items-center gap-2">
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    {isExtracting ? "Extracting..." : "Translating..."}
+                    Translating...
                   </span>
                 ) : (
                   "Translate"
@@ -667,7 +511,11 @@ export default function DraftModePage() {
               <CopyButton text={isEditing ? editedResponse : aiResponse.response} />
               <h3 className="text-base font-bold font-serif text-primary mb-3">The Translation</h3>
               {isEditing ? (
-                <EditableContent html={editedResponse} onChange={setEditedResponse} />
+                <Textarea
+                  value={editedResponse}
+                  onChange={(e) => setEditedResponse(e.target.value)}
+                  className="min-h-[150px] mb-3 text-sm"
+                />
               ) : (
                 <div className="mb-3">
                   <MarkdownRenderer content={aiResponse.response} />

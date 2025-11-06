@@ -19,9 +19,17 @@ export async function POST(request: NextRequest) {
       receiverGeneration,
       analyzeContext,
       interpretation,
+      attachedFiles,
     } = body
 
-    console.log("[v0] Translation request received:", { mode, text, context, sender, receiver })
+    console.log("[v0] Translation request received:", {
+      mode,
+      text,
+      context,
+      sender,
+      receiver,
+      filesCount: attachedFiles?.length || 0,
+    })
 
     const queryText = mode === "draft" ? `${context || ""} ${text}` : `${analyzeContext || ""} ${text}`
     console.log("[v0] Retrieving expert knowledge for translation:", queryText.substring(0, 100))
@@ -33,6 +41,30 @@ export async function POST(request: NextRequest) {
     relevantDocs.forEach((doc, i) => {
       console.log(`  ${i + 1}. ${doc.title} (similarity: ${doc.similarity?.toFixed(3) || "N/A"})`)
     })
+
+    let filesContext = ""
+    if (attachedFiles && attachedFiles.length > 0) {
+      console.log("[v0] Processing", attachedFiles.length, "attached files")
+      filesContext = "\n\nAttached Documents:\n"
+
+      for (const file of attachedFiles) {
+        filesContext += `\n--- ${file.name} ---\n`
+
+        if (file.type === "text/plain") {
+          // Text files can be included directly
+          filesContext += file.content + "\n"
+        } else if (file.type === "application/pdf" || file.type.includes("word")) {
+          // For PDFs and Word docs, we note their presence
+          // In a production app, you'd use a library to extract text
+          filesContext += `[${file.type} document - ${(file.size / 1024).toFixed(1)}KB]\n`
+          filesContext += "Note: This document contains additional context that should be considered in the analysis.\n"
+        } else if (file.type.startsWith("image/")) {
+          // For images, note their presence
+          filesContext += `[Image file - ${(file.size / 1024).toFixed(1)}KB]\n`
+          filesContext += "Note: This image may contain relevant visual information.\n"
+        }
+      }
+    }
 
     let systemPrompt = ""
     let userPrompt = ""
@@ -47,8 +79,9 @@ Communication Styles:
 Your task:
 1. Analyze the user's intent and draft
 2. Consider the communication styles, neurotypes, and generational differences
-3. Provide a detailed translation that bridges the gap
-4. Explain thoroughly how the original might be misinterpreted and why the translation is better
+3. Consider any attached documents as additional context
+4. Provide a detailed translation that bridges the gap
+5. Explain thoroughly how the original might be misinterpreted and why the translation is better
 
 When relevant expert knowledge is provided below, use it to inform your translations and explanations. Don't cite sources - just naturally incorporate the insights.
 
@@ -64,7 +97,7 @@ Audience Style: ${receiver}
 ${senderNeurotype ? `My Neurotype: ${senderNeurotype}` : ""}
 ${receiverNeurotype ? `Audience Neurotype: ${receiverNeurotype}` : ""}
 ${senderGeneration ? `My Generation: ${senderGeneration}` : ""}
-${receiverGeneration ? `Audience Generation: ${receiverGeneration}` : ""}`
+${receiverGeneration ? `Audience Generation: ${receiverGeneration}` : ""}${filesContext}`
     } else if (mode === "analyze") {
       systemPrompt = `You are the Clarity Coach, an expert communication analyst. Your role is to help people understand messages they've received by analyzing tone, subtext, and potential misinterpretations.
 
@@ -75,8 +108,9 @@ Communication Styles:
 Your task:
 1. Analyze what the sender likely meant
 2. Consider communication styles, neurotypes, and generational differences
-3. Explain potential misinterpretations
-4. Provide a suggested response that bridges the gap
+3. Consider any attached documents as additional context
+4. Explain potential misinterpretations
+5. Provide a suggested response that bridges the gap
 
 When relevant expert knowledge is provided below, use it to inform your analysis and suggestions. Don't cite sources - just naturally incorporate the insights.
 
@@ -93,7 +127,7 @@ My Style: ${receiver}
 ${senderNeurotype ? `Their Neurotype: ${senderNeurotype}` : ""}
 ${receiverNeurotype ? `My Neurotype: ${receiverNeurotype}` : ""}
 ${senderGeneration ? `Their Generation: ${senderGeneration}` : ""}
-${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}`
+${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}${filesContext}`
     } else {
       throw new Error("Invalid mode. Must be 'draft' or 'analyze'")
     }
