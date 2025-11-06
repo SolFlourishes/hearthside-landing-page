@@ -58,9 +58,8 @@ export async function POST(request: NextRequest) {
         if (file.type === "text/plain") {
           filesContext += file.content + "\n"
         } else if (file.type === "application/pdf" || file.type.includes("word")) {
-          // For PDFs and Word docs, include the base64 content
           filesContext += `[${file.type} document - ${(file.size / 1024).toFixed(1)}KB]\n`
-          filesContext += `Content (base64): ${file.content.substring(0, 500)}...\n`
+          filesContext += `Content preview: ${file.content.substring(0, 500)}...\n`
           filesContext +=
             "Note: This document contains additional context that MUST be analyzed and potentially revised.\n"
         } else if (file.type.startsWith("image/")) {
@@ -162,14 +161,12 @@ ${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}${filesContex
 
     let cleanedText = aiText.trim()
 
-    // Remove markdown code blocks
     if (cleanedText.startsWith("```json")) {
       cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "")
     } else if (cleanedText.startsWith("```")) {
       cleanedText = cleanedText.replace(/^```\s*/, "").replace(/\s*```$/, "")
     }
 
-    // Try to extract JSON object if there's extra text
     const jsonMatch = cleanedText.match(/\{[\s\S]*\}/)
     if (jsonMatch) {
       cleanedText = jsonMatch[0]
@@ -186,7 +183,6 @@ ${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}${filesContex
       throw new Error(`Invalid JSON response: ${parseError instanceof Error ? parseError.message : String(parseError)}`)
     }
 
-    // Validate the response has required fields
     if (!parsed.explanation || !parsed.translation) {
       console.error("[v0] Missing required fields in response:", parsed)
       throw new Error("Response missing required fields (explanation or translation)")
