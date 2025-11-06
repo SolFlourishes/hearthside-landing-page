@@ -492,87 +492,112 @@ export default function DraftModePage() {
         )}
 
         {aiResponse && !isLoading && (
-          <div className="mt-6 grid md:grid-cols-2 gap-4">
-            <Card className="p-4 relative">
-              <CopyButton text={aiResponse.explanation} />
-              <h3 className="text-base font-bold font-serif text-primary mb-3">How They Might Hear It</h3>
-              <MarkdownRenderer content={aiResponse.explanation} />
-              <FeedbackWidget
-                rating={explanationFeedback.rating}
-                comment={explanationFeedback.comment}
-                onRatingChange={(rating) => setExplanationFeedback({ ...explanationFeedback, rating })}
-                onCommentChange={(comment) => setExplanationFeedback({ ...explanationFeedback, comment })}
-                onSubmit={() => handleFeedbackSubmit("explanation")}
-                isSuccess={feedbackSuccess.explanation}
-              />
-            </Card>
-
-            <Card className="p-4 relative">
-              <CopyButton text={isEditing ? editedResponse : aiResponse.response} />
-              <h3 className="text-base font-bold font-serif text-primary mb-3">The Translation</h3>
-              {isEditing ? (
-                <Textarea
-                  value={editedResponse}
-                  onChange={(e) => setEditedResponse(e.target.value)}
-                  className="min-h-[150px] mb-3 text-sm"
-                />
-              ) : (
-                <div className="mb-3">
-                  <MarkdownRenderer content={aiResponse.response} />
+          <div className="mt-6 space-y-4">
+            {aiResponse.attachmentGuidance && uploadedFiles.length > 0 && (
+              <Card className="p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
+                <h3 className="text-base font-bold font-serif text-amber-900 dark:text-amber-100 mb-2 flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                  </svg>
+                  Attachment Guidance
+                </h3>
+                <div className="text-sm text-amber-900 dark:text-amber-100">
+                  <MarkdownRenderer content={aiResponse.attachmentGuidance} />
                 </div>
-              )}
+              </Card>
+            )}
 
-              <div className="flex flex-wrap gap-2 items-center mb-3">
-                {!isEditing ? (
-                  <Button onClick={handleEditClick} variant="outline" size="sm">
-                    <Edit className="w-3 h-3 mr-1" />
-                    Edit
-                  </Button>
-                ) : (
-                  <>
-                    <Button onClick={handleSaveEdit} disabled={isSavingEdit} size="sm">
-                      <Save className="w-3 h-3 mr-1" />
-                      {isSavingEdit ? "Saving..." : "Save"}
-                    </Button>
-                    <Button onClick={() => setIsEditing(false)} variant="outline" size="sm">
-                      <X className="w-3 h-3 mr-1" />
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={handleReanalyze}
-                      disabled={isReanalyzing || !editSaveSuccess}
-                      variant="outline"
-                      size="sm"
-                    >
-                      <RefreshCw className={`w-3 h-3 mr-1 ${isReanalyzing ? "animate-spin" : ""}`} />
-                      Re-analyze
-                    </Button>
-                  </>
-                )}
-              </div>
-
-              {editSaveSuccess && <p className="text-xs text-green-600 dark:text-green-400 mb-3">Feedback saved!</p>}
-
-              {reanalysisResult && (
-                <Card className="p-3 bg-muted mb-3">
-                  <h4 className="font-bold text-xs mb-2">Analysis of Your Edit</h4>
-                  <div className="text-xs">
-                    <MarkdownRenderer content={reanalysisResult} />
-                  </div>
-                </Card>
-              )}
-
-              {!isEditing && (
+            <div className="grid md:grid-cols-2 gap-4">
+              <Card className="p-4 relative">
+                <CopyButton text={aiResponse.explanation} />
+                <h3 className="text-base font-bold font-serif text-primary mb-3">How They Might Hear It</h3>
+                <MarkdownRenderer content={aiResponse.explanation} />
                 <FeedbackWidget
-                  rating={responseFeedback.rating}
-                  comment={responseFeedback.comment}
-                  onRatingChange={(rating) => setResponseFeedback({ ...responseFeedback, rating })}
-                  onCommentChange={(comment) => setResponseFeedback({ ...responseFeedback, comment })}
-                  onSubmit={() => handleFeedbackSubmit("response")}
-                  isSuccess={feedbackSuccess.response}
+                  rating={explanationFeedback.rating}
+                  comment={explanationFeedback.comment}
+                  onRatingChange={(rating) => setExplanationFeedback({ ...explanationFeedback, rating })}
+                  onCommentChange={(comment) => setExplanationFeedback({ ...explanationFeedback, comment })}
+                  onSubmit={() => handleFeedbackSubmit("explanation")}
+                  isSuccess={feedbackSuccess.explanation}
                 />
-              )}
-            </Card>
+              </Card>
+
+              <Card className="p-4 relative">
+                <CopyButton text={isEditing ? editedResponse : aiResponse.response} />
+                <h3 className="text-base font-bold font-serif text-primary mb-3">The Translation</h3>
+                {isEditing ? (
+                  <Textarea
+                    value={editedResponse}
+                    onChange={(e) => setEditedResponse(e.target.value)}
+                    className="min-h-[150px] mb-3 text-sm"
+                  />
+                ) : (
+                  <div className="mb-3">
+                    <MarkdownRenderer content={aiResponse.response} />
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-2 items-center mb-3">
+                  {!isEditing ? (
+                    <Button onClick={handleEditClick} variant="outline" size="sm">
+                      <Edit className="w-3 h-3 mr-1" />
+                      Edit
+                    </Button>
+                  ) : (
+                    <>
+                      <Button onClick={handleSaveEdit} disabled={isSavingEdit} size="sm">
+                        <Save className="w-3 h-3 mr-1" />
+                        {isSavingEdit ? "Saving..." : "Save"}
+                      </Button>
+                      <Button onClick={() => setIsEditing(false)} variant="outline" size="sm">
+                        <X className="w-3 h-3 mr-1" />
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleReanalyze}
+                        disabled={isReanalyzing || !editSaveSuccess}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <RefreshCw className={`w-3 h-3 mr-1 ${isReanalyzing ? "animate-spin" : ""}`} />
+                        Re-analyze
+                      </Button>
+                    </>
+                  )}
+                </div>
+
+                {editSaveSuccess && <p className="text-xs text-green-600 dark:text-green-400 mb-3">Feedback saved!</p>}
+
+                {reanalysisResult && (
+                  <Card className="p-3 bg-muted mb-3">
+                    <h4 className="font-bold text-xs mb-2">Analysis of Your Edit</h4>
+                    <div className="text-xs">
+                      <MarkdownRenderer content={reanalysisResult} />
+                    </div>
+                  </Card>
+                )}
+
+                {!isEditing && (
+                  <FeedbackWidget
+                    rating={responseFeedback.rating}
+                    comment={responseFeedback.comment}
+                    onRatingChange={(rating) => setResponseFeedback({ ...responseFeedback, rating })}
+                    onCommentChange={(comment) => setResponseFeedback({ ...responseFeedback, comment })}
+                    onSubmit={() => handleFeedbackSubmit("response")}
+                    isSuccess={feedbackSuccess.response}
+                  />
+                )}
+              </Card>
+            </div>
           </div>
         )}
       </div>

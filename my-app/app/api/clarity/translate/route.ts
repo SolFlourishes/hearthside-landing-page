@@ -45,25 +45,31 @@ export async function POST(request: NextRequest) {
     let filesContext = ""
     if (attachedFiles && attachedFiles.length > 0) {
       console.log("[v0] Processing", attachedFiles.length, "attached files")
-      filesContext = "\n\nAttached Documents:\n"
+      filesContext = "\n\n=== ATTACHED DOCUMENTS (MUST BE ANALYZED) ===\n"
+      filesContext += "The user has attached the following documents. You MUST:\n"
+      filesContext += "1. Acknowledge each attachment in your explanation\n"
+      filesContext += "2. Analyze how the attachment content relates to the main message\n"
+      filesContext += "3. Suggest revisions to the attachment content if needed to match the communication style\n"
+      filesContext += "4. Indicate whether the attachment should remain separate or be integrated into the message\n\n"
 
       for (const file of attachedFiles) {
-        filesContext += `\n--- ${file.name} ---\n`
+        filesContext += `\n--- ATTACHMENT: ${file.name} ---\n`
 
         if (file.type === "text/plain") {
-          // Text files can be included directly
           filesContext += file.content + "\n"
         } else if (file.type === "application/pdf" || file.type.includes("word")) {
-          // For PDFs and Word docs, we note their presence
-          // In a production app, you'd use a library to extract text
+          // For PDFs and Word docs, include the base64 content
           filesContext += `[${file.type} document - ${(file.size / 1024).toFixed(1)}KB]\n`
-          filesContext += "Note: This document contains additional context that should be considered in the analysis.\n"
+          filesContext += `Content (base64): ${file.content.substring(0, 500)}...\n`
+          filesContext +=
+            "Note: This document contains additional context that MUST be analyzed and potentially revised.\n"
         } else if (file.type.startsWith("image/")) {
-          // For images, note their presence
           filesContext += `[Image file - ${(file.size / 1024).toFixed(1)}KB]\n`
-          filesContext += "Note: This image may contain relevant visual information.\n"
+          filesContext +=
+            "Note: This image may contain relevant visual information that should be described and considered.\n"
         }
       }
+      filesContext += "\n=== END ATTACHED DOCUMENTS ===\n"
     }
 
     let systemPrompt = ""
@@ -79,16 +85,21 @@ Communication Styles:
 Your task:
 1. Analyze the user's intent and draft
 2. Consider the communication styles, neurotypes, and generational differences
-3. Consider any attached documents as additional context
+3. **CRITICAL: If documents are attached, you MUST analyze them and provide guidance on revisions**
 4. Provide a detailed translation that bridges the gap
 5. Explain thoroughly how the original might be misinterpreted and why the translation is better
+6. **For attachments: Explain whether they should be revised, integrated into the message, or kept separate**
 
 When relevant expert knowledge is provided below, use it to inform your translations and explanations. Don't cite sources - just naturally incorporate the insights.
 
 ${expertContext}
 
 IMPORTANT: Respond with ONLY a valid JSON object in this exact format (no markdown, no code blocks):
-{"explanation": "your detailed explanation here", "translation": "your improved message here"}`
+{
+  "explanation": "your detailed explanation here - MUST mention and analyze any attachments",
+  "translation": "your improved message here",
+  "attachmentGuidance": "if attachments exist, provide specific guidance on how to revise them or whether to integrate them into the main message. If no attachments, set this to null"
+}`
 
       userPrompt = `Intent: ${context || ""}
 Original Draft: ${text}
@@ -108,16 +119,21 @@ Communication Styles:
 Your task:
 1. Analyze what the sender likely meant
 2. Consider communication styles, neurotypes, and generational differences
-3. Consider any attached documents as additional context
+3. **CRITICAL: If documents are attached, you MUST analyze them and explain their significance**
 4. Explain potential misinterpretations
 5. Provide a suggested response that bridges the gap
+6. **For attachments: Explain how they affect the interpretation and whether your response should reference them**
 
 When relevant expert knowledge is provided below, use it to inform your analysis and suggestions. Don't cite sources - just naturally incorporate the insights.
 
 ${expertContext}
 
 IMPORTANT: Respond with ONLY a valid JSON object in this exact format (no markdown, no code blocks):
-{"explanation": "what they likely meant and why", "translation": "suggested response"}`
+{
+  "explanation": "what they likely meant and why - MUST mention and analyze any attachments",
+  "translation": "suggested response",
+  "attachmentGuidance": "if attachments exist, explain their significance and whether your response should reference them. If no attachments, set this to null"
+}`
 
       userPrompt = `Message Received: ${text}
 Situation Context: ${analyzeContext || ""}
@@ -179,6 +195,7 @@ ${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}${filesContex
     return NextResponse.json({
       explanation: parsed.explanation,
       response: parsed.translation,
+      attachmentGuidance: parsed.attachmentGuidance || null,
       success: true,
     })
   } catch (error) {
