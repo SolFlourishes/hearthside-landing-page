@@ -78,23 +78,27 @@ export default function RoadmapPage() {
             </div>
           </Card>
 
-          {/* Beta 3.3 - Planning */}
-          <Card className="p-6">
+          {/* Beta 3.3 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
             <div className="flex items-start gap-3 mb-4">
-              <Clock className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.3</h2>
-                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
-                    Planning
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
                   </span>
                 </div>
                 <h3 className="text-lg font-semibold text-primary mb-3">RAG Phase 2: Social Dynamics and Learning</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Expand knowledge base with social dynamics research</li>
-                  <li>Learning styles and educational communication patterns</li>
-                  <li>Group dynamics and team communication</li>
-                  <li>Conflict resolution and collaborative communication</li>
+                  <li>Expanded knowledge base with 10 new expert documents on social dynamics</li>
+                  <li>Growth mindset and psychological safety frameworks (Dweck, Edmondson)</li>
+                  <li>Generational communication patterns and Gen Z workplace dynamics</li>
+                  <li>Gender communication differences and rapport-building (Tannen)</li>
+                  <li>Cultural communication contexts and time systems (Hall)</li>
+                  <li>Impression management and social performance theory (Goffman)</li>
+                  <li>Interactional expertise and inclusive communication strategies</li>
+                  <li>Double empathy theory in expository contexts</li>
                 </ul>
               </div>
             </div>

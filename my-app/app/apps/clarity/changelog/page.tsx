@@ -10,8 +10,64 @@ export default function ChangelogPage() {
         <div className="space-y-6">
           <Card className="p-6">
             <div className="flex items-start justify-between mb-4">
-              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.2</h2>
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.3</h2>
               <span className="text-sm text-muted-foreground">Current Version</span>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-3">RAG Phase 2: Social Dynamics and Learning</h3>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Integrated 10 new expert documents covering social dynamics, learning theory, and communication patterns
+              </li>
+              <li>
+                Added Growth Mindset framework (Carol Dweck) - understanding fixed vs. growth mindsets in communication
+              </li>
+              <li>
+                Added Psychological Safety research (Amy Edmondson) - creating fearless organizations and safe
+                communication environments
+              </li>
+              <li>
+                Added Generation Z workplace research - understanding Gen Z communication preferences, expectations, and
+                intergenerational dynamics
+              </li>
+              <li>
+                Added Generational Differences framework - communication patterns across Baby Boomers, Gen X,
+                Millennials, and Gen Z
+              </li>
+              <li>
+                Added Gender Communication research (Deborah Tannen) - rapport-talk vs. report-talk and bridging gender
+                communication gaps
+              </li>
+              <li>
+                Added Cultural Communication theory (Edward T. Hall) - high-context vs. low-context communication,
+                monochronic vs. polychronic time systems
+              </li>
+              <li>
+                Added Impression Management theory (Erving Goffman) - understanding social performance and the
+                presentation of self
+              </li>
+              <li>
+                Added Interactional Expertise strategies - supporting diverse communication styles in mixed neurotype
+                conversations
+              </li>
+              <li>
+                Added Inclusive Communication Model - neurodiversity-friendly practices for recruitment, onboarding, and
+                retention
+              </li>
+              <li>
+                Added Double Empathy research in expository contexts - understanding communication accuracy across
+                neurotypes
+              </li>
+              <li>Enhanced AI responses with broader social and cultural communication insights</li>
+              <li>
+                Improved context-aware suggestions for workplace, generational, and cultural communication scenarios
+              </li>
+            </ul>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.2</h2>
+              <span className="text-sm text-muted-foreground">January 2025</span>
             </div>
             <h3 className="text-lg font-semibold text-primary mb-3">Document Upload & Analysis</h3>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">

@@ -31,7 +31,7 @@ async function main() {
   const { generateEmbedding } = await import("../lib/rag-system.js")
   const db = getDb()
 
-  const documentsPath = "D:\\Projects\\clarity_coach_brain\\RAG_Documents"
+  const documentsPath = path.join(process.cwd(), "rag-documents")
 
   console.log(`[Upload] Reading documents from: ${documentsPath}\n`)
 

@@ -62,6 +62,36 @@ export default function CreditsPage() {
                 <strong>The Neurobiological Model of ADHD:</strong> The reframing of ADHD not as a "deficit" but as a
                 neurological condition of "attention inconsistency," often managed best with external structure.
               </li>
+              <li>
+                <strong>Growth Mindset Theory:</strong> The framework that qualities can be cultivated through effort
+                and practice (growth mindset) versus being fixed traits (fixed mindset), fundamentally affecting how
+                people approach challenges and communication.
+              </li>
+              <li>
+                <strong>Psychological Safety:</strong> The organizational climate where people feel comfortable
+                expressing themselves, speaking up, and taking interpersonal risks without fear of humiliation or
+                retribution.
+              </li>
+              <li>
+                <strong>High-Context vs. Low-Context Communication:</strong> The cultural framework distinguishing
+                communication styles where meaning is either embedded in context (high-context) or explicitly stated
+                (low-context).
+              </li>
+              <li>
+                <strong>Rapport-Talk vs. Report-Talk:</strong> The gender communication framework identifying women's
+                tendency toward connection-building (rapport-talk) versus men's focus on status and information exchange
+                (report-talk).
+              </li>
+              <li>
+                <strong>Dramaturgical Framework:</strong> The sociological perspective viewing social interaction as
+                theatrical performance, where individuals manage impressions through front-stage and back-stage
+                behaviors.
+              </li>
+              <li>
+                <strong>Generational Communication Patterns:</strong> The recognition that different generations (Baby
+                Boomers, Gen X, Millennials, Gen Z) have distinct communication preferences, work values, and
+                expectations shaped by their socio-historical contexts.
+              </li>
             </ul>
 
             <h3 className="font-semibold text-foreground mb-3 mt-6">Journal Articles</h3>
@@ -71,6 +101,30 @@ export default function CreditsPage() {
                 Neurotype-matching, but not being autistic, influences self and observer ratings of interpersonal
                 rapport. <em>Frontiers in Psychology</em>, <em>11</em>, 586171.
                 https://doi.org/10.3389/fpsyg.2020.586171
+              </li>
+              <li className="pl-6 -indent-6">
+                Dougherty, J. D., Loth, E., Aziz, N. A., Bullen, J., Crawley, J. N., Dallman, J., Ding, Q., Estes, A.,
+                Gupta, A. R., Hanson, E., Horder, J., Howe, Y. J., Jeste, S., Jia, M., Krishnan, A., Murtagh, L., Parr,
+                J., Piven, J., Pramparo, T., ... Spooren, W. (2024). A comprehensive overview of Generation Z in the
+                workplace: A scoping review. <em>Journal of Workplace Behavioral Health</em>.
+              </li>
+              <li className="pl-6 -indent-6">
+                Doherty, M., McIntyre, S., Bould, E., Heasman, B., Beresford, B., Melville, C., & Boilson, M. (2022).
+                Developing an inclusive communication model for employment of autistic people: A qualitative study.{" "}
+                <em>Journal of Autism and Developmental Disorders</em>, <em>52</em>(11), 4724-4738.
+                https://doi.org/10.1007/s10803-021-05352-0
+              </li>
+              <li className="pl-6 -indent-6">
+                Heasman, B., & Gillespie, A. (2019). Neurodivergent interactional strategies in response to
+                non-acceptance: Developing interactional expertise. <em>Autism</em>, <em>23</em>(2), 408-421.
+                https://doi.org/10.1177/1362361317729526
+              </li>
+              <li className="pl-6 -indent-6">
+                Lau, B. Y., Leong, R., Uljarevic, M., Lerh, J. W., Rodgers, J., Hollocks, M. J., South, M., McConachie,
+                H., Ozsivadjian, A., Van Hecke, A., Libove, R., Hardan, A., Leekam, S., Simonoff, E., & Magiati, I.
+                (2020). Expository discourse in autistic adults: The role of verbal working memory and inhibitory
+                control. <em>Journal of Autism and Developmental Disorders</em>, <em>50</em>(5), 1470-1485.
+                https://doi.org/10.1007/s10803-019-03902-3
               </li>
               <li className="pl-6 -indent-6">
                 Milton, D. (2012). On the ontological status of autism: The 'double empathy problem'.{" "}
@@ -91,6 +145,23 @@ export default function CreditsPage() {
             <h3 className="font-semibold text-foreground mb-3 mt-6">Books</h3>
             <ul className="space-y-3 text-muted-foreground text-sm leading-relaxed">
               <li className="pl-6 -indent-6">
+                Dweck, C. S. (2006). <em>Mindset: The new psychology of success</em>. Random House.
+              </li>
+              <li className="pl-6 -indent-6">
+                Edmondson, A. C. (2018).{" "}
+                <em>
+                  The fearless organization: Creating psychological safety in the workplace for learning, innovation,
+                  and growth
+                </em>
+                . Wiley.
+              </li>
+              <li className="pl-6 -indent-6">
+                Goffman, E. (1959). <em>The presentation of self in everyday life</em>. Anchor Books.
+              </li>
+              <li className="pl-6 -indent-6">
+                Hall, E. T. (1976). <em>Beyond culture</em>. Anchor Books.
+              </li>
+              <li className="pl-6 -indent-6">
                 Hallowell, E. M., & Ratey, J. J. (1994).{" "}
                 <em>Driven to distraction: Recognizing and coping with Attention Deficit Disorder</em>. Pantheon Books.
               </li>
@@ -107,6 +178,9 @@ export default function CreditsPage() {
               </li>
               <li className="pl-6 -indent-6">
                 Rosenberg, M. B. (1999). <em>Nonviolent communication: A language of life</em>. PuddleDancer Press.
+              </li>
+              <li className="pl-6 -indent-6">
+                Tannen, D. (1990). <em>You just don't understand: Women and men in conversation</em>. William Morrow.
               </li>
             </ul>
           </Card>
