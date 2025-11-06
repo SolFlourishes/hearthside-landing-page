@@ -8,9 +8,15 @@ export function Services() {
       title: "The Clarity Coach",
       description:
         "Bridge communication gaps with AI-powered translation between different communication styles. Understand what others truly mean and express yourself with clarity across diverse perspectives.",
-      features: ["Style translation", "Intent analysis", "Communication coaching"],
+      features: [
+        "Draft, Analyze & Chat modes",
+        "Document upload & analysis",
+        "Clarity Coach Junior for kids",
+        "Research-backed insights",
+      ],
       image: "/clarity-coach-communication-translation.jpg",
       link: "/apps/clarity",
+      badge: "Beta 3.4",
     },
     {
       category: "Services",
@@ -64,6 +70,11 @@ export function Services() {
                       {service.category}
                     </span>
                   </div>
+                  {service.badge && (
+                    <div className="absolute top-3 right-3 bg-[#FFC72C] px-2.5 py-1 rounded-full">
+                      <span className="text-xs font-bold text-[#1F2937]">{service.badge}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
