@@ -117,12 +117,25 @@ export default function DraftModePage() {
     setFile(uploadedFile)
     setIsExtracting(true)
     setExtractionError(null)
-    setDraft('') // Clear existing text input
+
+    // --- FIX: Capture the current content before clearing or extracting ---
+    const currentDraft = draft;
+    setDraft(currentDraft.trim()); // Clean up existing content slightly
 
     const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase()
 
-    try {
+   try {
       const fileReader = new FileReader()
+
+      // Function to append and format the text clearly for the AI
+      const appendExtractedText = (extractedText: string) => {
+          const separator = `\n\n--- [ATTACHMENT CONTENT: ${uploadedFile.name}] ---\n\n`;
+          // If the draft was empty, just use the extracted text. Otherwise, append with separator.
+          const newDraft = currentDraft.trim() 
+            ? currentDraft.trim() + separator + extractedText 
+            : extractedText;
+          setDraft(newDraft);
+      }
 
       if (fileExtension === 'docx') {
         fileReader.onload = async (e) => {
