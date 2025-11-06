@@ -11,6 +11,8 @@ export interface RateLimitResult {
   limit: number
   remaining: number
   reset: number
+  allowed: boolean
+  resetIn: number
 }
 
 /**
@@ -30,16 +32,17 @@ export async function checkRateLimit(identifier: string, limit = 10, windowMs = 
     const requestCount = await redis.zcard(key)
 
     if (requestCount >= limit) {
-      // Get the oldest request timestamp to calculate reset time
       const oldestRequests = await redis.zrange(key, 0, 0, { withScores: true })
       const oldestTimestamp = oldestRequests.length > 0 ? Number(oldestRequests[1]) : now
       const resetTime = oldestTimestamp + windowMs
 
       return {
         success: false,
+        allowed: false,
         limit,
         remaining: 0,
         reset: resetTime,
+        resetIn: resetTime - now,
       }
     }
 
@@ -51,18 +54,21 @@ export async function checkRateLimit(identifier: string, limit = 10, windowMs = 
 
     return {
       success: true,
+      allowed: true,
       limit,
       remaining: limit - requestCount - 1,
       reset: now + windowMs,
+      resetIn: windowMs,
     }
   } catch (error) {
     console.error("[v0] Rate limit check failed:", error)
-    // On error, allow the request (fail open)
     return {
       success: true,
+      allowed: true,
       limit,
       remaining: limit,
       reset: now + windowMs,
+      resetIn: windowMs,
     }
   }
 }
@@ -70,18 +76,27 @@ export async function checkRateLimit(identifier: string, limit = 10, windowMs = 
 /**
  * Get rate limit for different access tiers
  */
-export function getRateLimitForTier(tier: "anonymous" | "authenticated" | "premium"): {
+export function getRateLimitForTier(tier: "anonymous" | "authenticated" | "supervised" | "premium"): {
   limit: number
   windowMs: number
 } {
   switch (tier) {
     case "anonymous":
-      return { limit: 10, windowMs: 3600000 } // 10 requests per hour
+      return { limit: 30, windowMs: 3600000 } // 30 requests per hour
     case "authenticated":
-      return { limit: 100, windowMs: 3600000 } // 100 requests per hour
+    case "supervised":
+      return { limit: 200, windowMs: 3600000 } // 200 requests per hour
     case "premium":
       return { limit: 1000, windowMs: 3600000 } // 1000 requests per hour
     default:
-      return { limit: 10, windowMs: 3600000 }
+      return { limit: 30, windowMs: 3600000 }
   }
+}
+
+export async function checkRateLimitWithTier(
+  identifier: string,
+  tier: "anonymous" | "authenticated" | "supervised" | "premium" = "anonymous",
+): Promise<RateLimitResult> {
+  const { limit, windowMs } = getRateLimitForTier(tier)
+  return checkRateLimit(identifier, limit, windowMs)
 }

@@ -3,13 +3,16 @@ import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
 import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
 import { checkContentSafety, generateSafetyResponse, getSafetySystemPrompt } from "@/lib/content-safety"
-import { checkRateLimit } from "@/lib/rate-limiter"
+import { checkRateLimitWithTier } from "@/lib/rate-limiter"
 import { validateOutput } from "@/lib/output-validator"
 
 export async function POST(request: NextRequest) {
   try {
     const clientId = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "anonymous"
-    const rateLimitResult = await checkRateLimit(clientId, "translate")
+    const body = await request.json()
+    const { accessTier = "anonymous" } = body
+
+    const rateLimitResult = await checkRateLimitWithTier(clientId, accessTier)
 
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
@@ -21,8 +24,6 @@ export async function POST(request: NextRequest) {
         { status: 429 },
       )
     }
-
-    const body = await request.json()
 
     const {
       mode,
