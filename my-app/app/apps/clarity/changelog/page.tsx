@@ -10,6 +10,66 @@ export default function ChangelogPage() {
         <div className="space-y-6">
           <Card className="p-6">
             <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.5</h2>
+              <span className="text-sm text-muted-foreground">Current Version</span>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-3">The Safety Update</h3>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Implemented comprehensive multi-layered safety system with content filtering for crisis situations,
+                violence, abuse, illegal activities, and inappropriate content
+              </li>
+              <li>
+                Added tiered access model with three levels: Anonymous (no account, limited features, no data
+                collection), Authenticated (13+, full features), and Supervised (under 13 with parental consent)
+              </li>
+              <li>
+                Trauma-informed content safety approach that supports legitimate sensitive conversations (bullying,
+                family conflict, identity, mental health) while providing appropriate crisis resources
+              </li>
+              <li>
+                Crisis intervention system that provides immediate resources (988 Suicide & Crisis Lifeline, Crisis Text
+                Line) without blocking conversations
+              </li>
+              <li>
+                Rate limiting using Upstash Redis to prevent abuse and ensure fair usage (10 requests per day for
+                anonymous users, higher limits for authenticated users)
+              </li>
+              <li>
+                Output validation system that checks AI responses for harmful advice or inappropriate content before
+                delivery
+              </li>
+              <li>
+                User reporting system allowing users to flag concerning AI responses with detailed feedback mechanism
+              </li>
+              <li>
+                Comprehensive Terms of Service covering acceptable use, prohibited activities, and user responsibilities
+              </li>
+              <li>
+                Privacy Policy with COPPA compliance, data collection transparency, and user rights (access, deletion,
+                portability)
+              </li>
+              <li>
+                Professional disclaimers clarifying that Clarity Coach is not a substitute for professional therapy,
+                medical advice, or legal counsel
+              </li>
+              <li>
+                Enhanced safety for Clarity Coach Junior with stricter age-appropriate content filtering and parental
+                control options
+              </li>
+              <li>
+                Anonymous access mode allows kids in difficult situations to get communication support without parental
+                consent barriers
+              </li>
+            </ul>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.4</h2>
+              <span className="text-sm text-muted-foreground">January 2025</span>
+            </div>
+            <div className="flex items-start justify-between mb-4">
               <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.4</h2>
               <span className="text-sm text-muted-foreground">Current Version</span>
             </div>

@@ -12,11 +12,11 @@ export function Services() {
         "Draft, Analyze & Chat modes",
         "Document upload & analysis",
         "Clarity Coach Junior for kids",
-        "Research-backed insights",
+        "Comprehensive safety protections",
       ],
       image: "/clarity-coach-communication-translation.jpg",
       link: "/apps/clarity",
-      badge: "Beta 3.4",
+      badge: "Beta 3.5",
     },
     {
       category: "Services",

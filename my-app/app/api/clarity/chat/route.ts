@@ -2,9 +2,26 @@ import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
 import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
+import { checkContentSafety, generateSafetyResponse, getSafetySystemPrompt } from "@/lib/content-safety"
+import { checkRateLimit } from "@/lib/rate-limiter"
+import { validateOutput } from "@/lib/output-validator"
 
 export async function POST(request: NextRequest) {
   try {
+    const clientId = request.headers.get("x-forwarded-for") || "anonymous"
+    const rateLimitResult = await checkRateLimit(clientId, "chat")
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        {
+          error: "Rate limit exceeded",
+          details: `Please wait ${Math.ceil(rateLimitResult.resetIn / 1000)} seconds before trying again.`,
+          success: false,
+        },
+        { status: 429 },
+      )
+    }
+
     if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
       console.error("[v0] Chat API error: GOOGLE_GENERATIVE_AI_API_KEY is not set")
       return NextResponse.json(
@@ -18,11 +35,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { history } = body
+    const { history, audience = "adult-to-adult" } = body // Get audience for safety checks
 
     console.log("[v0] Chat request received:", {
       historyLength: history?.length,
       historyType: Array.isArray(history) ? "array" : typeof history,
+      audience,
       firstMessage: history?.[0],
     })
 
@@ -34,6 +52,19 @@ export async function POST(request: NextRequest) {
 
     const lastUserMessage = history.filter((msg: any) => msg.role === "user").pop()?.content || ""
     const lastUserFiles = history.filter((msg: any) => msg.role === "user").pop()?.files || []
+
+    const safetyCheck = checkContentSafety(lastUserMessage, audience)
+
+    if (safetyCheck.shouldBlock) {
+      console.log("[v0] Content blocked due to safety concerns:", safetyCheck.category)
+      return NextResponse.json({
+        reply: generateSafetyResponse(safetyCheck),
+        success: true,
+        safetyBlocked: true,
+      })
+    }
+
+    const showSafetyResources = !safetyCheck.isSafe && !safetyCheck.shouldBlock
 
     console.log("[v0] Retrieving relevant expert knowledge for query:", lastUserMessage.substring(0, 100))
 
@@ -72,7 +103,11 @@ export async function POST(request: NextRequest) {
       filesContext += "\n=== END ATTACHED DOCUMENTS ===\n"
     }
 
+    const safetyGuidelines = getSafetySystemPrompt(audience)
+
     const systemPrompt = `You are the Clarity Coach, a supportive communication expert who helps people navigate difficult conversations and build identity cohesion.
+
+${safetyGuidelines}
 
 Your communication style:
 - Keep responses SHORT and conversational (150-200 words max)
@@ -94,10 +129,10 @@ Remember: You're having a conversation, not writing a manual. Keep it brief, foc
 
 Format your responses in HTML with proper paragraph tags for readability.${expertContext}${filesContext}`
 
-    console.log("[v0] Calling Google AI with model: gemini-pro-latest")
+    console.log("[v0] Calling Google AI with model: gemini-2.0-flash-exp")
 
     const { text } = await generateText({
-      model: google("gemini-pro-latest"),
+      model: google("gemini-2.0-flash-exp"),
       messages: [
         { role: "system", content: systemPrompt },
         ...history.map((msg: any) => ({
@@ -115,9 +150,17 @@ Format your responses in HTML with proper paragraph tags for readability.${exper
       .map((para) => `<p>${para}</p>`)
       .join("")
 
+    const outputValidation = validateOutput(formattedResponse, audience)
+
+    if (outputValidation.hasIssues) {
+      console.log("[v0] Output validation found issues:", outputValidation.issues)
+      // Log but don't block - the AI should have already handled this appropriately
+    }
+
     return NextResponse.json({
       reply: formattedResponse,
       success: true,
+      safetyWarning: showSafetyResources ? safetyCheck : null,
     })
   } catch (error) {
     console.error("[v0] Chat API error:", {

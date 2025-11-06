@@ -29,7 +29,7 @@ export default function AppsPage() {
                     Clarity Coach
                   </h2>
                   <span className="inline-block px-2 py-1 bg-accent text-accent-foreground text-xs rounded-full mb-3">
-                    Beta v3.0.2
+                    Beta v3.5
                   </span>
                 </div>
               </div>
@@ -45,6 +45,7 @@ export default function AppsPage() {
                   Analyze Mode
                 </span>
                 <span className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full">Chat Mode</span>
+                <span className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full">Kids Mode</span>
               </div>
             </Link>
 

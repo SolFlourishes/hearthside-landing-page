@@ -2,9 +2,26 @@ import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
 import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
+import { checkContentSafety, generateSafetyResponse, getSafetySystemPrompt } from "@/lib/content-safety"
+import { checkRateLimit } from "@/lib/rate-limiter"
+import { validateOutput } from "@/lib/output-validator"
 
 export async function POST(request: NextRequest) {
   try {
+    const clientId = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "anonymous"
+    const rateLimitResult = await checkRateLimit(clientId, "translate")
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        {
+          error: "Rate limit exceeded",
+          details: `Please wait ${Math.ceil(rateLimitResult.resetIn / 1000)} seconds before trying again.`,
+          success: false,
+        },
+        { status: 429 },
+      )
+    }
+
     const body = await request.json()
 
     const {
@@ -20,6 +37,7 @@ export async function POST(request: NextRequest) {
       analyzeContext,
       interpretation,
       attachedFiles,
+      audience = "adult-to-adult", // Get audience for safety checks
     } = body
 
     console.log("[v0] Translation request received:", {
@@ -28,8 +46,27 @@ export async function POST(request: NextRequest) {
       context,
       sender,
       receiver,
+      audience,
       filesCount: attachedFiles?.length || 0,
     })
+
+    const inputText =
+      mode === "draft" ? `${context || ""} ${text}` : `${analyzeContext || ""} ${text} ${interpretation || ""}`
+    const safetyCheck = checkContentSafety(inputText, audience)
+
+    if (safetyCheck.shouldBlock) {
+      console.log("[v0] Content blocked due to safety concerns:", safetyCheck.category)
+      return NextResponse.json({
+        explanation: generateSafetyResponse(safetyCheck),
+        response: "",
+        attachmentGuidance: null,
+        success: true,
+        safetyBlocked: true,
+      })
+    }
+
+    // If concerning but not blocking, we'll still process but may add resources
+    const showSafetyResources = !safetyCheck.isSafe && !safetyCheck.shouldBlock
 
     const queryText = mode === "draft" ? `${context || ""} ${text}` : `${analyzeContext || ""} ${text}`
     console.log("[v0] Retrieving expert knowledge for translation:", queryText.substring(0, 100))
@@ -74,8 +111,12 @@ export async function POST(request: NextRequest) {
     let systemPrompt = ""
     let userPrompt = ""
 
+    const safetyGuidelines = getSafetySystemPrompt(audience)
+
     if (mode === "draft") {
       systemPrompt = `You are the Clarity Coach, an expert communication translator. Your role is to help people communicate more clearly by translating their messages to match their audience's communication style.
+
+${safetyGuidelines}
 
 Communication Styles:
 - Direct: Prefers concise, straightforward communication with clear action items
@@ -104,12 +145,15 @@ IMPORTANT: Respond with ONLY a valid JSON object in this exact format (no markdo
 Original Draft: ${text}
 My Style: ${sender}
 Audience Style: ${receiver}
+Audience Type: ${audience}
 ${senderNeurotype ? `My Neurotype: ${senderNeurotype}` : ""}
 ${receiverNeurotype ? `Audience Neurotype: ${receiverNeurotype}` : ""}
 ${senderGeneration ? `My Generation: ${senderGeneration}` : ""}
 ${receiverGeneration ? `Audience Generation: ${receiverGeneration}` : ""}${filesContext}`
     } else if (mode === "analyze") {
       systemPrompt = `You are the Clarity Coach, an expert communication analyst. Your role is to help people understand messages they've received by analyzing tone, subtext, and potential misinterpretations.
+
+${safetyGuidelines}
 
 Communication Styles:
 - Direct: Says what they mean clearly and concisely
@@ -139,6 +183,7 @@ Situation Context: ${analyzeContext || ""}
 How I Interpreted It: ${interpretation}
 Their Style: ${sender}
 My Style: ${receiver}
+Audience Type: ${audience}
 ${senderNeurotype ? `Their Neurotype: ${senderNeurotype}` : ""}
 ${receiverNeurotype ? `My Neurotype: ${receiverNeurotype}` : ""}
 ${senderGeneration ? `Their Generation: ${senderGeneration}` : ""}
@@ -148,7 +193,7 @@ ${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}${filesContex
     }
 
     const { text: aiText } = await generateText({
-      model: google("gemini-pro-latest"),
+      model: google("gemini-2.0-flash-exp"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
@@ -188,11 +233,27 @@ ${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}${filesContex
       throw new Error("Response missing required fields (explanation or translation)")
     }
 
+    const outputValidation = validateOutput(parsed.explanation + " " + parsed.translation, audience)
+
+    if (!outputValidation.isSafe) {
+      console.log("[v0] Output validation failed:", outputValidation.issues)
+      // Log for review but provide a safe fallback
+      return NextResponse.json({
+        explanation:
+          "I apologize, but I need to reconsider my response to ensure it's helpful and appropriate. Please try rephrasing your request, or contact support if you believe this is an error.",
+        response: "",
+        attachmentGuidance: null,
+        success: true,
+        outputValidationFailed: true,
+      })
+    }
+
     return NextResponse.json({
       explanation: parsed.explanation,
       response: parsed.translation,
       attachmentGuidance: parsed.attachmentGuidance || null,
       success: true,
+      safetyWarning: showSafetyResources ? safetyCheck : null,
     })
   } catch (error) {
     console.error("[v0] Translation API error:", error)

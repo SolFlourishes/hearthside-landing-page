@@ -133,13 +133,74 @@ export default function RoadmapPage() {
             </div>
           </Card>
 
-          {/* Beta 3.5 - Planning */}
+          {/* Beta 3.5 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.5</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">The Safety Update</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>
+                    Implemented comprehensive multi-layered safety system with content filtering and crisis intervention
+                  </li>
+                  <li>
+                    Added tiered access model: Anonymous (no age gate), Authenticated (13+), and Supervised (under 13
+                    with consent)
+                  </li>
+                  <li>
+                    Trauma-informed content safety that supports sensitive conversations while providing appropriate
+                    resources
+                  </li>
+                  <li>Rate limiting using Upstash Redis to prevent abuse and ensure fair usage</li>
+                  <li>Output validation to catch potentially harmful AI responses before delivery</li>
+                  <li>User reporting system allowing users to flag concerning AI responses</li>
+                  <li>Comprehensive Terms of Service and Privacy Policy with COPPA compliance</li>
+                  <li>Crisis resources integration (988 Suicide & Crisis Lifeline, Crisis Text Line)</li>
+                  <li>
+                    Professional disclaimers clarifying tool limitations and encouraging professional help when needed
+                  </li>
+                  <li>Enhanced safety for Clarity Coach Junior with age-appropriate content filtering</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Beta 3.6 - Planning */}
           <Card className="p-6">
             <div className="flex items-start gap-3 mb-4">
               <Clock className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.5</h2>
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.6</h2>
+                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
+                    Planning
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Accounts and Subscriptions</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>User authentication system (sign up, login, logout)</li>
+                  <li>User profiles and preferences</li>
+                  <li>Conversation history and saved drafts</li>
+                  <li>Subscription management (Free and Premium tiers)</li>
+                  <li>Cross-platform access for all Hearthside Works apps and games</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Beta 3.7 - Planning (formerly 3.5) */}
+          <Card className="p-6">
+            <div className="flex items-start gap-3 mb-4">
+              <Clock className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.7</h2>
                   <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
                     Planning
                   </span>

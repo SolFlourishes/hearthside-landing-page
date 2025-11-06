@@ -13,6 +13,8 @@ import { FeedbackWidget } from "./FeedbackWidget"
 import { MarkdownRenderer } from "./MarkdownRenderer"
 import { FileUpload } from "@/components/file-upload"
 import { AudienceSelector } from "@/components/audience-selector"
+import { AccessGate } from "@/components/access-gate"
+import { ReportButton } from "@/components/report-button"
 
 const loadingTips = [
   "Average translation time is 5-10 seconds.",
@@ -290,325 +292,335 @@ export default function DraftModePage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-4 max-w-7xl">
-        <div className="text-center mb-4">
-          <h1 className="font-serif text-3xl font-bold text-foreground mb-2">Draft a Message</h1>
-          <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-            Transform your thoughts into clear, effective communication.
-          </p>
-        </div>
+    <AccessGate mode="draft">
+      <main className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-4 max-w-7xl">
+          <div className="text-center mb-4">
+            <h1 className="font-serif text-3xl font-bold text-foreground mb-2">Draft a Message</h1>
+            <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
+              Transform your thoughts into clear, effective communication.
+            </p>
+          </div>
 
-        {!aiResponse && (
-          <Card className="mb-4 p-3 bg-primary/5 border-primary/20">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="text-sm">
-                <span className="font-semibold">Try an example:</span>
-              </div>
-              <div className="flex flex-wrap gap-2 justify-center">
-                {Object.entries(EXAMPLE_SCENARIOS).map(([key, scenario]) => (
-                  <Button
-                    key={key}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setIntent(scenario.intent)
-                      setDraft(scenario.draft)
-                      setSenderStyle(scenario.senderStyle)
-                      setReceiverStyle(scenario.receiverStyle)
-                    }}
-                    className="capitalize text-xs"
-                  >
-                    {key}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {aiResponse && (
-          <Card className="mb-4 p-4 bg-muted/30">
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <p className="text-sm font-medium">Your Request:</p>
-                <p className="text-xs text-muted-foreground line-clamp-2">{intent}</p>
-              </div>
-              <Button onClick={handleReset} variant="outline" size="sm">
-                New Message
-              </Button>
-            </div>
-          </Card>
-        )}
-
-        {!aiResponse && (
-          <form onSubmit={handleTranslate} className="space-y-4">
-            <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
-              <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
-            </Card>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <Card className="p-4">
-                <Label htmlFor="intent" className="text-sm font-semibold mb-1 block">
-                  Your Goal <span className="text-destructive">*</span>
-                </Label>
-                <p className="text-xs text-muted-foreground mb-2">What do you want to achieve?</p>
-                <Textarea
-                  id="intent"
-                  value={intent}
-                  onChange={(e) => setIntent(e.target.value)}
-                  placeholder="Example: I want to ask for a promotion..."
-                  required
-                  className="min-h-[120px]"
-                />
-              </Card>
-
-              <Card className="p-4">
-                <Label htmlFor="draft" className="text-sm font-semibold mb-1 block">
-                  Your Draft <span className="text-destructive">*</span>
-                </Label>
-                <p className="text-xs text-muted-foreground mb-2">What are you thinking of saying?</p>
-                <Textarea
-                  id="draft"
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  placeholder="Example: Hey boss, I think I deserve a promotion..."
-                  required
-                  className="min-h-[120px]"
-                />
-              </Card>
-            </div>
-
-            <Card className="p-4">
-              <Label className="text-sm font-semibold mb-2 block">Additional Context (Optional)</Label>
-              <p className="text-xs text-muted-foreground mb-3">
-                Attach documents for additional context (e.g., previous email threads, background information)
-              </p>
-              <FileUpload onFilesChange={setUploadedFiles} maxFiles={3} disabled={isLoading} />
-            </Card>
-
-            <Card className="p-4 bg-muted/50">
-              <h3 className="font-serif text-base font-bold mb-3 text-center">Communication Styles</h3>
-              <div className="grid md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Style</Label>
-                  <RadioPillGroup
-                    name="sender"
-                    value={senderStyle}
-                    onChange={setSenderStyle}
-                    options={["direct", "indirect", "let-ai-decide"]}
-                  />
+          {!aiResponse && (
+            <Card className="mb-4 p-3 bg-primary/5 border-primary/20">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="text-sm">
+                  <span className="font-semibold">Try an example:</span>
                 </div>
-
-                <div>
-                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Style</Label>
-                  <RadioPillGroup
-                    name="receiver"
-                    value={receiverStyle}
-                    onChange={setReceiverStyle}
-                    options={["direct", "indirect"]}
-                  />
-                </div>
-              </div>
-
-              <div className="border-t pt-3">
-                <div className="text-center mb-3">
-                  <label className="flex items-center justify-center gap-2 text-xs text-muted-foreground cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={isAdvancedMode}
-                      onChange={() => setIsAdvancedMode(!isAdvancedMode)}
-                      className="w-4 h-4"
-                    />
-                    {isAdvancedMode ? "Hide" : "Show"} Additional Options
-                  </label>
-                </div>
-
-                {isAdvancedMode && (
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Neurotype</Label>
-                      <RadioPillGroup
-                        name="sender-nt"
-                        value={senderNeurotype}
-                        onChange={setSenderNeurotype}
-                        options={neurotypes}
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Neurotype</Label>
-                      <RadioPillGroup
-                        name="receiver-nt"
-                        value={receiverNeurotype}
-                        onChange={setReceiverNeurotype}
-                        options={neurotypes}
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Generation</Label>
-                      <RadioPillGroup
-                        name="sender-gen"
-                        value={senderGeneration}
-                        onChange={setSenderGeneration}
-                        options={generations}
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="text-xs font-medium mb-2 block">Their Generation</Label>
-                      <RadioPillGroup
-                        name="receiver-gen"
-                        value={receiverGeneration}
-                        onChange={setReceiverGeneration}
-                        options={generations}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Card>
-
-            <div className="flex justify-center items-center gap-4">
-              <Button type="submit" size="lg" disabled={isLoading || !intent || !draft}>
-                {isLoading ? (
-                  <span className="flex items-center gap-2">
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    Translating...
-                  </span>
-                ) : (
-                  "Translate"
-                )}
-              </Button>
-            </div>
-          </form>
-        )}
-
-        {isLoading && (
-          <Card className="mt-6 p-8 text-center">
-            <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-            <p className="text-sm text-muted-foreground">{loadingMessage}</p>
-          </Card>
-        )}
-
-        {error && (
-          <Card className="mt-6 p-4 bg-destructive/10 border-destructive">
-            <p className="text-destructive text-center text-sm">{error}</p>
-          </Card>
-        )}
-
-        {aiResponse && !isLoading && (
-          <div className="mt-6 space-y-4">
-            {aiResponse.attachmentGuidance && uploadedFiles.length > 0 && (
-              <Card className="p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
-                <h3 className="text-base font-bold font-serif text-amber-900 dark:text-amber-100 mb-2 flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                  </svg>
-                  Attachment Guidance
-                </h3>
-                <div className="text-sm text-amber-900 dark:text-amber-100">
-                  <MarkdownRenderer content={aiResponse.attachmentGuidance} />
-                </div>
-              </Card>
-            )}
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <Card className="p-4 relative">
-                <CopyButton text={aiResponse.explanation} />
-                <h3 className="text-base font-bold font-serif text-primary mb-3">How They Might Hear It</h3>
-                <MarkdownRenderer content={aiResponse.explanation} />
-                <FeedbackWidget
-                  rating={explanationFeedback.rating}
-                  comment={explanationFeedback.comment}
-                  onRatingChange={(rating) => setExplanationFeedback({ ...explanationFeedback, rating })}
-                  onCommentChange={(comment) => setExplanationFeedback({ ...explanationFeedback, comment })}
-                  onSubmit={() => handleFeedbackSubmit("explanation")}
-                  isSuccess={feedbackSuccess.explanation}
-                />
-              </Card>
-
-              <Card className="p-4 relative">
-                <CopyButton text={isEditing ? editedResponse : aiResponse.response} />
-                <h3 className="text-base font-bold font-serif text-primary mb-3">The Translation</h3>
-                {isEditing ? (
-                  <Textarea
-                    value={editedResponse}
-                    onChange={(e) => setEditedResponse(e.target.value)}
-                    className="min-h-[150px] mb-3 text-sm"
-                  />
-                ) : (
-                  <div className="mb-3">
-                    <MarkdownRenderer content={aiResponse.response} />
-                  </div>
-                )}
-
-                <div className="flex flex-wrap gap-2 items-center mb-3">
-                  {!isEditing ? (
-                    <Button onClick={handleEditClick} variant="outline" size="sm">
-                      <Edit className="w-3 h-3 mr-1" />
-                      Edit
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {Object.entries(EXAMPLE_SCENARIOS).map(([key, scenario]) => (
+                    <Button
+                      key={key}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setIntent(scenario.intent)
+                        setDraft(scenario.draft)
+                        setSenderStyle(scenario.senderStyle)
+                        setReceiverStyle(scenario.receiverStyle)
+                      }}
+                      className="capitalize text-xs"
+                    >
+                      {key}
                     </Button>
-                  ) : (
-                    <>
-                      <Button onClick={handleSaveEdit} disabled={isSavingEdit} size="sm">
-                        <Save className="w-3 h-3 mr-1" />
-                        {isSavingEdit ? "Saving..." : "Save"}
-                      </Button>
-                      <Button onClick={() => setIsEditing(false)} variant="outline" size="sm">
-                        <X className="w-3 h-3 mr-1" />
-                        Cancel
-                      </Button>
-                      <Button
-                        onClick={handleReanalyze}
-                        disabled={isReanalyzing || !editSaveSuccess}
-                        variant="outline"
-                        size="sm"
-                      >
-                        <RefreshCw className={`w-3 h-3 mr-1 ${isReanalyzing ? "animate-spin" : ""}`} />
-                        Re-analyze
-                      </Button>
-                    </>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {aiResponse && (
+            <Card className="mb-4 p-4 bg-muted/30">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Your Request:</p>
+                  <p className="text-xs text-muted-foreground line-clamp-2">{intent}</p>
+                </div>
+                <Button onClick={handleReset} variant="outline" size="sm">
+                  New Message
+                </Button>
+              </div>
+            </Card>
+          )}
+
+          {!aiResponse && (
+            <form onSubmit={handleTranslate} className="space-y-4">
+              <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
+                <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
+              </Card>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <Card className="p-4">
+                  <Label htmlFor="intent" className="text-sm font-semibold mb-1 block">
+                    Your Goal <span className="text-destructive">*</span>
+                  </Label>
+                  <p className="text-xs text-muted-foreground mb-2">What do you want to achieve?</p>
+                  <Textarea
+                    id="intent"
+                    value={intent}
+                    onChange={(e) => setIntent(e.target.value)}
+                    placeholder="Example: I want to ask for a promotion..."
+                    required
+                    className="min-h-[120px]"
+                  />
+                </Card>
+
+                <Card className="p-4">
+                  <Label htmlFor="draft" className="text-sm font-semibold mb-1 block">
+                    Your Draft <span className="text-destructive">*</span>
+                  </Label>
+                  <p className="text-xs text-muted-foreground mb-2">What are you thinking of saying?</p>
+                  <Textarea
+                    id="draft"
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    placeholder="Example: Hey boss, I think I deserve a promotion..."
+                    required
+                    className="min-h-[120px]"
+                  />
+                </Card>
+              </div>
+
+              <Card className="p-4">
+                <Label className="text-sm font-semibold mb-2 block">Additional Context (Optional)</Label>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Attach documents for additional context (e.g., previous email threads, background information)
+                </p>
+                <FileUpload onFilesChange={setUploadedFiles} maxFiles={3} disabled={isLoading} />
+              </Card>
+
+              <Card className="p-4 bg-muted/50">
+                <h3 className="font-serif text-base font-bold mb-3 text-center">Communication Styles</h3>
+                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Style</Label>
+                    <RadioPillGroup
+                      name="sender"
+                      value={senderStyle}
+                      onChange={setSenderStyle}
+                      options={["direct", "indirect", "let-ai-decide"]}
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Style</Label>
+                    <RadioPillGroup
+                      name="receiver"
+                      value={receiverStyle}
+                      onChange={setReceiverStyle}
+                      options={["direct", "indirect"]}
+                    />
+                  </div>
+                </div>
+
+                <div className="border-t pt-3">
+                  <div className="text-center mb-3">
+                    <label className="flex items-center justify-center gap-2 text-xs text-muted-foreground cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isAdvancedMode}
+                        onChange={() => setIsAdvancedMode(!isAdvancedMode)}
+                        className="w-4 h-4"
+                      />
+                      {isAdvancedMode ? "Hide" : "Show"} Additional Options
+                    </label>
+                  </div>
+
+                  {isAdvancedMode && (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Neurotype</Label>
+                        <RadioPillGroup
+                          name="sender-nt"
+                          value={senderNeurotype}
+                          onChange={setSenderNeurotype}
+                          options={neurotypes}
+                        />
+                      </div>
+
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Neurotype</Label>
+                        <RadioPillGroup
+                          name="receiver-nt"
+                          value={receiverNeurotype}
+                          onChange={setReceiverNeurotype}
+                          options={neurotypes}
+                        />
+                      </div>
+
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Generation</Label>
+                        <RadioPillGroup
+                          name="sender-gen"
+                          value={senderGeneration}
+                          onChange={setSenderGeneration}
+                          options={generations}
+                        />
+                      </div>
+
+                      <div>
+                        <Label className="text-xs font-medium mb-2 block">Their Generation</Label>
+                        <RadioPillGroup
+                          name="receiver-gen"
+                          value={receiverGeneration}
+                          onChange={setReceiverGeneration}
+                          options={generations}
+                        />
+                      </div>
+                    </div>
                   )}
                 </div>
-
-                {editSaveSuccess && <p className="text-xs text-green-600 dark:text-green-400 mb-3">Feedback saved!</p>}
-
-                {reanalysisResult && (
-                  <Card className="p-3 bg-muted mb-3">
-                    <h4 className="font-bold text-xs mb-2">Analysis of Your Edit</h4>
-                    <div className="text-xs">
-                      <MarkdownRenderer content={reanalysisResult} />
-                    </div>
-                  </Card>
-                )}
-
-                {!isEditing && (
-                  <FeedbackWidget
-                    rating={responseFeedback.rating}
-                    comment={responseFeedback.comment}
-                    onRatingChange={(rating) => setResponseFeedback({ ...responseFeedback, rating })}
-                    onCommentChange={(comment) => setResponseFeedback({ ...responseFeedback, comment })}
-                    onSubmit={() => handleFeedbackSubmit("response")}
-                    isSuccess={feedbackSuccess.response}
-                  />
-                )}
               </Card>
+
+              <div className="flex justify-center items-center gap-4">
+                <Button type="submit" size="lg" disabled={isLoading || !intent || !draft}>
+                  {isLoading ? (
+                    <span className="flex items-center gap-2">
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Translating...
+                    </span>
+                  ) : (
+                    "Translate"
+                  )}
+                </Button>
+              </div>
+            </form>
+          )}
+
+          {isLoading && (
+            <Card className="mt-6 p-8 text-center">
+              <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+              <p className="text-sm text-muted-foreground">{loadingMessage}</p>
+            </Card>
+          )}
+
+          {error && (
+            <Card className="mt-6 p-4 bg-destructive/10 border-destructive">
+              <p className="text-destructive text-center text-sm">{error}</p>
+            </Card>
+          )}
+
+          {aiResponse && !isLoading && (
+            <div className="mt-6 space-y-4">
+              {aiResponse.attachmentGuidance && uploadedFiles.length > 0 && (
+                <Card className="p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
+                  <h3 className="text-base font-bold font-serif text-amber-900 dark:text-amber-100 mb-2 flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                    </svg>
+                    Attachment Guidance
+                  </h3>
+                  <div className="text-sm text-amber-900 dark:text-amber-100">
+                    <MarkdownRenderer content={aiResponse.attachmentGuidance} />
+                  </div>
+                </Card>
+              )}
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <Card className="p-4 relative">
+                  <ReportButton content={aiResponse.explanation} mode="draft" type="explanation" />
+                  <CopyButton text={aiResponse.explanation} />
+                  <h3 className="text-base font-bold font-serif text-primary mb-3">How They Might Hear It</h3>
+                  <MarkdownRenderer content={aiResponse.explanation} />
+                  <FeedbackWidget
+                    rating={explanationFeedback.rating}
+                    comment={explanationFeedback.comment}
+                    onRatingChange={(rating) => setExplanationFeedback({ ...explanationFeedback, rating })}
+                    onCommentChange={(comment) => setExplanationFeedback({ ...explanationFeedback, comment })}
+                    onSubmit={() => handleFeedbackSubmit("explanation")}
+                    isSuccess={feedbackSuccess.explanation}
+                  />
+                </Card>
+
+                <Card className="p-4 relative">
+                  <ReportButton
+                    content={isEditing ? editedResponse : aiResponse.response}
+                    mode="draft"
+                    type="response"
+                  />
+                  <CopyButton text={isEditing ? editedResponse : aiResponse.response} />
+                  <h3 className="text-base font-bold font-serif text-primary mb-3">The Translation</h3>
+                  {isEditing ? (
+                    <Textarea
+                      value={editedResponse}
+                      onChange={(e) => setEditedResponse(e.target.value)}
+                      className="min-h-[150px] mb-3 text-sm"
+                    />
+                  ) : (
+                    <div className="mb-3">
+                      <MarkdownRenderer content={aiResponse.response} />
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-2 items-center mb-3">
+                    {!isEditing ? (
+                      <Button onClick={handleEditClick} variant="outline" size="sm">
+                        <Edit className="w-3 h-3 mr-1" />
+                        Edit
+                      </Button>
+                    ) : (
+                      <>
+                        <Button onClick={handleSaveEdit} disabled={isSavingEdit} size="sm">
+                          <Save className="w-3 h-3 mr-1" />
+                          {isSavingEdit ? "Saving..." : "Save"}
+                        </Button>
+                        <Button onClick={() => setIsEditing(false)} variant="outline" size="sm">
+                          <X className="w-3 h-3 mr-1" />
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleReanalyze}
+                          disabled={isReanalyzing || !editSaveSuccess}
+                          variant="outline"
+                          size="sm"
+                        >
+                          <RefreshCw className={`w-3 h-3 mr-1 ${isReanalyzing ? "animate-spin" : ""}`} />
+                          Re-analyze
+                        </Button>
+                      </>
+                    )}
+                  </div>
+
+                  {editSaveSuccess && (
+                    <p className="text-xs text-green-600 dark:text-green-400 mb-3">Feedback saved!</p>
+                  )}
+
+                  {reanalysisResult && (
+                    <Card className="p-3 bg-muted mb-3">
+                      <h4 className="font-bold text-xs mb-2">Analysis of Your Edit</h4>
+                      <div className="text-xs">
+                        <MarkdownRenderer content={reanalysisResult} />
+                      </div>
+                    </Card>
+                  )}
+
+                  {!isEditing && (
+                    <FeedbackWidget
+                      rating={responseFeedback.rating}
+                      comment={responseFeedback.comment}
+                      onRatingChange={(rating) => setResponseFeedback({ ...responseFeedback, rating })}
+                      onCommentChange={(comment) => setResponseFeedback({ ...responseFeedback, comment })}
+                      onSubmit={() => handleFeedbackSubmit("response")}
+                      isSuccess={feedbackSuccess.response}
+                    />
+                  )}
+                </Card>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-    </main>
+          )}
+        </div>
+      </main>
+    </AccessGate>
   )
 }

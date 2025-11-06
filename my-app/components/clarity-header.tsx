@@ -23,7 +23,7 @@ export function ClarityHeader() {
           <div className="flex items-center gap-3">
             <Link href={`${basePath}`} className="flex items-center gap-1.5">
               <span className="font-serif text-xs font-bold text-primary">Clarity Coach</span>
-              <span className="text-[9px] text-muted-foreground font-mono">Beta 3.4</span>
+              <span className="text-[9px] text-muted-foreground font-mono">Beta 3.5</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -100,6 +100,24 @@ export function ClarityHeader() {
                   Credits
                 </Button>
               </Link>
+              <Link href={`${basePath}/terms`}>
+                <Button
+                  variant={isActive(`${basePath}/terms`) ? "default" : "ghost"}
+                  size="sm"
+                  className="h-6 px-2 text-[11px]"
+                >
+                  Terms
+                </Button>
+              </Link>
+              <Link href={`${basePath}/privacy`}>
+                <Button
+                  variant={isActive(`${basePath}/privacy`) ? "default" : "ghost"}
+                  size="sm"
+                  className="h-6 px-2 text-[11px]"
+                >
+                  Privacy
+                </Button>
+              </Link>
             </nav>
           </div>
 
@@ -171,6 +189,16 @@ export function ClarityHeader() {
               <Link href={`${basePath}/credits`} className="block">
                 <Button variant="ghost" size="sm" className="w-full justify-start">
                   Credits
+                </Button>
+              </Link>
+              <Link href={`${basePath}/terms`} className="block">
+                <Button variant="ghost" size="sm" className="w-full justify-start">
+                  Terms
+                </Button>
+              </Link>
+              <Link href={`${basePath}/privacy`} className="block">
+                <Button variant="ghost" size="sm" className="w-full justify-start">
+                  Privacy
                 </Button>
               </Link>
             </div>
