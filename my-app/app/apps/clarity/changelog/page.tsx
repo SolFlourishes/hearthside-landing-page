@@ -13,7 +13,20 @@ export default function ChangelogPage() {
               <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.2</h2>
               <span className="text-sm text-muted-foreground">Current Version</span>
             </div>
-            <h3 className="text-lg font-semibold text-primary mb-3">RAG Phase 1: Neurodiversity and Empathy</h3>
+            <h3 className="text-lg font-semibold text-primary mb-3">Document Upload & Analysis</h3>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>Added file upload capability across all modes (Draft, Analyze, and Chat)</li>
+              <li>Support for PDFs, Word documents, text files, and images (up to 10MB per file)</li>
+              <li>AI now analyzes attached documents alongside your message text</li>
+              <li>
+                Attachment guidance feature provides specific feedback on whether documents should be revised,
+                integrated, or kept separate
+              </li>
+              <li>Enhanced context understanding by combining message intent with document content</li>
+              <li>Improved style matching for both message text and attachment content</li>
+            </ul>
+
+            <h3 className="text-lg font-semibold text-primary mb-3 mt-6">RAG Phase 1: Neurodiversity and Empathy</h3>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
               <li>Integrated Retrieval-Augmented Generation (RAG) system with expert knowledge base</li>
               <li>Added 10 expert documents covering autism, ADHD, communication, and the Double Empathy Problem</li>

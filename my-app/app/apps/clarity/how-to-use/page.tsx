@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Paperclip } from "lucide-react"
 
 export default function HowToUsePage() {
   return (
@@ -19,7 +20,18 @@ export default function HowToUsePage() {
               <li>Write your draft (your raw thoughts or key points)</li>
               <li>Select your communication style and your audience's style</li>
               <li>Optionally, use Advanced Options to specify neurotypes and generations</li>
+              <li className="flex items-start gap-2">
+                <span>Attach documents for context (optional)</span>
+                <Paperclip className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm italic">
+                  — PDFs, Word docs, or text files that provide background or related content
+                </span>
+              </li>
               <li>Click "Translate" to receive a polished draft and explanation</li>
+              <li>
+                Review attachment guidance if files were uploaded—the AI will suggest whether to revise, integrate, or
+                keep attachments separate
+              </li>
               <li>Edit the AI's suggestion if needed and re-analyze for feedback</li>
             </ol>
             <Link href="/apps/clarity/draft">
@@ -35,9 +47,16 @@ export default function HowToUsePage() {
             <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
               <li>Paste the message you received</li>
               <li>Provide context about the situation (optional but helpful)</li>
+              <li className="flex items-start gap-2">
+                <span>Upload conversation history or related documents (optional)</span>
+                <Paperclip className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm italic">— Email threads, chat logs, or background materials</span>
+              </li>
               <li>Select communication styles for both sender and receiver</li>
               <li>Click "Analyze" to decode the likely intent and subtext</li>
-              <li>Review the explanation to understand potential interpretations</li>
+              <li>
+                Review the explanation to understand potential interpretations and any attachment-related insights
+              </li>
             </ol>
             <Link href="/apps/clarity/analyze">
               <Button className="mt-4">Try Analyze Mode</Button>
@@ -51,6 +70,11 @@ export default function HowToUsePage() {
             </p>
             <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
               <li>Describe your communication challenge or question</li>
+              <li className="flex items-start gap-2">
+                <span>Attach relevant documents to any message (optional)</span>
+                <Paperclip className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm italic">— Click the paperclip icon to add context files</span>
+              </li>
               <li>Have a back-and-forth conversation with the AI coach</li>
               <li>Get personalized advice, strategies, and examples</li>
               <li>Ask follow-up questions to dive deeper</li>
@@ -65,6 +89,12 @@ export default function HowToUsePage() {
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
               <li>Be specific about your intent and context—the more detail, the better the translation</li>
               <li>Use Advanced Options when you know specific details about neurotypes or generations</li>
+              <li>
+                <strong>Upload supporting documents</strong> when your message references attachments or needs
+                additional context—the AI will analyze them and suggest revisions
+              </li>
+              <li>Supported file types: PDF, Word documents (.docx), text files (.txt), and images</li>
+              <li>Maximum file size: 10MB per file</li>
               <li>Provide feedback on translations to help improve the AI</li>
               <li>Edit and re-analyze AI suggestions to create your perfect message</li>
               <li>Remember: The AI is a coach, not a crutch—use it to build your own skills over time</li>
