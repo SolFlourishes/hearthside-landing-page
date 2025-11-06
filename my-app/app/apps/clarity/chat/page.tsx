@@ -10,6 +10,7 @@ import { FileUpload } from "@/components/file-upload"
 import { AudienceSelector } from "@/components/audience-selector"
 import { AccessGate, type AccessTier } from "@/components/access-gate"
 import { ReportButton } from "@/components/report-button"
+import { getAccessTier, setAccessTier as storeAccessTier } from "@/lib/access-storage"
 
 interface Message {
   role: "user" | "model"
@@ -56,6 +57,13 @@ export default function ChatModePage() {
       setInput(
         "I'm having a conflict with a coworker who keeps taking credit for my ideas in meetings. How should I address this without making things worse?",
       )
+    }
+  }, [])
+
+  useEffect(() => {
+    const storedTier = getAccessTier()
+    if (storedTier) {
+      setAccessTier(storedTier)
     }
   }, [])
 
@@ -108,8 +116,13 @@ export default function ChatModePage() {
     }
   }
 
+  const handleAccessGranted = (tier: AccessTier) => {
+    storeAccessTier(tier)
+    setAccessTier(tier)
+  }
+
   if (!accessTier) {
-    return <AccessGate mode="chat" onAccessGranted={setAccessTier} />
+    return <AccessGate mode="chat" onAccessGranted={handleAccessGranted} />
   }
 
   return (

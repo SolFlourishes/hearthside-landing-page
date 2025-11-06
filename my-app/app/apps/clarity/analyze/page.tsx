@@ -11,6 +11,7 @@ import { FileUpload } from "@/components/file-upload"
 import { AudienceSelector } from "@/components/audience-selector"
 import { AccessGate, type AccessTier } from "@/components/access-gate"
 import { ReportButton } from "@/components/report-button"
+import { getAccessTier, setAccessTier as storeAccessTier } from "@/lib/access-storage"
 
 const loadingTips = [
   "Average analysis time is 5-10 seconds.",
@@ -60,6 +61,13 @@ export default function AnalyzeModePage() {
     }
     return () => clearInterval(interval)
   }, [isLoading])
+
+  useEffect(() => {
+    const storedTier = getAccessTier()
+    if (storedTier) {
+      setAccessTier(storedTier)
+    }
+  }, [])
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -156,8 +164,13 @@ export default function AnalyzeModePage() {
     setReceiverGeneration("unsure")
   }
 
+  const handleAccessGranted = (tier: AccessTier) => {
+    storeAccessTier(tier)
+    setAccessTier(tier)
+  }
+
   if (!accessTier) {
-    return <AccessGate mode="analyze" onAccessGranted={setAccessTier} />
+    return <AccessGate mode="analyze" onAccessGranted={handleAccessGranted} />
   }
 
   return (

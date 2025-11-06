@@ -15,6 +15,7 @@ import { FileUpload } from "@/components/file-upload"
 import { AudienceSelector } from "@/components/audience-selector"
 import { AccessGate, type AccessTier } from "@/components/access-gate"
 import { ReportButton } from "@/components/report-button"
+import { getAccessTier, setAccessTier as storeAccessTier } from "@/lib/access-storage"
 
 const loadingTips = [
   "Average translation time is 5-10 seconds.",
@@ -95,6 +96,13 @@ export default function DraftModePage() {
     }
     return () => clearInterval(interval)
   }, [isLoading])
+
+  useEffect(() => {
+    const storedTier = getAccessTier()
+    if (storedTier) {
+      setAccessTier(storedTier)
+    }
+  }, [])
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -292,8 +300,13 @@ export default function DraftModePage() {
     setFeedbackDocId(null)
   }
 
+  const handleAccessGranted = (tier: AccessTier) => {
+    storeAccessTier(tier)
+    setAccessTier(tier)
+  }
+
   if (!accessTier) {
-    return <AccessGate mode="draft" onAccessGranted={setAccessTier} />
+    return <AccessGate mode="draft" onAccessGranted={handleAccessGranted} />
   }
 
   return (
