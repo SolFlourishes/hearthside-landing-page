@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export default function CreditsPage() {
   return (
@@ -27,209 +28,284 @@ export default function CreditsPage() {
               Generation (RAG).
             </p>
 
-            <h3 className="font-semibold text-foreground mb-3 mt-6">Key Theoretical Influences</h3>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm leading-relaxed">
-              <li>
-                <strong>The Double Empathy Problem:</strong> The foundational theory that communication difficulties
-                between autistic and non-autistic people are a bi-directional, mutual misunderstanding, not a deficit in
-                the autistic person.
-              </li>
-              <li>
-                <strong>Client-Centered Therapy:</strong> The core empathetic framework holding that constructive change
-                requires three conditions: Congruence (genuineness), Unconditional Positive Regard, and Empathic
-                Understanding.
-              </li>
-              <li>
-                <strong>Nonviolent Communication (NVC):</strong> The practical 4-step method for practicing empathy by
-                identifying and expressing Observations, Feelings, Needs, and Requests, which separates one's
-                observations from evaluations.
-              </li>
-              <li>
-                <strong>Autistic-Led Metacognition:</strong> The strengths-based finding that autistic individuals
-                possess existing, useful knowledge about communication, such as using physical sensations as
-                self-prompts and "trait knowledge" of partners to reduce uncertainty.
-              </li>
-              <li>
-                <strong>The Cost of Masking:</strong> The concept that "masking" (hiding autistic traits) is an
-                exhausting, high-cost strategy, and that unmasking is central to authentic autistic identity.
-              </li>
-              <li>
-                <strong>The Dialogue & Safety Framework:</strong> The principle that successful high-stakes
-                conversations depend on creating and maintaining psychological safety (through Mutual Purpose and Mutual
-                Respect) to build a "Pool of Shared Meaning".
-              </li>
-              <li>
-                <strong>The Neurobiological Model of ADHD:</strong> The reframing of ADHD not as a "deficit" but as a
-                neurological condition of "attention inconsistency," often managed best with external structure.
-              </li>
-              <li>
-                <strong>Growth Mindset Theory:</strong> The framework that qualities can be cultivated through effort
-                and practice (growth mindset) versus being fixed traits (fixed mindset), fundamentally affecting how
-                people approach challenges and communication.
-              </li>
-              <li>
-                <strong>Psychological Safety:</strong> The organizational climate where people feel comfortable
-                expressing themselves, speaking up, and taking interpersonal risks without fear of humiliation or
-                retribution.
-              </li>
-              <li>
-                <strong>High-Context vs. Low-Context Communication:</strong> The cultural framework distinguishing
-                communication styles where meaning is either embedded in context (high-context) or explicitly stated
-                (low-context).
-              </li>
-              <li>
-                <strong>Rapport-Talk vs. Report-Talk:</strong> The gender communication framework identifying women's
-                tendency toward connection-building (rapport-talk) versus men's focus on status and information exchange
-                (report-talk).
-              </li>
-              <li>
-                <strong>Dramaturgical Framework:</strong> The sociological perspective viewing social interaction as
-                theatrical performance, where individuals manage impressions through front-stage and back-stage
-                behaviors.
-              </li>
-              <li>
-                <strong>Generational Communication Patterns:</strong> The recognition that different generations (Baby
-                Boomers, Gen X, Millennials, Gen Z) have distinct communication preferences, work values, and
-                expectations shaped by their socio-historical contexts.
-              </li>
-              <li>
-                <strong>Whole-Brain Integration:</strong> The developmental framework that mental health and resilience
-                depend on integrating distinct parts of the brain (left/right, upstairs/downstairs, implicit/explicit
-                memories) to work together as a cohesive whole.
-              </li>
-              <li>
-                <strong>Parent-Mediated Early Intervention:</strong> The evidence-based approach where parents are
-                trained as therapists to enhance parent-child interaction, communication skills, and synchronous
-                engagement in young children with autism.
-              </li>
-              <li>
-                <strong>Social Stories Framework:</strong> The structured intervention using perspective sentences and
-                directive guidance to help individuals with autism understand social situations and appropriate
-                responses.
-              </li>
-              <li>
-                <strong>Emotion Regulation in Neurodevelopmental Conditions:</strong> The understanding that emotional
-                dysregulation in autism and ADHD involves physiological hyperarousal, cognitive rigidity, and sensory
-                processing differences requiring targeted support strategies.
-              </li>
-            </ul>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="theoretical-influences">
+                <AccordionTrigger className="text-lg font-semibold">Key Theoretical Influences</AccordionTrigger>
+                <AccordionContent>
+                  <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm leading-relaxed">
+                    <li>
+                      <strong>The Double Empathy Problem:</strong> The foundational theory that communication
+                      difficulties between autistic and non-autistic people are a bi-directional, mutual
+                      misunderstanding, not a deficit in the autistic person.
+                    </li>
+                    <li>
+                      <strong>Client-Centered Therapy:</strong> The core empathetic framework holding that constructive
+                      change requires three conditions: Congruence (genuineness), Unconditional Positive Regard, and
+                      Empathic Understanding.
+                    </li>
+                    <li>
+                      <strong>Nonviolent Communication (NVC):</strong> The practical 4-step method for practicing
+                      empathy by identifying and expressing Observations, Feelings, Needs, and Requests, which separates
+                      one's observations from evaluations.
+                    </li>
+                    <li>
+                      <strong>Autistic-Led Metacognition:</strong> The strengths-based finding that autistic individuals
+                      possess existing, useful knowledge about communication, such as using physical sensations as
+                      self-prompts and "trait knowledge" of partners to reduce uncertainty.
+                    </li>
+                    <li>
+                      <strong>The Cost of Masking:</strong> The concept that "masking" (hiding autistic traits) is an
+                      exhausting, high-cost strategy, and that unmasking is central to authentic autistic identity.
+                    </li>
+                    <li>
+                      <strong>The Dialogue & Safety Framework:</strong> The principle that successful high-stakes
+                      conversations depend on creating and maintaining psychological safety (through Mutual Purpose and
+                      Mutual Respect) to build a "Pool of Shared Meaning".
+                    </li>
+                    <li>
+                      <strong>The Neurobiological Model of ADHD:</strong> The reframing of ADHD not as a "deficit" but
+                      as a neurological condition of "attention inconsistency," often managed best with external
+                      structure.
+                    </li>
+                    <li>
+                      <strong>Growth Mindset Theory:</strong> The framework that qualities can be cultivated through
+                      effort and practice (growth mindset) versus being fixed traits (fixed mindset), fundamentally
+                      affecting how people approach challenges and communication.
+                    </li>
+                    <li>
+                      <strong>Psychological Safety:</strong> The organizational climate where people feel comfortable
+                      expressing themselves, speaking up, and taking interpersonal risks without fear of humiliation or
+                      retribution.
+                    </li>
+                    <li>
+                      <strong>High-Context vs. Low-Context Communication:</strong> The cultural framework distinguishing
+                      communication styles where meaning is either embedded in context (high-context) or explicitly
+                      stated (low-context).
+                    </li>
+                    <li>
+                      <strong>Rapport-Talk vs. Report-Talk:</strong> The gender communication framework identifying
+                      women's tendency toward connection-building (rapport-talk) versus men's focus on status and
+                      information exchange (report-talk).
+                    </li>
+                    <li>
+                      <strong>Dramaturgical Framework:</strong> The sociological perspective viewing social interaction
+                      as theatrical performance, where individuals manage impressions through front-stage and back-stage
+                      behaviors.
+                    </li>
+                    <li>
+                      <strong>Generational Communication Patterns:</strong> The recognition that different generations
+                      (Baby Boomers, Gen X, Millennials, Gen Z) have distinct communication preferences, work values,
+                      and expectations shaped by their socio-historical contexts.
+                    </li>
+                    <li>
+                      <strong>Whole-Brain Integration:</strong> The developmental framework that mental health and
+                      resilience depend on integrating distinct parts of the brain (left/right, upstairs/downstairs,
+                      implicit/explicit memories) to work together as a cohesive whole.
+                    </li>
+                    <li>
+                      <strong>Parent-Mediated Early Intervention:</strong> The evidence-based approach where parents are
+                      trained as therapists to enhance parent-child interaction, communication skills, and synchronous
+                      engagement in young children with autism.
+                    </li>
+                    <li>
+                      <strong>Social Stories Framework:</strong> The structured intervention using perspective sentences
+                      and directive guidance to help individuals with autism understand social situations and
+                      appropriate responses.
+                    </li>
+                    <li>
+                      <strong>Emotion Regulation in Neurodevelopmental Conditions:</strong> The understanding that
+                      emotional dysregulation in autism and ADHD involves physiological hyperarousal, cognitive
+                      rigidity, and sensory processing differences requiring targeted support strategies.
+                    </li>
+                    <li>
+                      <strong>Relevance Theory & Mutual Manifestness:</strong> The cognitive framework explaining how
+                      people derive meaning through assumptions of relevance, and how communication succeeds when shared
+                      contextual assumptions are mutually manifest to both parties.
+                    </li>
+                    <li>
+                      <strong>Foucault's Discipline and Power:</strong> The critical examination of how power operates
+                      through subtle mechanisms of discipline, normalization, and surveillance in social institutions,
+                      creating hierarchies of "normal" versus "abnormal."
+                    </li>
+                    <li>
+                      <strong>Cognitive Biases & Heuristics:</strong> The systematic patterns of deviation from
+                      rationality in judgment (System 1 thinking), including confirmation bias, availability heuristic,
+                      anchoring effect, and the framing effect that influence communication and decision-making.
+                    </li>
+                    <li>
+                      <strong>Nonverbal Communication Channels:</strong> The multi-channel system of meaning-making
+                      through facial expressions, gestures, posture, eye contact, touch, and paralanguage, which varies
+                      significantly across cultures and neurotypes.
+                    </li>
+                    <li>
+                      <strong>Hofstede's Cultural Dimensions:</strong> The framework identifying five key dimensions of
+                      cultural variation: Power Distance, Individualism vs. Collectivism, Masculinity vs. Femininity,
+                      Uncertainty Avoidance, and Long-Term vs. Short-Term Orientation.
+                    </li>
+                    <li>
+                      <strong>Barrier-Free Communication:</strong> The framework emphasizing reciprocity, flexible
+                      turn-taking, and acceptance of boundaries rather than strict adherence to neurotypical norms,
+                      creating space for authentic cross-neurotype dialogue.
+                    </li>
+                    <li>
+                      <strong>Neurodiverse Relationship Dynamics:</strong> Research-based understanding of facilitators
+                      (shared interests, acceptance) and barriers (sensory overload, social expectations) in
+                      cross-neurotype relationships, particularly autistic-allistic partnerships.
+                    </li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
 
-            <h3 className="font-semibold text-foreground mb-3 mt-6">Journal Articles</h3>
-            <ul className="space-y-3 text-muted-foreground text-sm leading-relaxed">
-              <li className="pl-6 -indent-6">
-                Crompton, C. J., Sharp, M., Axbey, H., Fletcher-Watson, S., Flynn, E. G., & Ropar, D. (2020).
-                Neurotype-matching, but not being autistic, influences self and observer ratings of interpersonal
-                rapport. <em>Frontiers in Psychology</em>, <em>11</em>, 586171.
-                https://doi.org/10.3389/fpsyg.2020.586171
-              </li>
-              <li className="pl-6 -indent-6">
-                Dougherty, J. D., Loth, E., Aziz, N. A., Bullen, J., Crawley, J. N., Dallman, J., Ding, Q., Estes, A.,
-                Gupta, A. R., Hanson, E., Horder, J., Howe, Y. J., Jeste, S., Jia, M., Krishnan, A., Murtagh, L., Parr,
-                J., Piven, J., Pramparo, T., ... Spooren, W. (2024). A comprehensive overview of Generation Z in the
-                workplace: A scoping review. <em>Journal of Workplace Behavioral Health</em>.
-              </li>
-              <li className="pl-6 -indent-6">
-                Doherty, M., McIntyre, S., Bould, E., Heasman, B., Beresford, B., Melville, C., & Boilson, M. (2022).
-                Developing an inclusive communication model for employment of autistic people: A qualitative study.{" "}
-                <em>Journal of Autism and Developmental Disorders</em>, <em>52</em>(11), 4724-4738.
-                https://doi.org/10.1007/s10803-021-05352-0
-              </li>
-              <li className="pl-6 -indent-6">
-                Heasman, B., & Gillespie, A. (2019). Neurodivergent interactional strategies in response to
-                non-acceptance: Developing interactional expertise. <em>Autism</em>, <em>23</em>(2), 408-421.
-                https://doi.org/10.1177/1362361317729526
-              </li>
-              <li className="pl-6 -indent-6">
-                Lau, B. Y., Leong, R., Uljarevic, M., Lerh, J. W., Rodgers, J., Hollocks, M. J., South, M., McConachie,
-                H., Ozsivadjian, A., Van Hecke, A., Libove, R., Hardan, A., Leekam, S., Simonoff, E., & Magiati, I.
-                (2020). Expository discourse in autistic adults: The role of verbal working memory and inhibitory
-                control. <em>Journal of Autism and Developmental Disorders</em>, <em>50</em>(5), 1470-1485.
-                https://doi.org/10.1007/s10803-019-03902-3
-              </li>
-              <li className="pl-6 -indent-6">
-                Milton, D. (2012). On the ontological status of autism: The 'double empathy problem'.{" "}
-                <em>Disability & Society</em>, <em>27</em>(6), 883-887. https://doi.org/10.1080/09687599.2012.710008
-              </li>
-              <li className="pl-6 -indent-6">
-                Norris, J. E., Lei, J., & Maras, K. (2024). Adapting communication with autistic service users:
-                Co-produced adaptations for medical services, employers, and the third sector. <em>Neurodiversity</em>,{" "}
-                <em>2</em>. https://doi.org/10.1177/27546330241266723
-              </li>
-              <li className="pl-6 -indent-6">
-                Silver, K., & Parsons, S. (2022). Perspectives of autistic adults on the strategies that help or hinder
-                successful conversations. <em>Autism & Developmental Language Impairments</em>, <em>7</em>.
-                https://doi.org/10.1177/23969415221101113
-              </li>
-              <li className="pl-6 -indent-6">
-                Oono, I. P., Honey, E. J., & McConachie, H. (2013). Parent-mediated early intervention for young
-                children with autism spectrum disorders (ASD). <em>Cochrane Database of Systematic Reviews</em>,{" "}
-                <em>2013</em>(4), CD009774. https://doi.org/10.1002/14651858.CD009774.pub2
-              </li>
-              <li className="pl-6 -indent-6">
-                Mazefsky, C. A., & White, S. W. (2014). Emotion regulation: Concepts & practice in autism spectrum
-                disorder. <em>Child and Adolescent Psychiatric Clinics of North America</em>, <em>23</em>(1), 15-24.
-                https://doi.org/10.1016/j.chc.2013.07.002
-              </li>
-              <li className="pl-6 -indent-6">
-                Kokina, A., & Kern, L. (2010). Social Story interventions for students with autism spectrum disorders: A
-                meta-analysis. <em>Journal of Autism and Developmental Disorders</em>, <em>40</em>(7), 812-826.
-                https://doi.org/10.1007/s10803-009-0931-0
-              </li>
-            </ul>
+              <AccordionItem value="journal-articles">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Journal Articles & Research Papers
+                </AccordionTrigger>
+                <AccordionContent>
+                  <ul className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                    <li className="pl-6 -indent-6">
+                      Crompton, C. J., Sharp, M., Axbey, H., Fletcher-Watson, S., Flynn, E. G., & Ropar, D. (2020).
+                      Neurotype-matching, but not being autistic, influences self and observer ratings of interpersonal
+                      rapport. <em>Frontiers in Psychology</em>, <em>11</em>, 586171.
+                      https://doi.org/10.3389/fpsyg.2020.586171
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Dougherty, J. D., Loth, E., Aziz, N. A., Bullen, J., Crawley, J. N., Dallman, J., Ding, Q., Estes,
+                      A., Gupta, A. R., Hanson, E., Horder, J., Howe, Y. J., Jeste, S., Jia, M., Krishnan, A., Murtagh,
+                      L., Parr, J., Piven, J., Pramparo, T., ... Spooren, W. (2024). A comprehensive overview of
+                      Generation Z in the workplace: A scoping review. <em>Journal of Workplace Behavioral Health</em>.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Doherty, M., McIntyre, S., Bould, E., Heasman, B., Beresford, B., Melville, C., & Boilson, M.
+                      (2022). Developing an inclusive communication model for employment of autistic people: A
+                      qualitative study. <em>Journal of Autism and Developmental Disorders</em>, <em>52</em>(11),
+                      4724-4738. https://doi.org/10.1007/s10803-021-05352-0
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Heasman, B., & Gillespie, A. (2019). Neurodivergent interactional strategies in response to
+                      non-acceptance: Developing interactional expertise. <em>Autism</em>, <em>23</em>(2), 408-421.
+                      https://doi.org/10.1177/1362361317729526
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Lau, B. Y., Leong, R., Uljarevic, M., Lerh, J. W., Rodgers, J., Hollocks, M. J., South, M.,
+                      McConachie, H., Ozsivadjian, A., Van Hecke, A., Libove, R., Hardan, A., Leekam, S., Simonoff, E.,
+                      & Magiati, I. (2020). Expository discourse in autistic adults: The role of verbal working memory
+                      and inhibitory control. <em>Journal of Autism and Developmental Disorders</em>, <em>50</em>(5),
+                      1470-1485. https://doi.org/10.1007/s10803-019-03902-3
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Milton, D. (2012). On the ontological status of autism: The 'double empathy problem'.{" "}
+                      <em>Disability & Society</em>, <em>27</em>(6), 883-887.
+                      https://doi.org/10.1080/09687599.2012.710008
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Norris, J. E., Lei, J., & Maras, K. (2024). Adapting communication with autistic service users:
+                      Co-produced adaptations for medical services, employers, and the third sector.{" "}
+                      <em>Neurodiversity</em>, <em>2</em>. https://doi.org/10.1177/27546330241266723
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Silver, K., & Parsons, S. (2022). Perspectives of autistic adults on the strategies that help or
+                      hinder successful conversations. <em>Autism & Developmental Language Impairments</em>, <em>7</em>.
+                      https://doi.org/10.1177/23969415221101113
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Oono, I. P., Honey, E. J., & McConachie, H. (2013). Parent-mediated early intervention for young
+                      children with autism spectrum disorders (ASD). <em>Cochrane Database of Systematic Reviews</em>,{" "}
+                      <em>2013</em>(4), CD009774. https://doi.org/10.1002/14651858.CD009774.pub2
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Mazefsky, C. A., & White, S. W. (2014). Emotion regulation: Concepts & practice in autism spectrum
+                      disorder. <em>Child and Adolescent Psychiatric Clinics of North America</em>, <em>23</em>(1),
+                      15-24. https://doi.org/10.1016/j.chc.2013.07.002
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Kokina, A., & Kern, L. (2010). Social Story interventions for students with autism spectrum
+                      disorders: A meta-analysis. <em>Journal of Autism and Developmental Disorders</em>, <em>40</em>
+                      (7), 812-826. https://doi.org/10.1007/s10803-009-0931-0
+                    </li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
 
-            <h3 className="font-semibold text-foreground mb-3 mt-6">Books</h3>
-            <ul className="space-y-3 text-muted-foreground text-sm leading-relaxed">
-              <li className="pl-6 -indent-6">
-                Dweck, C. S. (2006). <em>Mindset: The new psychology of success</em>. Random House.
-              </li>
-              <li className="pl-6 -indent-6">
-                Edmondson, A. C. (2018).{" "}
-                <em>
-                  The fearless organization: Creating psychological safety in the workplace for learning, innovation,
-                  and growth
-                </em>
-                . Wiley.
-              </li>
-              <li className="pl-6 -indent-6">
-                Goffman, E. (1959). <em>The presentation of self in everyday life</em>. Anchor Books.
-              </li>
-              <li className="pl-6 -indent-6">
-                Hall, E. T. (1976). <em>Beyond culture</em>. Anchor Books.
-              </li>
-              <li className="pl-6 -indent-6">
-                Hallowell, E. M., & Ratey, J. J. (1994).{" "}
-                <em>Driven to distraction: Recognizing and coping with Attention Deficit Disorder</em>. Pantheon Books.
-              </li>
-              <li className="pl-6 -indent-6">
-                Patterson, K., Grenny, J., McMillan, R., & Switzler, A. (2002).{" "}
-                <em>Crucial conversations: Tools for talking when stakes are high</em>. McGraw-Hill.
-              </li>
-              <li className="pl-6 -indent-6">
-                Price, D. (2022). <em>Unmasking autism: Discovering the new faces of neurodiversity</em>. Harmony Books.
-              </li>
-              <li className="pl-6 -indent-6">
-                Rogers, C. R. (1961). <em>On becoming a person: A therapist's view of psychotherapy</em>. Houghton
-                Mifflin.
-              </li>
-              <li className="pl-6 -indent-6">
-                Rosenberg, M. B. (1999). <em>Nonviolent communication: A language of life</em>. PuddleDancer Press.
-              </li>
-              <li className="pl-6 -indent-6">
-                Tannen, D. (1990). <em>You just don't understand: Women and men in conversation</em>. William Morrow.
-              </li>
-              <li className="pl-6 -indent-6">
-                Faber, A., & Mazlish, E. (2012). <em>How to talk so kids will listen & listen so kids will talk</em>.
-                Scribner.
-              </li>
-              <li className="pl-6 -indent-6">
-                Gray, C. (2010). <em>The new social story book</em> (10th anniversary ed.). Future Horizons.
-              </li>
-              <li className="pl-6 -indent-6">
-                Siegel, D. J., & Bryson, T. P. (2011).{" "}
-                <em>The whole-brain child: 12 revolutionary strategies to nurture your child's developing mind</em>.
-                Delacorte Press.
-              </li>
-            </ul>
+              <AccordionItem value="books">
+                <AccordionTrigger className="text-lg font-semibold">Books & Monographs</AccordionTrigger>
+                <AccordionContent>
+                  <ul className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                    <li className="pl-6 -indent-6">
+                      Dweck, C. S. (2006). <em>Mindset: The new psychology of success</em>. Random House.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Edmondson, A. C. (2018).{" "}
+                      <em>
+                        The fearless organization: Creating psychological safety in the workplace for learning,
+                        innovation, and growth
+                      </em>
+                      . Wiley.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Goffman, E. (1959). <em>The presentation of self in everyday life</em>. Anchor Books.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Hall, E. T. (1976). <em>Beyond culture</em>. Anchor Books.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Hallowell, E. M., & Ratey, J. J. (1994).{" "}
+                      <em>Driven to distraction: Recognizing and coping with Attention Deficit Disorder</em>. Pantheon
+                      Books.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Patterson, K., Grenny, J., McMillan, R., & Switzler, A. (2002).{" "}
+                      <em>Crucial conversations: Tools for talking when stakes are high</em>. McGraw-Hill.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Price, D. (2022). <em>Unmasking autism: Discovering the new faces of neurodiversity</em>. Harmony
+                      Books.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Rogers, C. R. (1961). <em>On becoming a person: A therapist's view of psychotherapy</em>. Houghton
+                      Mifflin.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Rosenberg, M. B. (1999). <em>Nonviolent communication: A language of life</em>. PuddleDancer
+                      Press.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Tannen, D. (1990). <em>You just don't understand: Women and men in conversation</em>. William
+                      Morrow.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Faber, A., & Mazlish, E. (2012).{" "}
+                      <em>How to talk so kids will listen & listen so kids will talk</em>. Scribner.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Gray, C. (2010). <em>The new social story book</em> (10th anniversary ed.). Future Horizons.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Siegel, D. J., & Bryson, T. P. (2011).{" "}
+                      <em>
+                        The whole-brain child: 12 revolutionary strategies to nurture your child's developing mind
+                      </em>
+                      . Delacorte Press.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Kahneman, D. (2011). <em>Thinking, fast and slow</em>. Farrar, Straus and Giroux.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Foucault, M. (1977). <em>Discipline and punish: The birth of the prison</em> (A. Sheridan,
+                      Trans.). Pantheon Books. (Original work published 1975)
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Hofstede, G. (1980).{" "}
+                      <em>Culture's consequences: International differences in work-related values</em>. SAGE
+                      Publications.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Knapp, M. L., Hall, J. A., & Horgan, T. G. (2013).{" "}
+                      <em>Nonverbal communication in human interaction</em> (8th ed.). Wadsworth/Cengage Learning.
+                    </li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </Card>
 
           <Card className="p-6">

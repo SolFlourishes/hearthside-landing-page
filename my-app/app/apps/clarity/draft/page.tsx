@@ -6,16 +6,19 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
-import { Edit, Save, X, RefreshCw } from "lucide-react"
+import { Edit, Save, X, RefreshCw, ChevronDown, ChevronUp, Sparkles } from "lucide-react"
 import { RadioPillGroup } from "./RadioPillGroup"
 import { CopyButton } from "./CopyButton"
 import { FeedbackWidget } from "./FeedbackWidget"
 import { MarkdownRenderer } from "./MarkdownRenderer"
-import { FileUpload } from "@/components/file-upload"
 import { AudienceSelector } from "@/components/audience-selector"
 import { AccessGate, type AccessTier } from "@/components/access-gate"
 import { ReportButton } from "@/components/report-button"
 import { getAccessTier, setAccessTier as storeAccessTier } from "@/lib/access-storage"
+import { RelationshipSelector } from "@/components/relationship-selector"
+import type { RelationshipContext } from "@/lib/communication-profiles"
+import { AnalysisInfoCard } from "@/components/analysis-info-card"
+import { InfoTooltip } from "@/components/info-tooltip"
 
 const loadingTips = [
   "Average translation time is 5-10 seconds.",
@@ -65,6 +68,7 @@ export default function DraftModePage() {
   const [receiverNeurotype, setReceiverNeurotype] = useState("Unsure")
   const [senderGeneration, setSenderGeneration] = useState("unsure")
   const [receiverGeneration, setReceiverGeneration] = useState("unsure")
+  const [receiverRelationship, setReceiverRelationship] = useState<RelationshipContext>("colleague")
   const [isLoading, setIsLoading] = useState(false)
   const [loadingMessage, setLoadingMessage] = useState(loadingTips[0])
   const [error, setError] = useState<string | null>(null)
@@ -79,6 +83,7 @@ export default function DraftModePage() {
   const [explanationFeedback, setExplanationFeedback] = useState({ rating: 0, comment: "" })
   const [responseFeedback, setResponseFeedback] = useState({ rating: 0, comment: "" })
   const [feedbackSuccess, setFeedbackSuccess] = useState({ explanation: false, response: false })
+  const [showContextOptions, setShowContextOptions] = useState(false)
 
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
@@ -130,33 +135,18 @@ export default function DraftModePage() {
     setIsLoading(true)
 
     try {
-      let finalSenderStyle = senderStyle
-      if (senderStyle === "let-ai-decide") {
-        const textForClassification = intent || draft
-        if (!textForClassification) throw new Error("Please provide text for the AI to analyze your style.")
-
-        const clsRes = await fetch(`/api/clarity/classify-style`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: textForClassification }),
-        })
-        if (!clsRes.ok) throw new Error("Could not classify style.")
-        const data = await clsRes.json()
-        finalSenderStyle = data.style
-      }
-
       const requestBody = {
         mode: "draft",
         text: draft,
         context: intent,
-        sender: finalSenderStyle,
-        receiver: receiverStyle,
         senderNeurotype,
         receiverNeurotype,
         senderGeneration,
         receiverGeneration,
+        receiverRelationship,
         attachedFiles: uploadedFiles,
         audience,
+        accessTier,
       }
 
       const transRes = await fetch(`/api/clarity/translate`, {
@@ -165,11 +155,7 @@ export default function DraftModePage() {
         body: JSON.stringify(requestBody),
       })
 
-      if (!transRes.ok) {
-        const errData = await transRes.json()
-        throw new Error(errData.error || "An error occurred during translation.")
-      }
-
+      if (!transRes.ok) throw new Error("An error occurred during translation.")
       const data = await transRes.json()
       setAiResponse(data)
     } catch (err: any) {
@@ -292,6 +278,7 @@ export default function DraftModePage() {
     setReceiverNeurotype("Unsure")
     setSenderGeneration("unsure")
     setReceiverGeneration("unsure")
+    setReceiverRelationship("colleague")
     setIsEditing(false)
     setEditedResponse("")
     setEditSaveSuccess(false)
@@ -311,19 +298,27 @@ export default function DraftModePage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-4 max-w-7xl">
-        <div className="text-center mb-4">
+      <div className="container mx-auto px-4 py-4 max-w-5xl">
+        <div className="text-center mb-6">
           <h1 className="font-serif text-3xl font-bold text-foreground mb-2">Draft a Message</h1>
-          <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-            Transform your thoughts into clear, effective communication.
+          <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-2">
+            Transform your thoughts into clear, effective communication. Enter your goal and draft, then we'll help you
+            refine it based on how your audience might interpret it.
           </p>
+          <a
+            href="/apps/clarity/how-to-use"
+            className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+          >
+            Learn how to get the best results →
+          </a>
         </div>
 
         {!aiResponse && (
-          <Card className="mb-4 p-3 bg-primary/5 border-primary/20">
+          <Card className="mb-6 p-4 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-blue-200 dark:border-blue-800">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="text-sm">
-                <span className="font-semibold">Try an example:</span>
+              <div className="text-sm font-medium flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                Try an example:
               </div>
               <div className="flex flex-wrap gap-2 justify-center">
                 {Object.entries(EXAMPLE_SCENARIOS).map(([key, scenario]) => (
@@ -363,143 +358,156 @@ export default function DraftModePage() {
         )}
 
         {!aiResponse && (
-          <form onSubmit={handleTranslate} className="space-y-4">
-            <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
-              <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
-            </Card>
+          <form onSubmit={handleTranslate} className="space-y-6">
+            <Card className="p-6 border-2 border-primary/20">
+              <div className="space-y-5">
+                <div className="pb-4 border-b">
+                  <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
+                </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              <Card className="p-4">
-                <Label htmlFor="intent" className="text-sm font-semibold mb-1 block">
-                  Your Goal <span className="text-destructive">*</span>
-                </Label>
-                <p className="text-xs text-muted-foreground mb-2">What do you want to achieve?</p>
-                <Textarea
-                  id="intent"
-                  value={intent}
-                  onChange={(e) => setIntent(e.target.value)}
-                  placeholder="Example: I want to ask for a promotion..."
-                  required
-                  className="min-h-[120px]"
-                />
-              </Card>
-
-              <Card className="p-4">
-                <Label htmlFor="draft" className="text-sm font-semibold mb-1 block">
-                  Your Draft <span className="text-destructive">*</span>
-                </Label>
-                <p className="text-xs text-muted-foreground mb-2">What are you thinking of saying?</p>
-                <Textarea
-                  id="draft"
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  placeholder="Example: Hey boss, I think I deserve a promotion..."
-                  required
-                  className="min-h-[120px]"
-                />
-              </Card>
-            </div>
-
-            <Card className="p-4">
-              <Label className="text-sm font-semibold mb-2 block">Additional Context (Optional)</Label>
-              <p className="text-xs text-muted-foreground mb-3">
-                Attach documents for additional context (e.g., previous email threads, background information)
-              </p>
-              <FileUpload onFilesChange={setUploadedFiles} maxFiles={3} disabled={isLoading} />
-            </Card>
-
-            <Card className="p-4 bg-muted/50">
-              <h3 className="font-serif text-base font-bold mb-3 text-center">Communication Styles</h3>
-              <div className="grid md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Style</Label>
-                  <RadioPillGroup
-                    name="sender"
-                    value={senderStyle}
-                    onChange={setSenderStyle}
-                    options={["direct", "indirect", "let-ai-decide"]}
+                  <Label htmlFor="intent" className="text-base font-semibold mb-2 block">
+                    What do you want to achieve? <span className="text-destructive">*</span>
+                  </Label>
+                  <Textarea
+                    id="intent"
+                    value={intent}
+                    onChange={(e) => setIntent(e.target.value)}
+                    placeholder="Example: I want to ask for a promotion because I've exceeded my goals for 3 years..."
+                    required
+                    className="min-h-[100px] text-base"
+                    aria-required="true"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Style</Label>
-                  <RadioPillGroup
-                    name="receiver"
-                    value={receiverStyle}
-                    onChange={setReceiverStyle}
-                    options={["direct", "indirect"]}
+                  <Label htmlFor="draft" className="text-base font-semibold mb-2 block">
+                    What are you thinking of saying? <span className="text-destructive">*</span>
+                  </Label>
+                  <Textarea
+                    id="draft"
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    placeholder="Example: Hey boss, I think I deserve a promotion..."
+                    required
+                    className="min-h-[120px] text-base"
+                    aria-required="true"
                   />
                 </div>
               </div>
+            </Card>
 
-              <div className="border-t pt-3">
-                <div className="text-center mb-3">
-                  <label className="flex items-center justify-center gap-2 text-xs text-muted-foreground cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={isAdvancedMode}
-                      onChange={() => setIsAdvancedMode(!isAdvancedMode)}
-                      className="w-4 h-4"
-                    />
-                    {isAdvancedMode ? "Hide" : "Show"} Additional Options
-                  </label>
+            <Card className="overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowContextOptions(!showContextOptions)}
+                className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
+                aria-expanded={showContextOptions}
+                aria-controls="context-options"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold">Add Context for Better Results</span>
+                  <span className="text-xs text-muted-foreground">(Optional)</span>
                 </div>
+                {showContextOptions ? (
+                  <ChevronUp className="w-5 h-5 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                )}
+              </button>
 
-                {isAdvancedMode && (
+              {showContextOptions && (
+                <div id="context-options" className="p-4 pt-0 border-t space-y-4">
+                  <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <p className="text-xs text-muted-foreground">
+                      <strong className="text-foreground">How this helps:</strong> We'll automatically detect your
+                      communication style from your message. Adding context about you and your audience helps us provide
+                      more specific, tailored guidance that accounts for neurotype, generational differences, and
+                      relationship dynamics.
+                    </p>
+                  </div>
+
                   <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Neurotype</Label>
-                      <RadioPillGroup
-                        name="sender-nt"
-                        value={senderNeurotype}
-                        onChange={setSenderNeurotype}
-                        options={neurotypes}
-                      />
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-sm pb-2 border-b">About You</h4>
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                          Your Neurotype
+                          <InfoTooltip content="How your brain processes communication. Autism: prefers literal, direct language. ADHD: may provide extra context. Neurotypical: comfortable with social hints." />
+                        </Label>
+                        <RadioPillGroup
+                          name="sender-nt"
+                          value={senderNeurotype}
+                          onChange={setSenderNeurotype}
+                          options={neurotypes}
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                          Your Generation
+                          <InfoTooltip content="Boomer (1946-1964), Gen X (1965-1980), Xennial (1977-1983), Millennial (1981-1996), Gen Z (1997-2012), Gen Alpha (2013+)" />
+                        </Label>
+                        <RadioPillGroup
+                          name="sender-gen"
+                          value={senderGeneration}
+                          onChange={setSenderGeneration}
+                          options={generations}
+                        />
+                      </div>
                     </div>
 
-                    <div>
-                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Neurotype</Label>
-                      <RadioPillGroup
-                        name="receiver-nt"
-                        value={receiverNeurotype}
-                        onChange={setReceiverNeurotype}
-                        options={neurotypes}
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="text-xs font-medium mb-2 flex items-center gap-2">Your Generation</Label>
-                      <RadioPillGroup
-                        name="sender-gen"
-                        value={senderGeneration}
-                        onChange={setSenderGeneration}
-                        options={generations}
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="text-xs font-medium mb-2 block">Their Generation</Label>
-                      <RadioPillGroup
-                        name="receiver-gen"
-                        value={receiverGeneration}
-                        onChange={setReceiverGeneration}
-                        options={generations}
-                      />
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-sm pb-2 border-b">About Your Audience</h4>
+                      <div>
+                        <RelationshipSelector
+                          label="Your Relationship"
+                          value={receiverRelationship}
+                          onChange={setReceiverRelationship}
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                          Their Neurotype
+                          <InfoTooltip content="If you know how they communicate, we can adapt your message. Autistic people prefer direct language without implied meanings." />
+                        </Label>
+                        <RadioPillGroup
+                          name="receiver-nt"
+                          value={receiverNeurotype}
+                          onChange={setReceiverNeurotype}
+                          options={neurotypes}
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                          Their Generation
+                          <InfoTooltip content="Different generations expect different formality levels. Boomers prefer context, Gen Z values brevity and authenticity." />
+                        </Label>
+                        <RadioPillGroup
+                          name="receiver-gen"
+                          value={receiverGeneration}
+                          onChange={setReceiverGeneration}
+                          options={generations}
+                        />
+                      </div>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </Card>
 
-            <div className="flex justify-center items-center gap-4">
-              <Button type="submit" size="lg" disabled={isLoading || !intent || !draft}>
+            <div className="flex justify-center">
+              <Button type="submit" size="lg" disabled={isLoading || !intent || !draft} className="px-12">
                 {isLoading ? (
                   <span className="flex items-center gap-2">
                     <RefreshCw className="w-4 h-4 animate-spin" />
                     Translating...
                   </span>
                 ) : (
-                  "Translate"
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4" />
+                    Translate My Message
+                  </span>
                 )}
               </Button>
             </div>
@@ -521,6 +529,16 @@ export default function DraftModePage() {
 
         {aiResponse && !isLoading && (
           <div className="mt-6 space-y-4">
+            <AnalysisInfoCard
+              detectedStyle={aiResponse.detectedStyle || "auto-detected from your message"}
+              yourNeurotype={senderNeurotype}
+              theirNeurotype={receiverNeurotype}
+              yourGeneration={senderGeneration}
+              theirGeneration={receiverGeneration}
+              relationship={receiverRelationship}
+              mode="draft"
+            />
+
             {aiResponse.attachmentGuidance && uploadedFiles.length > 0 && (
               <Card className="p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
                 <h3 className="text-base font-bold font-serif text-amber-900 dark:text-amber-100 mb-2 flex items-center gap-2">

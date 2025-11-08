@@ -5,6 +5,14 @@ import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-sys
 import { checkContentSafety, generateSafetyResponse, getSafetySystemPrompt } from "@/lib/content-safety"
 import { checkRateLimitWithTier } from "@/lib/rate-limiter"
 import { validateOutput } from "@/lib/output-validator"
+import {
+  getNeurotypeGuidance,
+  getGenerationGuidance,
+  getRelationshipGuidance,
+  type Neurotype,
+  type Generation,
+  type RelationshipContext,
+} from "@/lib/communication-profiles"
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,6 +43,8 @@ export async function POST(request: NextRequest) {
       receiverNeurotype,
       senderGeneration,
       receiverGeneration,
+      senderRelationship,
+      receiverRelationship,
       analyzeContext,
       interpretation,
       attachedFiles,
@@ -114,22 +124,41 @@ export async function POST(request: NextRequest) {
 
     const safetyGuidelines = getSafetySystemPrompt(audience)
 
+    const senderProfile = `
+=== SENDER COMMUNICATION PROFILE ===
+${senderNeurotype ? getNeurotypeGuidance(senderNeurotype as Neurotype) : ""}
+${senderGeneration ? getGenerationGuidance(senderGeneration as Generation) : ""}
+${senderRelationship ? `**Relationship Context:** ${senderRelationship}\n${getRelationshipGuidance(senderRelationship as RelationshipContext)}` : ""}
+`
+
+    const receiverProfile = `
+=== RECEIVER COMMUNICATION PROFILE ===
+${receiverNeurotype ? getNeurotypeGuidance(receiverNeurotype as Neurotype) : ""}
+${receiverGeneration ? getGenerationGuidance(receiverGeneration as Generation) : ""}
+${receiverRelationship ? `**Relationship Context:** ${receiverRelationship}\n${getRelationshipGuidance(receiverRelationship as RelationshipContext)}` : ""}
+`
+
     if (mode === "draft") {
       systemPrompt = `You are the Clarity Coach, an expert communication translator. Your role is to help people communicate more clearly by translating their messages to match their audience's communication style.
 
 ${safetyGuidelines}
 
-Communication Styles:
-- Direct: Prefers concise, straightforward communication with clear action items
-- Indirect: Prefers context, relationship-building, and softer language
+**Your task:**
+1. Analyze the sender's actual communication style FROM THEIR MESSAGE (don't rely on self-assessment)
+2. Consider the sender's neurotype, generation, and relationship to the receiver
+3. Consider the receiver's neurotype, generation, and relationship to the sender  
+4. **CRITICAL: Each aspect of their profile (neurotype, generation, relationship) MUST visibly influence your translation**
+5. If documents are attached, you MUST analyze them and provide guidance on revisions
+6. Provide a detailed translation that bridges specific communication gaps
+7. Explain thoroughly how the original might be misinterpreted based on SPECIFIC DIFFERENCES in their profiles
+8. For attachments: Explain whether they should be revised, integrated into the message, or kept separate
 
-Your task:
-1. Analyze the user's intent and draft
-2. Consider the communication styles, neurotypes, and generational differences
-3. **CRITICAL: If documents are attached, you MUST analyze them and provide guidance on revisions**
-4. Provide a detailed translation that bridges the gap
-5. Explain thoroughly how the original might be misinterpreted and why the translation is better
-6. **For attachments: Explain whether they should be revised, integrated into the message, or kept separate**
+**IMPORTANT:** Your translation must demonstrably reflect:
+- Neurotype differences (e.g., making implicit expectations explicit for autistic receivers, adding structure for ADHD receivers)
+- Generational differences (e.g., adding context for Boomers, being more concise for Gen Z)
+- Relationship dynamics (e.g., appropriate formality for boss, collaborative tone for colleagues)
+
+Do NOT provide generic advice. Show how EACH selected profile aspect changes your translation.
 
 When relevant expert knowledge is provided below, use it to inform your translations and explanations. Don't cite sources - just naturally incorporate the insights.
 
@@ -137,36 +166,50 @@ ${expertContext}
 
 IMPORTANT: Respond with ONLY a valid JSON object in this exact format (no markdown, no code blocks):
 {
-  "explanation": "your detailed explanation here - MUST mention and analyze any attachments",
-  "translation": "your improved message here",
-  "attachmentGuidance": "if attachments exist, provide specific guidance on how to revise them or whether to integrate them into the main message. If no attachments, set this to null"
+  "detectedStyle": "brief description of the detected communication style (e.g., 'direct and task-focused', 'indirect with emotional context')",
+  "explanation": "your detailed explanation showing how EACH profile aspect influenced your analysis",
+  "translation": "your improved message that reflects the specific profile differences",
+  "attachmentGuidance": "if attachments exist, provide specific guidance. If none, set to null"
 }`
 
       userPrompt = `Intent: ${context || ""}
 Original Draft: ${text}
-My Style: ${sender}
-Audience Style: ${receiver}
+
+${senderProfile}
+
+${receiverProfile}
+
 Audience Type: ${audience}
-${senderNeurotype ? `My Neurotype: ${senderNeurotype}` : ""}
-${receiverNeurotype ? `Audience Neurotype: ${receiverNeurotype}` : ""}
-${senderGeneration ? `My Generation: ${senderGeneration}` : ""}
-${receiverGeneration ? `Audience Generation: ${receiverGeneration}` : ""}${filesContext}`
+
+${filesContext}
+
+**Remember:** Your translation MUST show visible changes based on:
+1. Neurotype differences between sender and receiver
+2. Generational communication preferences  
+3. Relationship power dynamics and context
+
+Explain SPECIFICALLY how each of these factors influenced your translation.`
     } else if (mode === "analyze") {
       systemPrompt = `You are the Clarity Coach, an expert communication analyst. Your role is to help people understand messages they've received by analyzing tone, subtext, and potential misinterpretations.
 
 ${safetyGuidelines}
 
-Communication Styles:
-- Direct: Says what they mean clearly and concisely
-- Indirect: Uses context, subtext, and softer language
+**Your task:**
+1. Analyze the sender's actual communication style FROM THEIR MESSAGE
+2. Consider how the sender's neurotype, generation, and relationship might have influenced their word choices
+3. Consider how the receiver's neurotype, generation, and relationship might cause misinterpretation
+4. **CRITICAL: Each aspect of their profiles MUST visibly influence your analysis**
+5. If documents are attached, you MUST analyze them and explain their significance
+6. Explain potential misinterpretations based on SPECIFIC PROFILE DIFFERENCES
+7. Provide a suggested response that bridges the gap
+8. For attachments: Explain how they affect interpretation and whether your response should reference them
 
-Your task:
-1. Analyze what the sender likely meant
-2. Consider communication styles, neurotypes, and generational differences
-3. **CRITICAL: If documents are attached, you MUST analyze them and explain their significance**
-4. Explain potential misinterpretations
-5. Provide a suggested response that bridges the gap
-6. **For attachments: Explain how they affect the interpretation and whether your response should reference them**
+**IMPORTANT:** Your analysis must demonstrably address:
+- How neurotype differences might cause misinterpretation (e.g., autistic sender being "too blunt" to neurotypical receiver)
+- How generational norms might create confusion (e.g., Gen Z brevity seeming rude to Boomer)
+- How relationship context affects meaning (e.g., boss's "suggestion" actually being a directive)
+
+Do NOT provide generic advice. Show how EACH selected profile aspect changes your interpretation and suggested response.
 
 When relevant expert knowledge is provided below, use it to inform your analysis and suggestions. Don't cite sources - just naturally incorporate the insights.
 
@@ -174,21 +217,28 @@ ${expertContext}
 
 IMPORTANT: Respond with ONLY a valid JSON object in this exact format (no markdown, no code blocks):
 {
-  "explanation": "what they likely meant and why - MUST mention and analyze any attachments",
-  "translation": "suggested response",
-  "attachmentGuidance": "if attachments exist, explain their significance and whether your response should reference them. If no attachments, set this to null"
+  "detectedStyle": "brief description of the detected communication style from the message (e.g., 'casual and friendly', 'formal and reserved')",
+  "explanation": "what they likely meant, showing how EACH profile aspect influenced your interpretation",
+  "translation": "suggested response that accounts for the specific profile differences",
+  "attachmentGuidance": "if attachments exist, explain significance. If none, set to null"
 }`
 
       userPrompt = `Message Received: ${text}
 Situation Context: ${analyzeContext || ""}
 How I Interpreted It: ${interpretation}
-Their Style: ${sender}
-My Style: ${receiver}
+
+${senderProfile}
+
+${receiverProfile}
+
 Audience Type: ${audience}
-${senderNeurotype ? `Their Neurotype: ${senderNeurotype}` : ""}
-${receiverNeurotype ? `My Neurotype: ${receiverNeurotype}` : ""}
-${senderGeneration ? `Their Generation: ${senderGeneration}` : ""}
-${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}${filesContext}`
+
+${filesContext}
+
+**Remember:** Your analysis MUST explain:
+1. How sender's neurotype/generation/relationship influenced their message
+2. How receiver's neurotype/generation/relationship might cause misinterpretation
+3. How to bridge these SPECIFIC gaps in your suggested response`
     } else {
       throw new Error("Invalid mode. Must be 'draft' or 'analyze'")
     }
@@ -250,6 +300,7 @@ ${receiverGeneration ? `My Generation: ${receiverGeneration}` : ""}${filesContex
     }
 
     return NextResponse.json({
+      detectedStyle: parsed.detectedStyle || "communication style analyzed from message",
       explanation: parsed.explanation,
       response: parsed.translation,
       attachmentGuidance: parsed.attachmentGuidance || null,

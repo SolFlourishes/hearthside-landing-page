@@ -171,13 +171,129 @@ export default function RoadmapPage() {
             </div>
           </Card>
 
-          {/* Beta 3.6 - Planning */}
+          {/* Beta 3.6 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.6</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">The UX Redesign</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>
+                    Redesigned interface with progressive disclosure - core inputs immediately visible, context options
+                    collapsible
+                  </li>
+                  <li>
+                    Removed unreliable "Direct/Indirect" self-assessment selector - AI now auto-detects communication
+                    style from actual message
+                  </li>
+                  <li>
+                    Added meaningful communication profiles for neurotypes (Autism, ADHD, Neurotypical) with specific
+                    behavioral guidance
+                  </li>
+                  <li>
+                    Added generation-specific profiles (Boomer through Gen Alpha) with cultural and communication
+                    context
+                  </li>
+                  <li>
+                    Added relationship context selector (colleague, manager, friend, etc.) for situational guidance
+                  </li>
+                  <li>
+                    Implemented informative tooltips explaining what neurotypes mean and generation year ranges (e.g.,
+                    "Gen Z: 1997-2012")
+                  </li>
+                  <li>
+                    Added AnalysisInfoCard showing detected communication style and selected context after
+                    translation/analysis
+                  </li>
+                  <li>
+                    Reduced cognitive load with clearer information hierarchy and "Add Context for Better Results"
+                  </li>
+                  <li>
+                    Added helpful intro text to Draft and Analyze pages with links to "How to Use" for detailed guidance
+                  </li>
+                  <li>
+                    Updated "How to Use" page to reflect new simplified interface and explain context options clearly
+                  </li>
+                  <li>Maintained all accessibility features with proper ARIA labels and semantic HTML</li>
+                  <li>All safety features remain fully intact (content filtering, crisis intervention, reporting)</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Beta 3.7 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.7</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">
+                  RAG Phase 3: Advanced Frameworks - Power, Culture & Cognition
+                </h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>
+                    Integrated 8 new expert documents covering advanced communication frameworks, cognitive biases, and
+                    social theory
+                  </li>
+                  <li>
+                    Added Foucault's Discipline and Punish - power dynamics, institutional communication, and the shift
+                    from body to soul in modern discourse
+                  </li>
+                  <li>
+                    Added Double Empathy Problem and Mutual Misunderstanding - Relevance Theory, mutual manifestness,
+                    and bidirectional communication failures
+                  </li>
+                  <li>
+                    Added Nonverbal Communication framework - channels (face, voice, gesture), functions
+                    (identification, relationship, emotion), and cultural variations
+                  </li>
+                  <li>
+                    Added Kahneman's Thinking, Fast and Slow - System 1/System 2 thinking, cognitive biases, heuristics,
+                    and decision-making under uncertainty
+                  </li>
+                  <li>
+                    Added Neurodiverse Relationships research - facilitators, challenges, and successful strategies in
+                    neurodiverse intimate partnerships
+                  </li>
+                  <li>
+                    Added Missing Responses analysis - communication disruptions, adjacency pairs, and
+                    neurotype-specific coping strategies
+                  </li>
+                  <li>
+                    Added Hofstede's Cultural Dimensions - Power Distance, Uncertainty Avoidance,
+                    Individualism/Collectivism, Masculinity/Femininity, Long-term Orientation
+                  </li>
+                  <li>
+                    Added Accepting Boundaries framework - reciprocity, barrier-free communication, and mutual
+                    adaptation in neurodiverse interactions
+                  </li>
+                  <li>
+                    Enhanced AI responses with deeper understanding of power structures, cultural mental programs,
+                    cognitive shortcuts, and cross-neurotype communication dynamics
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Beta 3.8 - Planning */}
           <Card className="p-6">
             <div className="flex items-start gap-3 mb-4">
               <Clock className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.6</h2>
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.8</h2>
                   <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
                     Planning
                   </span>
@@ -189,30 +305,6 @@ export default function RoadmapPage() {
                   <li>Conversation history and saved drafts</li>
                   <li>Subscription management (Free and Premium tiers)</li>
                   <li>Cross-platform access for all Hearthside Works apps and games</li>
-                </ul>
-              </div>
-            </div>
-          </Card>
-
-          {/* Beta 3.7 - Planning (formerly 3.5) */}
-          <Card className="p-6">
-            <div className="flex items-start gap-3 mb-4">
-              <Clock className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.7</h2>
-                  <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
-                    Planning
-                  </span>
-                </div>
-                <h3 className="text-lg font-semibold text-primary mb-3">
-                  RAG Phase 3: Advanced Frameworks - Power, Culture & Cognition
-                </h3>
-                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Power dynamics and hierarchical communication</li>
-                  <li>Cultural communication patterns and cross-cultural understanding</li>
-                  <li>Cognitive diversity and thinking styles</li>
-                  <li>Organizational and institutional communication frameworks</li>
                 </ul>
               </div>
             </div>

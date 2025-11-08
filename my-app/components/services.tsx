@@ -16,7 +16,7 @@ export function Services() {
       ],
       image: "/clarity-coach-communication-translation.jpg",
       link: "/apps/clarity",
-      badge: "Beta 3.5",
+      badge: "Beta 3.7",
     },
     {
       category: "Services",

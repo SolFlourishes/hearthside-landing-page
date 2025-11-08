@@ -29,7 +29,7 @@ export default function AppsPage() {
                     Clarity Coach
                   </h2>
                   <span className="inline-block px-2 py-1 bg-accent text-accent-foreground text-xs rounded-full mb-3">
-                    Beta v3.5
+                    Beta v3.7
                   </span>
                 </div>
               </div>

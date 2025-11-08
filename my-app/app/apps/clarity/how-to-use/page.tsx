@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Paperclip } from "lucide-react"
+import { Sparkles } from "lucide-react"
 
 export default function HowToUsePage() {
   return (
@@ -13,53 +13,78 @@ export default function HowToUsePage() {
           <Card className="p-6">
             <h2 className="font-serif text-2xl font-bold text-primary mb-4">Draft Mode</h2>
             <p className="text-muted-foreground mb-4">
-              Use Draft Mode when you need to compose a clear, effective message.
+              Use Draft Mode when you need to compose a clear, effective message that will be understood as intended.
             </p>
             <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-              <li>Enter your intent (what you want to achieve with your message)</li>
-              <li>Write your draft (your raw thoughts or key points)</li>
-              <li>Select your communication style and your audience's style</li>
-              <li>Optionally, use Advanced Options to specify neurotypes and generations</li>
-              <li className="flex items-start gap-2">
-                <span>Attach documents for context (optional)</span>
-                <Paperclip className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-sm italic">
-                  — PDFs, Word docs, or text files that provide background or related content
-                </span>
-              </li>
-              <li>Click "Translate" to receive a polished draft and explanation</li>
               <li>
-                Review attachment guidance if files were uploaded—the AI will suggest whether to revise, integrate, or
-                keep attachments separate
+                <strong>What do you want to achieve?</strong> — Explain your goal or intent (e.g., "I want to ask for a
+                promotion")
               </li>
-              <li>Edit the AI's suggestion if needed and re-analyze for feedback</li>
+              <li>
+                <strong>What are you thinking of saying?</strong> — Write your initial draft or raw thoughts
+              </li>
+              <li>
+                <strong>Add Context (Optional):</strong> Expand "Add Context for Better Results" to provide:
+                <ul className="list-disc list-inside ml-6 mt-1">
+                  <li>Your neurotype and generation</li>
+                  <li>Your audience's neurotype, generation, and your relationship with them</li>
+                </ul>
+              </li>
+              <li>Click "Translate My Message" to receive guidance</li>
+              <li>
+                Review <strong>"How They Might Hear It"</strong> to understand potential interpretations
+              </li>
+              <li>
+                Use <strong>"The Translation"</strong> as your refined message, or edit it further
+              </li>
+              <li>Edit and re-analyze if needed to perfect your message</li>
             </ol>
             <Link href="/apps/clarity/draft">
-              <Button className="mt-4">Try Draft Mode</Button>
+              <Button className="mt-4">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Try Draft Mode
+              </Button>
             </Link>
           </Card>
 
           <Card className="p-6">
             <h2 className="font-serif text-2xl font-bold text-primary mb-4">Analyze Mode</h2>
             <p className="text-muted-foreground mb-4">
-              Use Analyze Mode when you've received a message and want to understand its intent.
+              Use Analyze Mode when you've received a message and want to understand what they really meant.
             </p>
             <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-              <li>Paste the message you received</li>
-              <li>Provide context about the situation (optional but helpful)</li>
-              <li className="flex items-start gap-2">
-                <span>Upload conversation history or related documents (optional)</span>
-                <Paperclip className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-sm italic">— Email threads, chat logs, or background materials</span>
-              </li>
-              <li>Select communication styles for both sender and receiver</li>
-              <li>Click "Analyze" to decode the likely intent and subtext</li>
               <li>
-                Review the explanation to understand potential interpretations and any attachment-related insights
+                <strong>What did they say?</strong> — Paste the message you received
+              </li>
+              <li>
+                <strong>How did you interpret it?</strong> — Share your initial reaction or interpretation
+              </li>
+              <li>
+                <strong>Situation Context (Optional)</strong> — Provide background about the situation
+              </li>
+              <li>
+                <strong>Add Conversation History (Optional)</strong> — Upload related documents for full context
+              </li>
+              <li>
+                <strong>Add Context (Optional):</strong> Expand "Add Context for Better Results" to specify:
+                <ul className="list-disc list-inside ml-6 mt-1">
+                  <li>Their neurotype, generation, and your relationship</li>
+                  <li>Your neurotype and generation</li>
+                </ul>
+              </li>
+              <li>Click "Analyze This Message" to decode the intent</li>
+              <li>
+                Review <strong>"What They Likely Meant"</strong> to understand subtext and potential meanings
+              </li>
+              <li>
+                Use the <strong>"Suggested Response"</strong> to reply effectively
               </li>
             </ol>
             <Link href="/apps/clarity/analyze">
-              <Button className="mt-4">Try Analyze Mode</Button>
+              <Button className="mt-4">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Try Analyze Mode
+              </Button>
             </Link>
           </Card>
 
@@ -70,33 +95,91 @@ export default function HowToUsePage() {
             </p>
             <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
               <li>Describe your communication challenge or question</li>
-              <li className="flex items-start gap-2">
-                <span>Attach relevant documents to any message (optional)</span>
-                <Paperclip className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-sm italic">— Click the paperclip icon to add context files</span>
-              </li>
               <li>Have a back-and-forth conversation with the AI coach</li>
               <li>Get personalized advice, strategies, and examples</li>
               <li>Ask follow-up questions to dive deeper</li>
             </ol>
             <Link href="/apps/clarity/chat">
-              <Button className="mt-4">Try Chat Mode</Button>
+              <Button className="mt-4">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Try Chat Mode
+              </Button>
             </Link>
+          </Card>
+
+          <Card className="p-6 bg-muted/50">
+            <h2 className="font-serif text-2xl font-bold text-primary mb-4">Understanding Context Options</h2>
+            <div className="space-y-3 text-muted-foreground text-sm">
+              <div>
+                <h3 className="font-semibold text-foreground mb-1">Neurotypes</h3>
+                <ul className="list-disc list-inside space-y-1 ml-2">
+                  <li>
+                    <strong>Autism:</strong> Prefers literal, direct language without implied meanings
+                  </li>
+                  <li>
+                    <strong>ADHD:</strong> May provide extra context or jump between ideas
+                  </li>
+                  <li>
+                    <strong>Neurotypical:</strong> Comfortable with social hints and indirect communication
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground mb-1">Generations</h3>
+                <ul className="list-disc list-inside space-y-1 ml-2">
+                  <li>
+                    <strong>Boomer (1946-1964):</strong> Values formality, hierarchy, and thorough context
+                  </li>
+                  <li>
+                    <strong>Gen X (1965-1980):</strong> Direct, independent, appreciates efficiency
+                  </li>
+                  <li>
+                    <strong>Xennial (1977-1983):</strong> Bridge between analog and digital communication
+                  </li>
+                  <li>
+                    <strong>Millennial (1981-1996):</strong> Collaborative, values authenticity
+                  </li>
+                  <li>
+                    <strong>Gen Z (1997-2012):</strong> Prefers brevity, visual communication, authenticity
+                  </li>
+                  <li>
+                    <strong>Gen Alpha (2013+):</strong> Digital natives, ultra-brief communication
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground mb-1">Why This Matters</h3>
+                <p>
+                  The AI automatically detects communication style from the actual message. Context about neurotype,
+                  generation, and relationship helps provide more nuanced, accurate guidance that accounts for how
+                  different people naturally communicate.
+                </p>
+              </div>
+            </div>
           </Card>
 
           <Card className="p-6 bg-muted/50">
             <h2 className="font-serif text-2xl font-bold text-primary mb-4">Tips for Best Results</h2>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li>Be specific about your intent and context—the more detail, the better the translation</li>
-              <li>Use Advanced Options when you know specific details about neurotypes or generations</li>
               <li>
-                <strong>Upload supporting documents</strong> when your message references attachments or needs
-                additional context—the AI will analyze them and suggest revisions
+                <strong>Be specific about your goal</strong> — The more detail about what you want to achieve, the
+                better the guidance
               </li>
-              <li>Supported file types: PDF, Word documents (.docx), text files (.txt), and images</li>
-              <li>Maximum file size: 10MB per file</li>
-              <li>Provide feedback on translations to help improve the AI</li>
-              <li>Edit and re-analyze AI suggestions to create your perfect message</li>
+              <li>
+                <strong>Context is optional but powerful</strong> — If you know neurotype/generation details, adding
+                them significantly improves accuracy
+              </li>
+              <li>
+                <strong>Start simple</strong> — You don't need to fill out every field. The core inputs are enough for
+                good results
+              </li>
+              <li>
+                <strong>The AI detects style automatically</strong> — You don't need to self-assess whether you're
+                "direct" or "indirect"
+              </li>
+              <li>
+                <strong>Edit and iterate</strong> — Use the edit feature to refine translations and get feedback
+              </li>
               <li>Remember: The AI is a coach, not a crutch—use it to build your own skills over time</li>
             </ul>
           </Card>

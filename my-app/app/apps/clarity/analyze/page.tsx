@@ -6,12 +6,17 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
-import { RefreshCw } from "lucide-react"
+import { RefreshCw, ChevronDown, ChevronUp, Sparkles } from "lucide-react"
+import { RadioPillGroup } from "./RadioPillGroup"
 import { FileUpload } from "@/components/file-upload"
 import { AudienceSelector } from "@/components/audience-selector"
 import { AccessGate, type AccessTier } from "@/components/access-gate"
 import { ReportButton } from "@/components/report-button"
+import { AnalysisInfoCard } from "@/components/analysis-info-card"
+import { RelationshipSelector } from "@/components/relationship-selector"
+import type { RelationshipContext } from "@/lib/communication-profiles"
 import { getAccessTier, setAccessTier as storeAccessTier } from "@/lib/access-storage"
+import { InfoTooltip } from "@/components/info-tooltip"
 
 const loadingTips = [
   "Average analysis time is 5-10 seconds.",
@@ -30,13 +35,11 @@ export default function AnalyzeModePage() {
   const [interpretation, setInterpretation] = useState("")
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
   const [audience, setAudience] = useState("adult-to-adult")
-  const [senderStyle, setSenderStyle] = useState("indirect")
-  const [receiverStyle, setReceiverStyle] = useState("let-ai-decide")
-  const [isAdvancedMode, setIsAdvancedMode] = useState(false)
   const [senderNeurotype, setSenderNeurotype] = useState("Unsure")
   const [receiverNeurotype, setReceiverNeurotype] = useState("Unsure")
   const [senderGeneration, setSenderGeneration] = useState("unsure")
   const [receiverGeneration, setReceiverGeneration] = useState("unsure")
+  const [senderRelationship, setSenderRelationship] = useState<RelationshipContext>("colleague")
   const [isLoading, setIsLoading] = useState(false)
   const [loadingMessage, setLoadingMessage] = useState(loadingTips[0])
   const [error, setError] = useState<string | null>(null)
@@ -77,31 +80,19 @@ export default function AnalyzeModePage() {
     setIsLoading(true)
 
     try {
-      let finalReceiverStyle = receiverStyle
-      if (receiverStyle === "let-ai-decide") {
-        const clsRes = await fetch(`/api/clarity/classify-style`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: message }),
-        })
-        if (!clsRes.ok) throw new Error("Could not classify style.")
-        const data = await clsRes.json()
-        finalReceiverStyle = data.style
-      }
-
       const requestBody = {
         mode: "analyze",
         text: message,
         analyzeContext: situationContext,
         interpretation,
-        sender: senderStyle,
-        receiver: finalReceiverStyle,
         senderNeurotype,
         receiverNeurotype,
         senderGeneration,
         receiverGeneration,
+        senderRelationship,
         attachedFiles: uploadedFiles,
         audience,
+        accessTier,
       }
 
       const transRes = await fetch(`/api/clarity/translate`, {
@@ -155,13 +146,11 @@ export default function AnalyzeModePage() {
     setError(null)
     setAiResponse(null)
     setFeedbackSuccess({ explanation: false, response: false })
-    setIsAdvancedMode(false)
-    setSenderStyle("indirect")
-    setReceiverStyle("let-ai-decide")
     setSenderNeurotype("Unsure")
     setReceiverNeurotype("Unsure")
     setSenderGeneration("unsure")
     setReceiverGeneration("unsure")
+    setSenderRelationship("colleague")
   }
 
   const handleAccessGranted = (tier: AccessTier) => {
@@ -169,18 +158,28 @@ export default function AnalyzeModePage() {
     setAccessTier(tier)
   }
 
+  const [showContextOptions, setShowContextOptions] = useState(false)
+  const [showFileUpload, setShowFileUpload] = useState(false)
+
   if (!accessTier) {
     return <AccessGate mode="analyze" onAccessGranted={handleAccessGranted} />
   }
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-4 max-w-7xl">
-        <div className="text-center mb-4">
+      <div className="container mx-auto px-4 py-4 max-w-5xl">
+        <div className="text-center mb-6">
           <h1 className="font-serif text-3xl font-bold text-foreground mb-2">Analyze a Message</h1>
-          <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-            Understand what they really meant and how to respond.
+          <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-2">
+            Decode what someone really meant and get suggestions for how to respond. We'll analyze the message based on
+            communication styles and help you understand the subtext.
           </p>
+          <a
+            href="/apps/clarity/how-to-use"
+            className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+          >
+            Learn how to get the best results →
+          </a>
         </div>
 
         {aiResponse && (
@@ -198,121 +197,212 @@ export default function AnalyzeModePage() {
         )}
 
         {!aiResponse && (
-          <form onSubmit={handleAnalyze} className="space-y-4">
-            <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
-              <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
-            </Card>
-
-            <div className="grid md:grid-cols-3 gap-4">
-              <Card className="p-4">
-                <Label htmlFor="message" className="text-sm font-semibold mb-1 block">
-                  What They Wrote <span className="text-destructive">*</span>
-                </Label>
-                <Textarea
-                  id="message"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Paste the message..."
-                  required
-                  className="min-h-[120px]"
-                />
-              </Card>
-
-              <Card className="p-4">
-                <Label htmlFor="context" className="text-sm font-semibold mb-1 block">
-                  Situation Context
-                </Label>
-                <Textarea
-                  id="context"
-                  value={situationContext}
-                  onChange={(e) => setSituationContext(e.target.value)}
-                  placeholder="e.g., This is my boss..."
-                  className="min-h-[120px]"
-                />
-              </Card>
-
-              <Card className="p-4">
-                <Label htmlFor="interpretation" className="text-sm font-semibold mb-1 block">
-                  How I Heard It <span className="text-destructive">*</span>
-                </Label>
-                <Textarea
-                  id="interpretation"
-                  value={interpretation}
-                  onChange={(e) => setInterpretation(e.target.value)}
-                  placeholder="How did this make you feel?"
-                  required
-                  className="min-h-[120px]"
-                />
-              </Card>
-            </div>
-
-            <Card className="p-4">
-              <Label className="text-sm font-semibold mb-2 block">Additional Context (Optional)</Label>
-              <p className="text-xs text-muted-foreground mb-3">
-                Attach documents for full conversation history or related context
-              </p>
-              <FileUpload onFilesChange={setUploadedFiles} maxFiles={3} disabled={isLoading} />
-            </Card>
-
-            <Card className="p-4 bg-muted/50">
-              <div className="grid md:grid-cols-2 gap-4 mb-3">
-                <div>
-                  <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Style</Label>
+          <form onSubmit={handleAnalyze} className="space-y-6">
+            {/* Primary Inputs - Always Visible */}
+            <Card className="p-6 border-2 border-primary/20">
+              <div className="space-y-5">
+                {/* Audience Selector */}
+                <div className="pb-4 border-b">
+                  <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
                 </div>
 
+                {/* The Message */}
                 <div>
-                  <Label className="text-xs font-medium mb-2 block">My Style</Label>
-                </div>
-              </div>
-
-              <div className="text-center mb-3">
-                <label className="flex items-center justify-center gap-2 text-xs text-muted-foreground cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={isAdvancedMode}
-                    onChange={() => setIsAdvancedMode(!isAdvancedMode)}
-                    className="w-4 h-4"
+                  <Label htmlFor="message" className="text-base font-semibold mb-2 block">
+                    What did they say? <span className="text-destructive">*</span>
+                  </Label>
+                  <Textarea
+                    id="message"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Paste the message you received..."
+                    required
+                    className="min-h-[120px] text-base"
+                    aria-required="true"
                   />
-                  Show Advanced Options
-                </label>
+                </div>
+
+                {/* Your Interpretation */}
+                <div>
+                  <Label htmlFor="interpretation" className="text-base font-semibold mb-2 block">
+                    How did you interpret it? <span className="text-destructive">*</span>
+                  </Label>
+                  <Textarea
+                    id="interpretation"
+                    value={interpretation}
+                    onChange={(e) => setInterpretation(e.target.value)}
+                    placeholder="Example: I felt like they were annoyed with me..."
+                    required
+                    className="min-h-[100px] text-base"
+                    aria-required="true"
+                  />
+                </div>
+
+                {/* Optional Situation Context */}
+                <div>
+                  <Label htmlFor="context" className="text-sm font-medium mb-2 block flex items-center gap-1">
+                    Situation Context <span className="text-muted-foreground text-xs">(Optional)</span>
+                  </Label>
+                  <Textarea
+                    id="context"
+                    value={situationContext}
+                    onChange={(e) => setSituationContext(e.target.value)}
+                    placeholder="Example: This is my boss, and we've been discussing deadlines..."
+                    className="min-h-[80px]"
+                  />
+                </div>
               </div>
+            </Card>
 
-              {isAdvancedMode && (
-                <div className="grid md:grid-cols-2 gap-4 pt-3 border-t">
-                  <div>
-                    <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Neurotype</Label>
+            <Card className="overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowFileUpload(!showFileUpload)}
+                className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
+                aria-expanded={showFileUpload}
+                aria-controls="file-upload-section"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold">Add Conversation History</span>
+                  <span className="text-xs text-muted-foreground">(Optional)</span>
+                </div>
+                {showFileUpload ? (
+                  <ChevronUp className="w-5 h-5 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                )}
+              </button>
+
+              {showFileUpload && (
+                <div id="file-upload-section" className="p-4 pt-0 border-t">
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Upload documents for full conversation history or related context
+                  </p>
+                  <FileUpload onFilesChange={setUploadedFiles} maxFiles={3} disabled={isLoading} />
+                </div>
+              )}
+            </Card>
+
+            <Card className="overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowContextOptions(!showContextOptions)}
+                className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
+                aria-expanded={showContextOptions}
+                aria-controls="context-options"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold">Add Context for Better Results</span>
+                  <span className="text-xs text-muted-foreground">(Optional)</span>
+                </div>
+                {showContextOptions ? (
+                  <ChevronUp className="w-5 h-5 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                )}
+              </button>
+
+              {showContextOptions && (
+                <div id="context-options" className="p-4 pt-0 border-t space-y-4">
+                  <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <p className="text-xs text-muted-foreground">
+                      <strong className="text-foreground">How this helps:</strong> We'll automatically detect their
+                      communication style from the message. Adding context about you and them helps us provide more
+                      accurate interpretation that accounts for neurotype, generational differences, and relationship
+                      dynamics.
+                    </p>
                   </div>
 
-                  <div>
-                    <Label className="text-xs font-medium mb-2 block">My Neurotype</Label>
-                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {/* About Them (Sender) */}
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-sm pb-2 border-b">About Them (Sender)</h4>
+                      <div>
+                        <RelationshipSelector
+                          label="Your Relationship"
+                          value={senderRelationship}
+                          onChange={setSenderRelationship}
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                          Their Neurotype
+                          <InfoTooltip content="If you know how they communicate, we can interpret their message more accurately. Autistic people tend to be literal and direct." />
+                        </Label>
+                        <RadioPillGroup
+                          name="sender-nt"
+                          value={senderNeurotype}
+                          onChange={setSenderNeurotype}
+                          options={neurotypes}
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                          Their Generation
+                          <InfoTooltip content="Boomer (1946-1964), Gen X (1965-1980), Xennial (1977-1983), Millennial (1981-1996), Gen Z (1997-2012), Gen Alpha (2013+)" />
+                        </Label>
+                        <RadioPillGroup
+                          name="sender-gen"
+                          value={senderGeneration}
+                          onChange={setSenderGeneration}
+                          options={generations}
+                        />
+                      </div>
+                    </div>
 
-                  <div>
-                    <Label className="text-xs font-medium mb-2 flex items-center gap-2">Their Generation</Label>
-                  </div>
-
-                  <div>
-                    <Label className="text-xs font-medium mb-2 block">My Generation</Label>
+                    {/* About You (Receiver) */}
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-sm pb-2 border-b">About You (Receiver)</h4>
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                          Your Neurotype
+                          <InfoTooltip content="How your brain processes communication. Helps us explain the message in a way that makes sense to you." />
+                        </Label>
+                        <RadioPillGroup
+                          name="receiver-nt"
+                          value={receiverNeurotype}
+                          onChange={setReceiverNeurotype}
+                          options={neurotypes}
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                          Your Generation
+                          <InfoTooltip content="Your generational background helps us frame the analysis in terms you'll understand." />
+                        </Label>
+                        <RadioPillGroup
+                          name="receiver-gen"
+                          value={receiverGeneration}
+                          onChange={setReceiverGeneration}
+                          options={generations}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
             </Card>
 
-            <div className="flex justify-center items-center gap-4">
-              <Button type="submit" size="lg" disabled={isLoading || !message || !interpretation}>
+            <div className="flex justify-center">
+              <Button type="submit" size="lg" disabled={isLoading || !message || !interpretation} className="px-12">
                 {isLoading ? (
                   <span className="flex items-center gap-2">
                     <RefreshCw className="w-4 h-4 animate-spin" />
                     Analyzing...
                   </span>
                 ) : (
-                  "Analyze"
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4" />
+                    Analyze This Message
+                  </span>
                 )}
               </Button>
             </div>
           </form>
         )}
 
+        {/* Loading State */}
         {isLoading && (
           <Card className="mt-6 p-8 text-center">
             <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
@@ -320,14 +410,26 @@ export default function AnalyzeModePage() {
           </Card>
         )}
 
+        {/* Error State */}
         {error && (
           <Card className="mt-6 p-4 bg-destructive/10 border-destructive">
             <p className="text-destructive text-center text-sm">{error}</p>
           </Card>
         )}
 
+        {/* Results - Unchanged */}
         {aiResponse && !isLoading && (
           <div className="mt-6 space-y-4">
+            <AnalysisInfoCard
+              detectedStyle={aiResponse.detectedStyle || "auto-detected from their message"}
+              yourNeurotype={receiverNeurotype}
+              theirNeurotype={senderNeurotype}
+              yourGeneration={receiverGeneration}
+              theirGeneration={senderGeneration}
+              relationship={senderRelationship}
+              mode="analyze"
+            />
+
             {aiResponse.attachmentGuidance && uploadedFiles.length > 0 && (
               <Card className="p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
                 <h3 className="text-base font-bold font-serif text-amber-900 dark:text-amber-100 mb-2 flex items-center gap-2">
