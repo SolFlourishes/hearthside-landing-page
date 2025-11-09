@@ -58,4 +58,5 @@ export function getDb(): Firestore {
   return initializeFirebaseAdmin()
 }
 
+export const db = getDb()
 export const adminDb = getDb()

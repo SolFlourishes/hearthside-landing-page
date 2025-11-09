@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
 import { Star, MessageSquare, X } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 export function FeedbackWidget() {
   const [isOpen, setIsOpen] = useState(false)
@@ -14,20 +15,43 @@ export function FeedbackWidget() {
   const [hoveredRating, setHoveredRating] = useState(0)
   const [feedback, setFeedback] = useState("")
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const pathname = usePathname()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsSubmitting(true)
 
-    // TODO: Replace with actual API call to your feedback service
-    // Example: await fetch('/api/feedback', { method: 'POST', body: JSON.stringify({ rating, feedback }) })
+    try {
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rating,
+          feedback,
+          page: pathname,
+          userAgent: navigator.userAgent,
+        }),
+      })
 
-    setSubmitted(true)
-    setTimeout(() => {
-      setIsOpen(false)
-      setSubmitted(false)
-      setRating(0)
-      setFeedback("")
-    }, 2000)
+      const data = await response.json()
+
+      if (data.success) {
+        setSubmitted(true)
+        setTimeout(() => {
+          setIsOpen(false)
+          setSubmitted(false)
+          setRating(0)
+          setFeedback("")
+        }, 2000)
+      } else {
+        console.error("Failed to submit feedback:", data.error)
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (!isOpen) {
@@ -101,8 +125,12 @@ export function FeedbackWidget() {
             />
           </div>
 
-          <Button type="submit" disabled={rating === 0} className="w-full bg-[#007B8C] hover:bg-[#006270] text-white">
-            Submit Feedback
+          <Button
+            type="submit"
+            disabled={rating === 0 || isSubmitting}
+            className="w-full bg-[#007B8C] hover:bg-[#006270] text-white"
+          >
+            {isSubmitting ? "Submitting..." : "Submit Feedback"}
           </Button>
         </form>
       )}
