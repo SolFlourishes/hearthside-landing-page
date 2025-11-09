@@ -7,13 +7,19 @@ import { InfoTooltip } from "@/components/info-tooltip"
 
 interface PoliticalValuesSelectorProps {
   label: string
-  values: PoliticalValue[]
-  onChange: (values: PoliticalValue[]) => void
+  selectedValues: string[]
+  onChange: (values: string[]) => void
   disabled?: boolean
   tooltip?: string
 }
 
-export function PoliticalValuesSelector({ label, values, onChange, disabled, tooltip }: PoliticalValuesSelectorProps) {
+export function PoliticalValuesSelector({
+  label,
+  selectedValues,
+  onChange,
+  disabled,
+  tooltip,
+}: PoliticalValuesSelectorProps) {
   const availableValues: Array<{ value: PoliticalValue; label: string; description: string }> = [
     {
       value: "anti-establishment",
@@ -37,10 +43,11 @@ export function PoliticalValuesSelector({ label, values, onChange, disabled, too
   ]
 
   const handleToggle = (value: PoliticalValue) => {
-    if (values.includes(value)) {
-      onChange(values.filter((v) => v !== value))
+    const currentValues = selectedValues || []
+    if (currentValues.includes(value)) {
+      onChange(currentValues.filter((v) => v !== value))
     } else {
-      onChange([...values.filter((v) => v !== "none"), value])
+      onChange([...currentValues.filter((v) => v !== "none"), value])
     }
   }
 
@@ -55,7 +62,7 @@ export function PoliticalValuesSelector({ label, values, onChange, disabled, too
           <div key={item.value} className="flex items-start gap-2">
             <Checkbox
               id={`${label}-${item.value}`}
-              checked={values.includes(item.value)}
+              checked={selectedValues?.includes(item.value) || false}
               onCheckedChange={() => handleToggle(item.value)}
               disabled={disabled}
               className="mt-0.5"
