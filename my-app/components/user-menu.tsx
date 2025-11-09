@@ -31,34 +31,43 @@ export function UserMenu() {
   const supabase = useSupabase()
 
   useEffect(() => {
-    const loadUser = async () => {
-      if (!supabase) return
-
-      const {
-        data: { user: authUser },
-      } = await supabase.auth.getUser()
-
-      if (authUser) {
-        const { data: profile } = await supabase.from("profiles").select("*").eq("id", authUser.id).single()
-
-        if (profile) {
-          setUser({
-            id: profile.id,
-            display_name: profile.display_name,
-            avatar_url: profile.avatar_url,
-            role: profile.role,
-            tier: profile.tier,
-            email: authUser.email,
-          })
-        }
-      }
+    if (!supabase) {
       setLoading(false)
+      return
+    }
+
+    const loadUser = async () => {
+      try {
+        const {
+          data: { user: authUser },
+        } = await supabase.auth.getUser()
+
+        if (authUser) {
+          const { data: profile } = await supabase.from("profiles").select("*").eq("id", authUser.id).single()
+
+          if (profile) {
+            setUser({
+              id: profile.id,
+              display_name: profile.display_name,
+              avatar_url: profile.avatar_url,
+              role: profile.role,
+              tier: profile.tier,
+              email: authUser.email,
+            })
+          }
+        }
+      } catch (error) {
+        console.error("[v0] Error loading user:", error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     loadUser()
   }, [supabase])
 
   const handleLogout = async () => {
+    if (!supabase) return
     await fetch("/api/auth/logout", { method: "POST" })
     window.location.href = "/"
   }

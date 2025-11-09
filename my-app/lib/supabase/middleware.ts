@@ -22,14 +22,18 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
         },
       },
+      auth: {
+        detectSessionInUrl: false,
+        flowType: "pkce",
+      },
     },
   )
 
+  // Check auth and redirect if necessary
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect account routes - must be logged in
   if (!user && (request.nextUrl.pathname.startsWith("/account") || request.nextUrl.pathname.startsWith("/admin"))) {
     const url = request.nextUrl.clone()
     url.pathname = "/auth/login"
