@@ -13,6 +13,11 @@ import {
   type Generation,
   type RelationshipContext,
 } from "@/lib/communication-profiles"
+import {
+  getPoliticalIdentityGuidance,
+  getPoliticalValuesGuidance,
+  type PoliticalIdentity,
+} from "@/lib/political-profiles"
 
 export async function POST(request: NextRequest) {
   try {
@@ -48,7 +53,12 @@ export async function POST(request: NextRequest) {
       analyzeContext,
       interpretation,
       attachedFiles,
-      audience = "adult-to-adult", // Get audience for safety checks
+      audience = "adult-to-adult",
+      communicationMode = "personal",
+      senderPolitical,
+      receiverPolitical,
+      senderPoliticalValues = [],
+      receiverPoliticalValues = [],
     } = body
 
     console.log("[v0] Translation request received:", {
@@ -58,6 +68,7 @@ export async function POST(request: NextRequest) {
       sender,
       receiver,
       audience,
+      communicationMode,
       filesCount: attachedFiles?.length || 0,
     })
 
@@ -76,7 +87,6 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // If concerning but not blocking, we'll still process but may add resources
     const showSafetyResources = !safetyCheck.isSafe && !safetyCheck.shouldBlock
 
     const queryText = mode === "draft" ? `${context || ""} ${text}` : `${analyzeContext || ""} ${text}`
@@ -124,19 +134,35 @@ export async function POST(request: NextRequest) {
 
     const safetyGuidelines = getSafetySystemPrompt(audience)
 
-    const senderProfile = `
+    let senderProfile = ""
+    let receiverProfile = ""
+
+    if (communicationMode === "political") {
+      senderProfile = `
+=== SENDER POLITICAL PROFILE ===
+${senderPolitical ? getPoliticalIdentityGuidance(senderPolitical as PoliticalIdentity) : ""}
+${senderPoliticalValues && senderPoliticalValues.length > 0 ? `\n**Additional Communication Values:**\n${getPoliticalValuesGuidance(senderPoliticalValues)}` : ""}
+`
+      receiverProfile = `
+=== RECEIVER POLITICAL PROFILE ===
+${receiverPolitical ? getPoliticalIdentityGuidance(receiverPolitical as PoliticalIdentity) : ""}
+${receiverPoliticalValues && receiverPoliticalValues.length > 0 ? `\n**Additional Communication Values:**\n${getPoliticalValuesGuidance(receiverPoliticalValues)}` : ""}
+`
+    } else {
+      senderProfile = `
 === SENDER COMMUNICATION PROFILE ===
 ${senderNeurotype ? getNeurotypeGuidance(senderNeurotype as Neurotype) : ""}
 ${senderGeneration ? getGenerationGuidance(senderGeneration as Generation) : ""}
 ${senderRelationship ? `**Relationship Context:** ${senderRelationship}\n${getRelationshipGuidance(senderRelationship as RelationshipContext)}` : ""}
 `
 
-    const receiverProfile = `
+      receiverProfile = `
 === RECEIVER COMMUNICATION PROFILE ===
 ${receiverNeurotype ? getNeurotypeGuidance(receiverNeurotype as Neurotype) : ""}
 ${receiverGeneration ? getGenerationGuidance(receiverGeneration as Generation) : ""}
 ${receiverRelationship ? `**Relationship Context:** ${receiverRelationship}\n${getRelationshipGuidance(receiverRelationship as RelationshipContext)}` : ""}
 `
+    }
 
     if (mode === "draft") {
       systemPrompt = `You are the Clarity Coach, an expert communication translator. Your role is to help people communicate more clearly by translating their messages to match their audience's communication style.
@@ -145,18 +171,29 @@ ${safetyGuidelines}
 
 **Your task:**
 1. Analyze the sender's actual communication style FROM THEIR MESSAGE (don't rely on self-assessment)
-2. Consider the sender's neurotype, generation, and relationship to the receiver
-3. Consider the receiver's neurotype, generation, and relationship to the sender  
-4. **CRITICAL: Each aspect of their profile (neurotype, generation, relationship) MUST visibly influence your translation**
+2. ${communicationMode === "political" ? "Consider the sender's and receiver's political identities, moral foundations, and values" : "Consider the sender's neurotype, generation, and relationship to the receiver"}
+3. ${communicationMode === "political" ? "Identify shared values and bridge-building strategies to find common ground across political differences" : "Consider the receiver's neurotype, generation, and relationship to the sender"}
+4. **CRITICAL: Each aspect of their profile MUST visibly influence your translation**
 5. If documents are attached, you MUST analyze them and provide guidance on revisions
 6. Provide a detailed translation that bridges specific communication gaps
 7. Explain thoroughly how the original might be misinterpreted based on SPECIFIC DIFFERENCES in their profiles
 8. For attachments: Explain whether they should be revised, integrated into the message, or kept separate
 
 **IMPORTANT:** Your translation must demonstrably reflect:
+${
+  communicationMode === "political"
+    ? `
+- Political identity differences (e.g., reframing in terms of shared values, avoiding dogwhistles and charged language)
+- Moral foundation differences (e.g., appealing to loyalty/authority for conservatives, care/fairness for liberals)
+- Bridge-building strategies (e.g., finding common ground, acknowledging legitimate concerns, using inclusive language)
+- Communication values (e.g., respecting traditional/populist/progressive preferences for evidence, tone, and framing)
+`
+    : `
 - Neurotype differences (e.g., making implicit expectations explicit for autistic receivers, adding structure for ADHD receivers)
 - Generational differences (e.g., adding context for Boomers, being more concise for Gen Z)
 - Relationship dynamics (e.g., appropriate formality for boss, collaborative tone for colleagues)
+`
+}
 
 Do NOT provide generic advice. Show how EACH selected profile aspect changes your translation.
 
@@ -180,13 +217,25 @@ ${senderProfile}
 ${receiverProfile}
 
 Audience Type: ${audience}
+Communication Mode: ${communicationMode}
 
 ${filesContext}
 
 **Remember:** Your translation MUST show visible changes based on:
+${
+  communicationMode === "political"
+    ? `
+1. Political identity and moral foundation differences
+2. Shared values and common ground opportunities
+3. Bridge-building language that respects both perspectives
+4. Communication values that reflect their specific preferences (e.g., anti-establishment, traditional conservative, social justice, etc.)
+`
+    : `
 1. Neurotype differences between sender and receiver
 2. Generational communication preferences  
 3. Relationship power dynamics and context
+`
+}
 
 Explain SPECIFICALLY how each of these factors influenced your translation.`
     } else if (mode === "analyze") {
@@ -196,8 +245,8 @@ ${safetyGuidelines}
 
 **Your task:**
 1. Analyze the sender's actual communication style FROM THEIR MESSAGE
-2. Consider how the sender's neurotype, generation, and relationship might have influenced their word choices
-3. Consider how the receiver's neurotype, generation, and relationship might cause misinterpretation
+2. ${communicationMode === "political" ? "Consider how the sender's political identity and values might have influenced their word choices" : "Consider how the sender's neurotype, generation, and relationship might have influenced their word choices"}
+3. ${communicationMode === "political" ? "Consider how the receiver's political identity might cause misinterpretation due to different moral foundations or values" : "Consider how the receiver's neurotype, generation, and relationship might cause misinterpretation"}
 4. **CRITICAL: Each aspect of their profiles MUST visibly influence your analysis**
 5. If documents are attached, you MUST analyze them and explain their significance
 6. Explain potential misinterpretations based on SPECIFIC PROFILE DIFFERENCES
@@ -205,9 +254,20 @@ ${safetyGuidelines}
 8. For attachments: Explain how they affect interpretation and whether your response should reference them
 
 **IMPORTANT:** Your analysis must demonstrably address:
+${
+  communicationMode === "political"
+    ? `
+- How political identity differences might cause misinterpretation (e.g., same words meaning different things to liberals vs conservatives)
+- How moral foundation differences create confusion (e.g., appeals to loyalty/authority vs care/fairness)
+- How communication values affect interpretation (e.g., populist distrust of institutions vs traditional conservative respect for norms)
+- How to craft a response that finds common ground and respects both value systems
+`
+    : `
 - How neurotype differences might cause misinterpretation (e.g., autistic sender being "too blunt" to neurotypical receiver)
 - How generational norms might create confusion (e.g., Gen Z brevity seeming rude to Boomer)
 - How relationship context affects meaning (e.g., boss's "suggestion" actually being a directive)
+`
+}
 
 Do NOT provide generic advice. Show how EACH selected profile aspect changes your interpretation and suggested response.
 
@@ -232,13 +292,25 @@ ${senderProfile}
 ${receiverProfile}
 
 Audience Type: ${audience}
+Communication Mode: ${communicationMode}
 
 ${filesContext}
 
 **Remember:** Your analysis MUST explain:
+${
+  communicationMode === "political"
+    ? `
+1. How sender's political identity/values influenced their message
+2. How receiver's political identity might cause misinterpretation
+3. How their communication values affect understanding (e.g., populist vs traditional conservative language)
+4. How to bridge these SPECIFIC gaps with a response that finds common ground
+`
+    : `
 1. How sender's neurotype/generation/relationship influenced their message
 2. How receiver's neurotype/generation/relationship might cause misinterpretation
-3. How to bridge these SPECIFIC gaps in your suggested response`
+3. How to bridge these SPECIFIC gaps in your suggested response
+`
+}`
     } else {
       throw new Error("Invalid mode. Must be 'draft' or 'analyze'")
     }
@@ -288,7 +360,6 @@ ${filesContext}
 
     if (!outputValidation.isSafe) {
       console.log("[v0] Output validation failed:", outputValidation.issues)
-      // Log for review but provide a safe fallback
       return NextResponse.json({
         explanation:
           "I apologize, but I need to reconsider my response to ensure it's helpful and appropriate. Please try rephrasing your request, or contact support if you believe this is an error.",

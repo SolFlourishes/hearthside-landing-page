@@ -152,6 +152,76 @@ export default function CreditsPage() {
                       (shared interests, acceptance) and barriers (sensory overload, social expectations) in
                       cross-neurotype relationships, particularly autistic-allistic partnerships.
                     </li>
+                    <li>
+                      <strong>Moral Foundations Theory:</strong> The psychological framework identifying five universal
+                      moral foundations (Care/Harm, Fairness/Cheating, Loyalty/Betrayal, Authority/Subversion,
+                      Sanctity/Degradation) that are differentially weighted across the political spectrum, with
+                      progressives prioritizing care and fairness while conservatives value all five foundations more
+                      equally.
+                    </li>
+                    <li>
+                      <strong>Political Identity & Motivated Reasoning:</strong> The understanding that political
+                      identity functions as a powerful social identity triggering in-group favoritism, out-group
+                      hostility, and identity-protective cognition that motivates reasoning toward identity-congruent
+                      conclusions rather than truth-seeking.
+                    </li>
+                    <li>
+                      <strong>Political Discourse Analysis:</strong> The systematic examination of language in political
+                      contexts, including framing devices (metaphors, pronouns, agency), presuppositions, ideographs,
+                      and rhetorical strategies that shape political meaning and reproduce ideologies.
+                    </li>
+                    <li>
+                      <strong>Epistemic Differences Across Political Spectrum:</strong> The recognition that
+                      conservatives and progressives prioritize different sources of knowledge—conservatives valuing
+                      tradition, authority, and personal experience while progressives emphasizing empirical research,
+                      expert consensus, and systemic analysis.
+                    </li>
+                    <li>
+                      <strong>Depolarization Strategies:</strong> Evidence-based interventions including shared values
+                      discovery, affective empathy development, perspective-taking exercises, and collaborative
+                      problem-solving that reduce political hostility and facilitate cross-partisan understanding.
+                    </li>
+                    <li>
+                      <strong>Hidden Rules of Economic Class:</strong> Ruby Payne's framework identifying unspoken
+                      cultural cues and communication patterns that differ across poverty, middle class, and wealth -
+                      including language registers (casual vs. formal), narrative structures (circular vs. linear), time
+                      orientation (present vs. future), and multi-dimensional resources beyond just financial capital.
+                    </li>
+                    <li>
+                      <strong>Critical Class Analysis:</strong> Paul Gorski's critique exposing how deficit perspectives
+                      blame individuals for poverty while ignoring systemic classism, educational disparities (resource
+                      inequality, curricular tracking, teacher quality gaps), and structural barriers that perpetuate
+                      class hierarchy rather than addressing root causes like scarcity of living-wage jobs.
+                    </li>
+                    <li>
+                      <strong>Trauma and the Body:</strong> Bessel van der Kolk's neuroscientific framework showing how
+                      trauma is stored in the viscera and nervous system, fragmenting memory and breaking mind-body
+                      connections - including polyvagal theory (social engagement, fight/flight, freeze), traumatic
+                      memory fragmentation (Broca's area shutdown, thalamus dysfunction), ACE study correlations, and
+                      integrated recovery pathways (EMDR, yoga, IFS, neurofeedback).
+                    </li>
+                    <li>
+                      <strong>Indigenous Research as Ceremony:</strong> Shawn Wilson's paradigm grounding research in
+                      relationality where reality itself is relationships, knowledge is relational and shared with all
+                      creation, methodology is building more relations, and validity is replaced by authenticity through
+                      relational accountability - emphasizing intuitive logic, synthesis over deconstruction, and the
+                      inseparability of spiritual, emotional, and intellectual dimensions.
+                    </li>
+                    <li>
+                      <strong>Ubuntu Philosophy:</strong> African communal ethics based on "A person is a person through
+                      other persons" (*Umuntu ngumuntu ngabantu*), defining moral personhood through communal
+                      relationships that combine identity (sharing a coordinated way of life) with solidarity (caring
+                      for others' well-being through mutual aid) - emphasizing relationship preservation, collective
+                      responsibility, and honoring friendships over maximizing outcomes.
+                    </li>
+                    <li>
+                      <strong>Historical Trauma & Unresolved Grief:</strong> Maria Yellow Horse Brave Heart's framework
+                      identifying cumulative emotional and psychological wounding across generations from massive group
+                      trauma (genocide, slavery, forced relocation), including loyalty to ancestral suffering, impaired
+                      mourning from prohibited ceremonies, and intergenerational transmission through biological
+                      (epigenetics), psychological (parenting), and social/cultural (language loss) pathways - requiring
+                      trauma-informed communication that honors collective identity and community healing.
+                    </li>
                   </ul>
                 </AccordionContent>
               </AccordionItem>
@@ -162,6 +232,25 @@ export default function CreditsPage() {
                 </AccordionTrigger>
                 <AccordionContent>
                   <ul className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                    <li className="pl-6 -indent-6">
+                      Graham, J., Haidt, J., & Nosek, B. A. (2009). Liberals and conservatives rely on different sets of
+                      moral foundations. <em>Journal of Personality and Social Psychology</em>, <em>96</em>(5),
+                      1029-1046. https://doi.org/10.1037/a0015141
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Kahan, D. M. (2013). Ideology, motivated reasoning, and cognitive reflection.{" "}
+                      <em>Judgment and Decision Making</em>, <em>8</em>(4), 407-424.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Mason, L. (2018). Ideologues without issues: The polarizing consequences of ideological
+                      identities.
+                      <em>Public Opinion Quarterly</em>, <em>82</em>(S1), 866-887. https://doi.org/10.1093/poq/nfy005
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Wojcieszak, M., & Warner, B. R. (2020). Can interparty contact reduce affective polarization? A
+                      systematic test of different forms of intergroup contact. <em>Political Communication</em>,{" "}
+                      <em>37</em>(6), 789-811. https://doi.org/10.1080/10584609.2020.1760406
+                    </li>
                     <li className="pl-6 -indent-6">
                       Crompton, C. J., Sharp, M., Axbey, H., Fletcher-Watson, S., Flynn, E. G., & Ropar, D. (2020).
                       Neurotype-matching, but not being autistic, influences self and observer ratings of interpersonal
@@ -221,6 +310,15 @@ export default function CreditsPage() {
                       Kokina, A., & Kern, L. (2010). Social Story interventions for students with autism spectrum
                       disorders: A meta-analysis. <em>Journal of Autism and Developmental Disorders</em>, <em>40</em>
                       (7), 812-826. https://doi.org/10.1007/s10803-009-0931-0
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Brave Heart, M. Y. H. (2003). The historical trauma response among natives and its relationship
+                      with substance abuse: A Lakota illustration. <em>Journal of Psychoactive Drugs</em>, <em>35</em>
+                      (1), 7-13. https://doi.org/10.1080/02791072.2003.10399988
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Metz, T. (2007). Toward an African moral theory. <em>The Journal of Political Philosophy</em>,{" "}
+                      <em>15</em>(3), 321-341. https://doi.org/10.1111/j.1467-9760.2007.00280.x
                     </li>
                   </ul>
                 </AccordionContent>
@@ -301,6 +399,21 @@ export default function CreditsPage() {
                     <li className="pl-6 -indent-6">
                       Knapp, M. L., Hall, J. A., & Horgan, T. G. (2013).{" "}
                       <em>Nonverbal communication in human interaction</em> (8th ed.). Wadsworth/Cengage Learning.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Payne, R. K. (2005). <em>A framework for understanding poverty</em> (4th ed.). aha! Process, Inc.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Gorski, P. C. (2008). The classist underpinnings of Ruby Payne's framework. In{" "}
+                      <em>Teachers College Record</em>, <em>110</em>(6), 1422-1438.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      van der Kolk, B. A. (2014).{" "}
+                      <em>The body keeps the score: Brain, mind, and body in the healing of trauma</em>. Viking.
+                    </li>
+                    <li className="pl-6 -indent-6">
+                      Wilson, S. (2008). <em>Research is ceremony: Indigenous research methods</em>. Fernwood
+                      Publishing.
                     </li>
                   </ul>
                 </AccordionContent>

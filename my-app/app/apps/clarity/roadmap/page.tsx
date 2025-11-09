@@ -287,13 +287,111 @@ export default function RoadmapPage() {
             </div>
           </Card>
 
-          {/* Beta 3.8 - Planning */}
+          {/* Beta 3.8 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.8</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Politalk: Cross-Political Communication</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>
+                    Added political identity context selectors (Conservative, Moderate, Progressive) to Draft and
+                    Analyze modes
+                  </li>
+                  <li>
+                    Integrated 5 expert documents on political discourse, polarization, and cross-ideological
+                    communication
+                  </li>
+                  <li>
+                    Grounded AI advice in research on moral foundations, political psychology, and epistemic differences
+                    across the political spectrum
+                  </li>
+                  <li>
+                    Enhanced translations to bridge political divides with empathy, shared values discovery, and
+                    de-escalation strategies
+                  </li>
+                  <li>
+                    Added foundational research on Moral Foundations Theory (care, fairness, loyalty, authority,
+                    sanctity)
+                  </li>
+                  <li>
+                    Integrated Political Discourse Analysis frameworks for detecting framing, presuppositions, and
+                    rhetorical strategies
+                  </li>
+                  <li>
+                    Added psychological research on political identity, motivated reasoning, and in-group/out-group
+                    dynamics
+                  </li>
+                  <li>
+                    Included epistemic frameworks explaining how conservatives and progressives prioritize different
+                    sources of knowledge
+                  </li>
+                  <li>
+                    Added practical de-polarization strategies: shared values discovery, affective empathy,
+                    perspective-taking, and collaborative problem-solving
+                  </li>
+                  <li>
+                    Extended Double Empathy Problem framework to cross-political communication challenges and mutual
+                    misunderstanding
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Beta 3.9 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.9</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Positionality & Lived Experience (Part 1)</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Integrated 3 foundational documents on socioeconomic class, trauma, and lived experience</li>
+                  <li>
+                    Added Ruby Payne's Framework for Understanding Poverty - understanding "hidden rules" of economic
+                    classes, language registers (casual vs. formal), and resource inequalities
+                  </li>
+                  <li>
+                    Added critical analysis of class-based deficit perspectives - recognizing systemic classism,
+                    structural barriers in education, and the harm of stereotyping people in poverty
+                  </li>
+                  <li>
+                    Added The Body Keeps the Score framework - understanding how trauma is stored in the body,
+                    fragmented memory systems, and the neurobiology of PTSD
+                  </li>
+                  <li>
+                    Enhanced AI responses with awareness of socioeconomic communication differences, trauma-informed
+                    approaches, and class-based power dynamics
+                  </li>
+                  <li>
+                    Improved sensitivity to how poverty, class background, and trauma history shape communication
+                    patterns and expectations
+                  </li>
+                  <li>Part 2 will add Global & Non-Western communication frameworks</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          {/* Beta 4.0 - Planning */}
           <Card className="p-6">
             <div className="flex items-start gap-3 mb-4">
               <Clock className="w-6 h-6 text-muted-foreground mt-1 flex-shrink-0" />
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.8</h2>
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 4.0</h2>
                   <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
                     Planning
                   </span>
@@ -352,11 +450,11 @@ export default function RoadmapPage() {
                     Planning
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-primary mb-3">Advanced Ideological Translation</h3>
+                <h3 className="text-lg font-semibold text-primary mb-3">Generational & Professionalism Analysis</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Politalk: Translate discourse between different ideological viewpoints</li>
-                  <li>Bridge political and cultural divides</li>
-                  <li>Foster understanding across perspectives</li>
+                  <li>The Professionalism Lens: Analyze perceived professionalism</li>
+                  <li>Enhanced generational context awareness</li>
+                  <li>Hierarchical communication patterns analysis</li>
                 </ul>
               </div>
             </div>
@@ -373,11 +471,11 @@ export default function RoadmapPage() {
                     Planning
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-primary mb-3">Generational & Professionalism Analysis</h3>
+                <h3 className="text-lg font-semibold text-primary mb-3">Advanced Cross-Cultural Analysis</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>The Professionalism Lens: Analyze perceived professionalism</li>
-                  <li>Generational context awareness</li>
-                  <li>Hierarchical communication patterns</li>
+                  <li>International & Cultural Translation</li>
+                  <li>Multiple language support</li>
+                  <li>Cultural context awareness</li>
                 </ul>
               </div>
             </div>
@@ -394,11 +492,11 @@ export default function RoadmapPage() {
                     Planning
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-primary mb-3">Advanced Cross-Cultural Analysis</h3>
+                <h3 className="text-lg font-semibold text-primary mb-3">Skill Building</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>International & Cultural Translation</li>
-                  <li>Multiple language support</li>
-                  <li>Cultural context awareness</li>
+                  <li>Practice Conversation Simulator</li>
+                  <li>Real-time conversation with AI personas</li>
+                  <li>Skill development and practice scenarios</li>
                 </ul>
               </div>
             </div>
@@ -415,11 +513,11 @@ export default function RoadmapPage() {
                     Planning
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-primary mb-3">Skill Building</h3>
+                <h3 className="text-lg font-semibold text-primary mb-3">Workflow Integration</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Practice Conversation Simulator</li>
-                  <li>Real-time conversation with AI personas</li>
-                  <li>Skill development and practice scenarios</li>
+                  <li>Browser & App Extension</li>
+                  <li>Integration with email clients</li>
+                  <li>Direct integration into web browsers and applications</li>
                 </ul>
               </div>
             </div>

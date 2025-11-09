@@ -8,11 +8,164 @@ export default function ChangelogPage() {
         <p className="text-muted-foreground mb-8">Track updates, improvements, and new features.</p>
 
         <div className="space-y-6">
+          {/* Beta v3.9 */}
+          <Card className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.9</h2>
+              <span className="text-sm text-muted-foreground">Current Version</span>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-3">Positionality & Lived Experience</h3>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Part 1: Socioeconomic Class & Trauma</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Integrated 3 foundational research documents on socioeconomic class, trauma, and lived experience to
+                deepen AI understanding of positionality
+              </li>
+              <li>
+                Added Ruby Payne's "A Framework for Understanding Poverty" - comprehensive analysis of economic class
+                "hidden rules," language registers (casual vs. formal/consultative), narrative structures (circular vs.
+                linear), and multi-dimensional resources (financial, emotional, mental, social capital)
+              </li>
+              <li>
+                Added Paul Gorski's critical analysis "The Classist Underpinnings of Ruby Payne's Framework" -
+                understanding systemic classism, deficit perspectives, educational disparities, and how poverty is often
+                blamed on individuals rather than structural inequality
+              </li>
+              <li>
+                Added Bessel van der Kolk's "The Body Keeps the Score" - neurobiology of trauma (amygdala, prefrontal
+                cortex, vagus nerve), polyvagal theory (social engagement, mobilization, immobilization), traumatic
+                memory fragmentation, ACE study findings, epigenetics, and trauma-informed recovery pathways
+              </li>
+              <li>
+                Enhanced AI responses with nuanced understanding of how socioeconomic background shapes communication
+                expectations, priorities, and language use
+              </li>
+              <li>
+                Improved trauma-informed communication guidance - recognizing triggers, supporting safety and
+                empowerment, avoiding re-traumatization
+              </li>
+              <li>
+                Added awareness of class-based power dynamics in workplace and institutional communication, challenging
+                deficit narratives about people experiencing poverty
+              </li>
+              <li>
+                Integrated understanding of how trauma affects communication capacity - speechlessness (Broca's area
+                shutdown), loss of context (thalamus shutdown), and body disconnection
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">
+              Part 2: Global & Non-Western Perspectives
+            </h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Integrated 4 foundational documents on Indigenous research methodologies, African philosophy, and
+                intergenerational trauma
+              </li>
+              <li>
+                Added Shawn Wilson's "Research Is Ceremony" - Indigenous research paradigm grounded in relationality,
+                where reality itself is relationships, knowledge is relational and shared with all creation, and
+                methodology is the process of building more relations through respect, reciprocity, and responsibility
+              </li>
+              <li>
+                Added Ubuntu philosophy framework - African communal ethics based on "A person is a person through other
+                persons," emphasizing identity (sharing a way of life through coordinated interaction) and solidarity
+                (caring for others' well-being through mutual aid)
+              </li>
+              <li>
+                Added Maria Yellow Horse Brave Heart's Historical Trauma framework - understanding cumulative emotional
+                and psychological wounding across generations from massive group trauma, historical unresolved grief,
+                loyalty to ancestral suffering, and the intergenerational transmission of trauma through biological,
+                psychological, and cultural pathways
+              </li>
+              <li>
+                Enhanced AI responses with understanding of circular discourse patterns (Indigenous storytelling),
+                synthesis-first thinking (building relationships before breaking down details), collective knowledge
+                ownership, and non-interference communication styles
+              </li>
+              <li>
+                Improved trauma-informed communication guidance - recognizing triggers from historical trauma, building
+                trust slowly with marginalized communities, honoring cultural protocols, acknowledging ongoing impacts
+                of colonialism and genocide, and supporting community-based healing
+              </li>
+              <li>
+                Added awareness of how Ubuntu values shape communication - prioritizing relationship preservation over
+                directness, consensus-seeking over individual positions, and collective responsibility language ("we"
+                over "I")
+              </li>
+              <li>
+                Integrated understanding of Western vs. non-Western epistemologies - linear logic vs. circular thinking,
+                individual autonomy vs. relational identity, objectivity vs. relational accountability, deconstruction
+                vs. synthesis
+              </li>
+              <li>
+                Knowledge base now contains 37 expert documents covering neurodiversity, social dynamics, child
+                development, advanced frameworks, political communication, positionality, and global perspectives
+              </li>
+            </ul>
+          </Card>
+
+          {/* Beta v3.8 */}
+          <Card className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.8</h2>
+              <span className="text-sm text-muted-foreground">January 2025</span>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-3">Politalk: Cross-Political Communication</h3>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Added political identity context selectors to Draft and Analyze modes - users can now specify their own
+                and their audience's political orientation (Conservative, Moderate, Progressive, Unsure)
+              </li>
+              <li>
+                Integrated 5 comprehensive expert documents on political psychology, discourse analysis, and
+                depolarization strategies
+              </li>
+              <li>
+                Added Moral Foundations Theory framework - understanding how conservatives prioritize loyalty,
+                authority, and sanctity while progressives emphasize care and fairness
+              </li>
+              <li>
+                Added Political Discourse Analysis - recognizing framing devices, presuppositions, rhetorical
+                strategies, and ideological positioning in communication
+              </li>
+              <li>
+                Added Political Identity Psychology - understanding motivated reasoning, identity-protective cognition,
+                in-group favoritism, and confirmation bias across the political spectrum
+              </li>
+              <li>
+                Added Conservative vs. Progressive Epistemology - recognizing how different political orientations
+                prioritize different knowledge sources (tradition, authority, lived experience, empirical research)
+              </li>
+              <li>
+                Added Depolarization Strategies - practical techniques for shared values discovery, affective empathy,
+                perspective-taking, and collaborative problem-solving
+              </li>
+              <li>
+                Extended Double Empathy Problem framework to political communication - recognizing that cross-political
+                misunderstanding is bidirectional, not a deficit in either side
+              </li>
+              <li>
+                Enhanced AI responses to bridge ideological divides with empathy, find common ground, and de-escalate
+                politically charged conversations
+              </li>
+              <li>
+                Added transparency features showing detected political framing and selected political context in
+                AnalysisInfoCard
+              </li>
+              <li>
+                Knowledge base now contains 31 expert documents covering neurodiversity, social dynamics, child
+                development, advanced frameworks, and political communication
+              </li>
+            </ul>
+          </Card>
+
           {/* Beta v3.7 */}
           <Card className="p-6">
             <div className="flex items-start justify-between mb-4">
               <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.7</h2>
-              <span className="text-sm text-muted-foreground">Current Version</span>
+              <span className="text-sm text-muted-foreground">January 2025</span>
             </div>
             <h3 className="text-lg font-semibold text-primary mb-3">
               RAG Phase 3: Advanced Frameworks - Power, Culture & Cognition

@@ -14,7 +14,11 @@ import { AccessGate, type AccessTier } from "@/components/access-gate"
 import { ReportButton } from "@/components/report-button"
 import { AnalysisInfoCard } from "@/components/analysis-info-card"
 import { RelationshipSelector } from "@/components/relationship-selector"
+import { CommunicationModeSelector, type CommunicationMode } from "@/components/communication-mode-selector"
+import { PoliticalIdentitySelector } from "@/components/political-identity-selector"
+import { PoliticalValuesSelector } from "@/components/political-values-selector"
 import type { RelationshipContext } from "@/lib/communication-profiles"
+import type { PoliticalIdentity } from "@/lib/political-profiles"
 import { getAccessTier, setAccessTier as storeAccessTier } from "@/lib/access-storage"
 import { InfoTooltip } from "@/components/info-tooltip"
 
@@ -85,11 +89,21 @@ export default function AnalyzeModePage() {
         text: message,
         analyzeContext: situationContext,
         interpretation,
-        senderNeurotype,
-        receiverNeurotype,
-        senderGeneration,
-        receiverGeneration,
-        senderRelationship,
+        communicationMode,
+        ...(communicationMode === "personal"
+          ? {
+              senderNeurotype,
+              receiverNeurotype,
+              senderGeneration,
+              receiverGeneration,
+              senderRelationship,
+            }
+          : {
+              senderPolitical,
+              receiverPolitical,
+              senderPoliticalValues,
+              receiverPoliticalValues,
+            }),
         attachedFiles: uploadedFiles,
         audience,
         accessTier,
@@ -151,6 +165,11 @@ export default function AnalyzeModePage() {
     setSenderGeneration("unsure")
     setReceiverGeneration("unsure")
     setSenderRelationship("colleague")
+    setCommunicationMode("personal")
+    setSenderPolitical("unsure")
+    setReceiverPolitical("unsure")
+    setSenderPoliticalValues([])
+    setReceiverPoliticalValues([])
   }
 
   const handleAccessGranted = (tier: AccessTier) => {
@@ -160,6 +179,11 @@ export default function AnalyzeModePage() {
 
   const [showContextOptions, setShowContextOptions] = useState(false)
   const [showFileUpload, setShowFileUpload] = useState(false)
+  const [communicationMode, setCommunicationMode] = useState<CommunicationMode>("personal")
+  const [senderPolitical, setSenderPolitical] = useState<PoliticalIdentity>("unsure")
+  const [receiverPolitical, setReceiverPolitical] = useState<PoliticalIdentity>("unsure")
+  const [senderPoliticalValues, setSenderPoliticalValues] = useState<string[]>([])
+  const [receiverPoliticalValues, setReceiverPoliticalValues] = useState<string[]>([])
 
   if (!accessTier) {
     return <AccessGate mode="analyze" onAccessGranted={handleAccessGranted} />
@@ -201,6 +225,15 @@ export default function AnalyzeModePage() {
             {/* Primary Inputs - Always Visible */}
             <Card className="p-6 border-2 border-primary/20">
               <div className="space-y-5">
+                {/* Communication Mode Selector */}
+                <div className="pb-4 border-b">
+                  <CommunicationModeSelector
+                    value={communicationMode}
+                    onChange={setCommunicationMode}
+                    disabled={isLoading}
+                  />
+                </div>
+
                 {/* Audience Selector */}
                 <div className="pb-4 border-b">
                   <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
@@ -247,7 +280,11 @@ export default function AnalyzeModePage() {
                     id="context"
                     value={situationContext}
                     onChange={(e) => setSituationContext(e.target.value)}
-                    placeholder="Example: This is my boss, and we've been discussing deadlines..."
+                    placeholder={
+                      communicationMode === "personal"
+                        ? "Example: This is my boss, and we've been discussing deadlines..."
+                        : "Example: This is a family member who has different political views..."
+                    }
                     className="min-h-[80px]"
                   />
                 </div>
@@ -306,80 +343,124 @@ export default function AnalyzeModePage() {
                 <div id="context-options" className="p-4 pt-0 border-t space-y-4">
                   <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
                     <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground">How this helps:</strong> We'll automatically detect their
-                      communication style from the message. Adding context about you and them helps us provide more
-                      accurate interpretation that accounts for neurotype, generational differences, and relationship
-                      dynamics.
+                      <strong className="text-foreground">How this helps:</strong>{" "}
+                      {communicationMode === "personal"
+                        ? "We'll automatically detect their communication style from the message. Adding context about you and them helps us provide more accurate interpretation that accounts for neurotype, generational differences, and relationship dynamics."
+                        : "We'll automatically detect their communication style from the message. Adding political identity context helps us navigate moral foundations, values differences, and find common ground for constructive dialogue."}
                     </p>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {/* About Them (Sender) */}
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-sm pb-2 border-b">About Them (Sender)</h4>
-                      <div>
-                        <RelationshipSelector
-                          label="Your Relationship"
-                          value={senderRelationship}
-                          onChange={setSenderRelationship}
+                  {communicationMode === "political" ? (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {/* About Them (Sender) */}
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-sm pb-2 border-b">About Them (Sender)</h4>
+                        <PoliticalIdentitySelector
+                          label="Their Political Identity"
+                          value={senderPolitical}
+                          onChange={setSenderPolitical}
                           disabled={isLoading}
+                          tooltip="Their general political orientation. This helps us understand their values and communication patterns."
                         />
+                        {senderPolitical !== "unsure" && (
+                          <PoliticalValuesSelector
+                            label="Their Communication Values"
+                            selectedValues={senderPoliticalValues}
+                            onChange={setSenderPoliticalValues}
+                            disabled={isLoading}
+                          />
+                        )}
                       </div>
-                      <div>
-                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
-                          Their Neurotype
-                          <InfoTooltip content="If you know how they communicate, we can interpret their message more accurately. Autistic people tend to be literal and direct." />
-                        </Label>
-                        <RadioPillGroup
-                          name="sender-nt"
-                          value={senderNeurotype}
-                          onChange={setSenderNeurotype}
-                          options={neurotypes}
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
-                          Their Generation
-                          <InfoTooltip content="Boomer (1946-1964), Gen X (1965-1980), Xennial (1977-1983), Millennial (1981-1996), Gen Z (1997-2012), Gen Alpha (2013+)" />
-                        </Label>
-                        <RadioPillGroup
-                          name="sender-gen"
-                          value={senderGeneration}
-                          onChange={setSenderGeneration}
-                          options={generations}
-                        />
-                      </div>
-                    </div>
 
-                    {/* About You (Receiver) */}
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-sm pb-2 border-b">About You (Receiver)</h4>
-                      <div>
-                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
-                          Your Neurotype
-                          <InfoTooltip content="How your brain processes communication. Helps us explain the message in a way that makes sense to you." />
-                        </Label>
-                        <RadioPillGroup
-                          name="receiver-nt"
-                          value={receiverNeurotype}
-                          onChange={setReceiverNeurotype}
-                          options={neurotypes}
+                      {/* About You (Receiver) */}
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-sm pb-2 border-b">About You (Receiver)</h4>
+                        <PoliticalIdentitySelector
+                          label="Your Political Identity"
+                          value={receiverPolitical}
+                          onChange={setReceiverPolitical}
+                          disabled={isLoading}
+                          tooltip="Your general political orientation. This helps us frame the analysis in terms you'll understand and suggest bridge-building responses."
                         />
-                      </div>
-                      <div>
-                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
-                          Your Generation
-                          <InfoTooltip content="Your generational background helps us frame the analysis in terms you'll understand." />
-                        </Label>
-                        <RadioPillGroup
-                          name="receiver-gen"
-                          value={receiverGeneration}
-                          onChange={setReceiverGeneration}
-                          options={generations}
-                        />
+                        {receiverPolitical !== "unsure" && (
+                          <PoliticalValuesSelector
+                            label="Your Communication Values"
+                            selectedValues={receiverPoliticalValues}
+                            onChange={setReceiverPoliticalValues}
+                            disabled={isLoading}
+                          />
+                        )}
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {/* About Them (Sender) */}
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-sm pb-2 border-b">About Them (Sender)</h4>
+                        <div>
+                          <RelationshipSelector
+                            label="Your Relationship"
+                            value={senderRelationship}
+                            onChange={setSenderRelationship}
+                            disabled={isLoading}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                            Their Neurotype
+                            <InfoTooltip content="If you know how they communicate, we can interpret their message more accurately. Autistic people tend to be literal and direct." />
+                          </Label>
+                          <RadioPillGroup
+                            name="sender-nt"
+                            value={senderNeurotype}
+                            onChange={setSenderNeurotype}
+                            options={neurotypes}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                            Their Generation
+                            <InfoTooltip content="Boomer (1946-1964), Gen X (1965-1980), Xennial (1977-1983), Millennial (1981-1996), Gen Z (1997-2012), Gen Alpha (2013+)" />
+                          </Label>
+                          <RadioPillGroup
+                            name="sender-gen"
+                            value={senderGeneration}
+                            onChange={setSenderGeneration}
+                            options={generations}
+                          />
+                        </div>
+                      </div>
+
+                      {/* About You (Receiver) */}
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-sm pb-2 border-b">About You (Receiver)</h4>
+                        <div>
+                          <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                            Your Neurotype
+                            <InfoTooltip content="How your brain processes communication. Helps us explain the message in a way that makes sense to you." />
+                          </Label>
+                          <RadioPillGroup
+                            name="receiver-nt"
+                            value={receiverNeurotype}
+                            onChange={setReceiverNeurotype}
+                            options={neurotypes}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                            Your Generation
+                            <InfoTooltip content="Your generational background helps us frame the analysis in terms you'll understand." />
+                          </Label>
+                          <RadioPillGroup
+                            name="receiver-gen"
+                            value={receiverGeneration}
+                            onChange={setReceiverGeneration}
+                            options={generations}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </Card>

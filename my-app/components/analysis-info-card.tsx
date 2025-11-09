@@ -7,6 +7,8 @@ interface AnalysisInfoCardProps {
   theirNeurotype?: string
   yourGeneration?: string
   theirGeneration?: string
+  yourPoliticalIdentity?: string
+  theirPoliticalIdentity?: string
   relationship?: string
   mode: "draft" | "analyze"
 }
@@ -17,6 +19,8 @@ export function AnalysisInfoCard({
   theirNeurotype,
   yourGeneration,
   theirGeneration,
+  yourPoliticalIdentity,
+  theirPoliticalIdentity,
   relationship,
   mode,
 }: AnalysisInfoCardProps) {
@@ -54,6 +58,16 @@ export function AnalysisInfoCard({
               {theirGeneration && theirGeneration !== "unsure" && (
                 <p>
                   <strong>Their Generation:</strong> {theirGeneration}
+                </p>
+              )}
+              {yourPoliticalIdentity && yourPoliticalIdentity !== "unsure" && (
+                <p>
+                  <strong>Your Politics:</strong> {yourPoliticalIdentity}
+                </p>
+              )}
+              {theirPoliticalIdentity && theirPoliticalIdentity !== "unsure" && (
+                <p>
+                  <strong>Their Politics:</strong> {theirPoliticalIdentity}
                 </p>
               )}
               {relationship && relationship !== "colleague" && (

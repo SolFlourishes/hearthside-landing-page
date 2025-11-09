@@ -19,6 +19,10 @@ import { RelationshipSelector } from "@/components/relationship-selector"
 import type { RelationshipContext } from "@/lib/communication-profiles"
 import { AnalysisInfoCard } from "@/components/analysis-info-card"
 import { InfoTooltip } from "@/components/info-tooltip"
+import { CommunicationModeSelector, type CommunicationMode } from "@/components/communication-mode-selector"
+import { PoliticalIdentitySelector } from "@/components/political-identity-selector"
+import { PoliticalValuesSelector } from "@/components/political-values-selector"
+import type { PoliticalIdentity } from "@/lib/political-profiles"
 
 const loadingTips = [
   "Average translation time is 5-10 seconds.",
@@ -53,6 +57,13 @@ const EXAMPLE_SCENARIOS = {
     senderStyle: "indirect",
     receiverStyle: "direct",
   },
+  policyDiscussion: {
+    intent:
+      "I want to discuss healthcare policy with my uncle who has different political views. I need to bridge our differences and find common ground.",
+    draft: "Hey uncle, I've been thinking a lot about healthcare policy lately. I think we need to discuss it further.",
+    senderStyle: "direct",
+    receiverStyle: "indirect",
+  },
 }
 
 export default function DraftModePage() {
@@ -84,9 +95,15 @@ export default function DraftModePage() {
   const [responseFeedback, setResponseFeedback] = useState({ rating: 0, comment: "" })
   const [feedbackSuccess, setFeedbackSuccess] = useState({ explanation: false, response: false })
   const [showContextOptions, setShowContextOptions] = useState(false)
+  const [communicationMode, setCommunicationMode] = useState<CommunicationMode>("personal")
+  const [senderPolitical, setSenderPolitical] = useState<PoliticalIdentity>("unsure")
+  const [receiverPolitical, setReceiverPolitical] = useState<PoliticalIdentity>("unsure")
+  const [senderPoliticalValues, setSenderPoliticalValues] = useState<string[]>([])
+  const [receiverPoliticalValues, setReceiverPoliticalValues] = useState<string[]>([])
 
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
+  const politicalIdentities = ["Liberal", "Conservative", "Moderate", "Independent", "unsure"]
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -118,6 +135,11 @@ export default function DraftModePage() {
       setDraft(scenario.draft)
       setSenderStyle(scenario.senderStyle)
       setReceiverStyle(scenario.receiverStyle)
+      if (example === "policyDiscussion") {
+        setCommunicationMode("political")
+      } else {
+        setCommunicationMode("personal")
+      }
     }
   }, [])
 
@@ -139,11 +161,21 @@ export default function DraftModePage() {
         mode: "draft",
         text: draft,
         context: intent,
-        senderNeurotype,
-        receiverNeurotype,
-        senderGeneration,
-        receiverGeneration,
-        receiverRelationship,
+        communicationMode,
+        ...(communicationMode === "personal"
+          ? {
+              senderNeurotype,
+              receiverNeurotype,
+              senderGeneration,
+              receiverGeneration,
+              receiverRelationship,
+            }
+          : {
+              senderPolitical,
+              receiverPolitical,
+              senderPoliticalValues,
+              receiverPoliticalValues,
+            }),
         attachedFiles: uploadedFiles,
         audience,
         accessTier,
@@ -213,10 +245,19 @@ export default function DraftModePage() {
         interpretation: "How does my new version sound?",
         sender: senderStyle,
         receiver: receiverStyle,
-        senderNeurotype,
-        receiverNeurotype,
-        senderGeneration,
-        receiverGeneration,
+        ...(communicationMode === "personal"
+          ? {
+              senderNeurotype,
+              receiverNeurotype,
+              senderGeneration,
+              receiverGeneration,
+            }
+          : {
+              senderPolitical,
+              receiverPolitical,
+              senderPoliticalValues,
+              receiverPoliticalValues,
+            }),
       }
 
       const transRes = await fetch(`/api/clarity/translate`, {
@@ -285,6 +326,11 @@ export default function DraftModePage() {
     setIsReanalyzing(false)
     setReanalysisResult(null)
     setFeedbackDocId(null)
+    setCommunicationMode("personal")
+    setSenderPolitical("unsure")
+    setReceiverPolitical("unsure")
+    setSenderPoliticalValues([])
+    setReceiverPoliticalValues([])
   }
 
   const handleAccessGranted = (tier: AccessTier) => {
@@ -332,6 +378,11 @@ export default function DraftModePage() {
                       setDraft(scenario.draft)
                       setSenderStyle(scenario.senderStyle)
                       setReceiverStyle(scenario.receiverStyle)
+                      if (key === "policyDiscussion") {
+                        setCommunicationMode("political")
+                      } else {
+                        setCommunicationMode("personal")
+                      }
                     }}
                     className="capitalize text-xs"
                   >
@@ -362,6 +413,14 @@ export default function DraftModePage() {
             <Card className="p-6 border-2 border-primary/20">
               <div className="space-y-5">
                 <div className="pb-4 border-b">
+                  <CommunicationModeSelector
+                    value={communicationMode}
+                    onChange={setCommunicationMode}
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="pb-4 border-b">
                   <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
                 </div>
 
@@ -373,7 +432,11 @@ export default function DraftModePage() {
                     id="intent"
                     value={intent}
                     onChange={(e) => setIntent(e.target.value)}
-                    placeholder="Example: I want to ask for a promotion because I've exceeded my goals for 3 years..."
+                    placeholder={
+                      communicationMode === "personal"
+                        ? "Example: I want to ask for a promotion because I've exceeded my goals for 3 years..."
+                        : "Example: I want to discuss healthcare policy with my uncle who has different political views..."
+                    }
                     required
                     className="min-h-[100px] text-base"
                     aria-required="true"
@@ -388,7 +451,11 @@ export default function DraftModePage() {
                     id="draft"
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
-                    placeholder="Example: Hey boss, I think I deserve a promotion..."
+                    placeholder={
+                      communicationMode === "personal"
+                        ? "Example: Hey boss, I think I deserve a promotion..."
+                        : "Example: I think we need universal healthcare because people are suffering..."
+                    }
                     required
                     className="min-h-[120px] text-base"
                     aria-required="true"
@@ -420,78 +487,120 @@ export default function DraftModePage() {
                 <div id="context-options" className="p-4 pt-0 border-t space-y-4">
                   <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
                     <p className="text-xs text-muted-foreground">
-                      <strong className="text-foreground">How this helps:</strong> We'll automatically detect your
-                      communication style from your message. Adding context about you and your audience helps us provide
-                      more specific, tailored guidance that accounts for neurotype, generational differences, and
-                      relationship dynamics.
+                      <strong className="text-foreground">How this helps:</strong>{" "}
+                      {communicationMode === "personal"
+                        ? "We'll automatically detect your communication style from your message. Adding context about you and your audience helps us provide more specific, tailored guidance that accounts for neurotype, generational differences, and relationship dynamics."
+                        : "We'll automatically detect your communication style from your message. Adding political identity context helps us navigate moral foundations, values differences, and bridge-building strategies for cross-partisan dialogue."}
                     </p>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-sm pb-2 border-b">About You</h4>
-                      <div>
-                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
-                          Your Neurotype
-                          <InfoTooltip content="How your brain processes communication. Autism: prefers literal, direct language. ADHD: may provide extra context. Neurotypical: comfortable with social hints." />
-                        </Label>
-                        <RadioPillGroup
-                          name="sender-nt"
-                          value={senderNeurotype}
-                          onChange={setSenderNeurotype}
-                          options={neurotypes}
-                        />
+                  {communicationMode === "personal" ? (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-sm pb-2 border-b">About You</h4>
+                        <div>
+                          <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                            Your Neurotype
+                            <InfoTooltip content="How your brain processes communication. Autism: prefers literal, direct language. ADHD: may provide extra context. Neurotypical: comfortable with social hints." />
+                          </Label>
+                          <RadioPillGroup
+                            name="sender-nt"
+                            value={senderNeurotype}
+                            onChange={setSenderNeurotype}
+                            options={neurotypes}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                            Your Generation
+                            <InfoTooltip content="Boomer (1946-1964), Gen X (1965-1980), Xennial (1977-1983), Millennial (1981-1996), Gen Z (1997-2012), Gen Alpha (2013+)" />
+                          </Label>
+                          <RadioPillGroup
+                            name="sender-gen"
+                            value={senderGeneration}
+                            onChange={setSenderGeneration}
+                            options={generations}
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
-                          Your Generation
-                          <InfoTooltip content="Boomer (1946-1964), Gen X (1965-1980), Xennial (1977-1983), Millennial (1981-1996), Gen Z (1997-2012), Gen Alpha (2013+)" />
-                        </Label>
-                        <RadioPillGroup
-                          name="sender-gen"
-                          value={senderGeneration}
-                          onChange={setSenderGeneration}
-                          options={generations}
-                        />
-                      </div>
-                    </div>
 
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-sm pb-2 border-b">About Your Audience</h4>
-                      <div>
-                        <RelationshipSelector
-                          label="Your Relationship"
-                          value={receiverRelationship}
-                          onChange={setReceiverRelationship}
-                          disabled={isLoading}
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
-                          Their Neurotype
-                          <InfoTooltip content="If you know how they communicate, we can adapt your message. Autistic people prefer direct language without implied meanings." />
-                        </Label>
-                        <RadioPillGroup
-                          name="receiver-nt"
-                          value={receiverNeurotype}
-                          onChange={setReceiverNeurotype}
-                          options={neurotypes}
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-xs font-medium mb-2 flex items-center gap-1">
-                          Their Generation
-                          <InfoTooltip content="Different generations expect different formality levels. Boomers prefer context, Gen Z values brevity and authenticity." />
-                        </Label>
-                        <RadioPillGroup
-                          name="receiver-gen"
-                          value={receiverGeneration}
-                          onChange={setReceiverGeneration}
-                          options={generations}
-                        />
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-sm pb-2 border-b">About Your Audience</h4>
+                        <div>
+                          <RelationshipSelector
+                            label="Your Relationship"
+                            value={receiverRelationship}
+                            onChange={setReceiverRelationship}
+                            disabled={isLoading}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                            Their Neurotype
+                            <InfoTooltip content="If you know how they communicate, we can adapt your message. Autistic people prefer direct language without implied meanings." />
+                          </Label>
+                          <RadioPillGroup
+                            name="receiver-nt"
+                            value={receiverNeurotype}
+                            onChange={setReceiverNeurotype}
+                            options={neurotypes}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium mb-2 flex items-center gap-1">
+                            Their Generation
+                            <InfoTooltip content="Different generations expect different formality levels. Boomers prefer context, Gen Z values brevity and authenticity." />
+                          </Label>
+                          <RadioPillGroup
+                            name="receiver-gen"
+                            value={receiverGeneration}
+                            onChange={setReceiverGeneration}
+                            options={generations}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-sm pb-2 border-b">About You</h4>
+                        <PoliticalIdentitySelector
+                          label="Your Political Identity"
+                          value={senderPolitical}
+                          onChange={setSenderPolitical}
+                          disabled={isLoading}
+                          tooltip="Your general political orientation. This helps us understand your moral foundations and communication patterns."
+                        />
+                        {senderPolitical !== "unsure" && (
+                          <PoliticalValuesSelector
+                            label="Your Communication Values"
+                            selectedValues={senderPoliticalValues}
+                            onChange={setSenderPoliticalValues}
+                            disabled={isLoading}
+                          />
+                        )}
+                      </div>
+
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-sm pb-2 border-b">About Your Audience</h4>
+                        <PoliticalIdentitySelector
+                          label="Their Political Identity"
+                          value={receiverPolitical}
+                          onChange={setReceiverPolitical}
+                          disabled={isLoading}
+                          tooltip="Their general political orientation. This helps us identify bridge-building strategies and shared values."
+                        />
+                        {receiverPolitical !== "unsure" && (
+                          <PoliticalValuesSelector
+                            label="Their Communication Values"
+                            selectedValues={receiverPoliticalValues}
+                            onChange={setReceiverPoliticalValues}
+                            disabled={isLoading}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </Card>
@@ -536,6 +645,8 @@ export default function DraftModePage() {
               yourGeneration={senderGeneration}
               theirGeneration={receiverGeneration}
               relationship={receiverRelationship}
+              yourPolitical={senderPolitical}
+              theirPolitical={receiverPolitical}
               mode="draft"
             />
 

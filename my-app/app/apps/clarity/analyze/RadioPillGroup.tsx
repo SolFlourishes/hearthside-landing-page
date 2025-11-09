@@ -7,9 +7,10 @@ interface RadioPillGroupProps {
   value: string
   onChange: (value: string) => void
   options: string[]
+  disabled?: boolean
 }
 
-export function RadioPillGroup({ name, value, onChange, options }: RadioPillGroupProps) {
+export function RadioPillGroup({ name, value, onChange, options, disabled }: RadioPillGroupProps) {
   return (
     <div className="flex flex-wrap gap-2">
       {options.map((option) => (
@@ -19,9 +20,10 @@ export function RadioPillGroup({ name, value, onChange, options }: RadioPillGrou
           variant={value === option ? "default" : "outline"}
           size="sm"
           onClick={() => onChange(option)}
+          disabled={disabled}
           className="capitalize text-xs"
         >
-          {option.replace(/-/g, " ")}
+          {typeof option === "string" ? option.replace(/-/g, " ") : option}
         </Button>
       ))}
     </div>
