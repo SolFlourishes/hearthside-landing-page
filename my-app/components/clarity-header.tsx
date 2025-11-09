@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { UserMenu } from "@/components/user-menu"
 
 export function ClarityHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -23,7 +24,7 @@ export function ClarityHeader() {
           <div className="flex items-center gap-3">
             <Link href={`${basePath}`} className="flex items-center gap-1.5">
               <span className="font-serif text-xs font-bold text-primary">Clarity Coach</span>
-              <span className="text-[9px] text-muted-foreground font-mono">Beta 3.10</span>
+              <span className="text-[9px] text-muted-foreground font-mono">Beta 4.0</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -123,6 +124,7 @@ export function ClarityHeader() {
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            <UserMenu />
             <Button
               variant="ghost"
               size="sm"

@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/firebase-admin"
-import { checkAdminAuth } from "@/lib/admin-auth"
+import { checkModeratorAuth } from "@/lib/admin-auth"
 
 export async function POST(request: NextRequest) {
   try {
-    const authResult = checkAdminAuth(request)
+    const authResult = await checkModeratorAuth()
 
     if (!authResult.isAuthenticated) {
       return NextResponse.json(
@@ -18,13 +18,13 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { storyId, action, reviewNotes, reviewedBy } = body
+    const { storyId, action, reviewNotes } = body
 
-    if (!storyId || !action || !reviewedBy) {
+    if (!storyId || !action) {
       return NextResponse.json(
         {
           success: false,
-          error: "Missing required fields: storyId, action, reviewedBy",
+          error: "Missing required fields: storyId, action",
         },
         { status: 400 },
       )
@@ -41,9 +41,9 @@ export async function POST(request: NextRequest) {
     }
 
     const db = getDb()
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       status: action === "approve" ? "published" : "rejected",
-      reviewedBy,
+      reviewedBy: authResult.user?.email || "unknown",
       reviewNotes: reviewNotes || "",
     }
 

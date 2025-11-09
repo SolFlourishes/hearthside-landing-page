@@ -2,10 +2,10 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
 import { HearthArch } from "./hearth-arch"
 import { ThemeToggle } from "./theme-toggle"
+import { UserMenu } from "./user-menu"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -102,9 +102,7 @@ export function Header() {
 
             <ThemeToggle />
 
-            <Button size="sm" className="bg-[#007B8C] hover:bg-[#006270] text-white rounded-lg" asChild>
-              <Link href="/apps/clarity">Get Started</Link>
-            </Button>
+            <UserMenu />
           </div>
 
           {/* Mobile Menu Button */}
@@ -188,6 +186,7 @@ export function Header() {
               >
                 Get Started
               </Link>
+              <UserMenu />
             </div>
           </div>
         )}

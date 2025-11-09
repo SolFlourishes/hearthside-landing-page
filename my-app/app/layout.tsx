@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Header } from "@/components/header"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SupabaseProvider } from "@/components/supabase-provider"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,10 +35,12 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${merriweather.variable}`}>
       <body>
         <ThemeProvider>
-          <Header />
-          {children}
-          <Analytics />
-          <SpeedInsights />
+          <SupabaseProvider>
+            <Header />
+            {children}
+            <Analytics />
+            <SpeedInsights />
+          </SupabaseProvider>
         </ThemeProvider>
       </body>
     </html>

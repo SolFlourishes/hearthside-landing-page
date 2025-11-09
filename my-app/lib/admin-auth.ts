@@ -1,83 +1,93 @@
-import type { NextRequest } from "next/server"
+import { createClient } from "@/lib/supabase/server"
+import type { UserRole } from "./user-management"
 
 export interface AdminAuthResult {
   isAuthenticated: boolean
+  user?: {
+    id: string
+    email: string
+    role: UserRole
+  }
   error?: string
 }
 
 /**
- * Simple admin authentication check using environment variable
- * In production, replace with proper auth service (e.g., Clerk, Auth0, Firebase Auth)
+ * Check if the current user has the required role
+ * Role hierarchy: admin (4) > moderator (3) > author (2) > elder (1) > user (0)
  */
-export function checkAdminAuth(request: NextRequest): AdminAuthResult {
-  const authHeader = request.headers.get("authorization")
+export async function checkRoleAuth(requiredRole: UserRole): Promise<AdminAuthResult> {
+  const supabase = await createClient()
 
-  if (!authHeader) {
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser()
+
+  if (authError || !user) {
     return {
       isAuthenticated: false,
-      error: "Missing authorization header",
+      error: "Not authenticated",
     }
   }
 
-  // Expected format: "Bearer <admin_token>"
-  const [bearer, token] = authHeader.split(" ")
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("role, email")
+    .eq("id", user.id)
+    .single()
 
-  if (bearer !== "Bearer" || !token) {
+  if (profileError || !profile) {
     return {
       isAuthenticated: false,
-      error: "Invalid authorization format. Expected: Bearer <token>",
+      error: "User profile not found",
     }
   }
 
-  const adminToken = process.env.ADMIN_AUTH_TOKEN
-
-  if (!adminToken) {
-    console.error("ADMIN_AUTH_TOKEN environment variable is not set")
-    return {
-      isAuthenticated: false,
-      error: "Admin authentication is not configured",
-    }
+  const roleHierarchy: Record<UserRole, number> = {
+    user: 0,
+    elder: 1,
+    author: 2,
+    moderator: 3,
+    admin: 4,
   }
 
-  if (token !== adminToken) {
+  const userLevel = roleHierarchy[profile.role as UserRole] || 0
+  const requiredLevel = roleHierarchy[requiredRole]
+
+  if (userLevel < requiredLevel) {
     return {
       isAuthenticated: false,
-      error: "Invalid admin token",
+      error: `Insufficient permissions. Required: ${requiredRole}, Current: ${profile.role}`,
     }
   }
 
   return {
     isAuthenticated: true,
+    user: {
+      id: user.id,
+      email: profile.email,
+      role: profile.role as UserRole,
+    },
   }
 }
 
 /**
- * Get admin credentials from environment for initial setup
- * This is a temporary solution - in production, use proper user management
+ * Check if current user is an admin
  */
-export function getAdminInstructions(): string {
-  const adminToken = process.env.ADMIN_AUTH_TOKEN
+export async function checkAdminAuth(): Promise<AdminAuthResult> {
+  return checkRoleAuth("admin")
+}
 
-  if (!adminToken) {
-    return `
-Admin authentication is not configured. To set up admin access:
+/**
+ * Check if current user is a moderator or higher
+ */
+export async function checkModeratorAuth(): Promise<AdminAuthResult> {
+  return checkRoleAuth("moderator")
+}
 
-1. Add ADMIN_AUTH_TOKEN environment variable in your Vercel project settings
-2. Set it to a secure random string (e.g., use a password generator)
-3. When making admin API requests, include the header:
-   Authorization: Bearer YOUR_ADMIN_TOKEN
-
-For local development, add to .env.local:
-ADMIN_AUTH_TOKEN=your-secure-token-here
-`
-  }
-
-  return `
-Admin authentication is configured. To access admin endpoints:
-
-Include this header in your API requests:
-Authorization: Bearer ${adminToken.substring(0, 8)}...
-
-Keep this token secure and never commit it to version control.
-`
+/**
+ * Check if current user is an author or higher
+ */
+export async function checkAuthorAuth(): Promise<AdminAuthResult> {
+  return checkRoleAuth("author")
 }

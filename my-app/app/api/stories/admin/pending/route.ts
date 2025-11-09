@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/firebase-admin"
-import { checkAdminAuth } from "@/lib/admin-auth"
+import { checkModeratorAuth } from "@/lib/admin-auth"
 
 export async function GET(request: NextRequest) {
   try {
-    const authResult = checkAdminAuth(request)
+    const authResult = await checkModeratorAuth()
 
     if (!authResult.isAuthenticated) {
       return NextResponse.json(

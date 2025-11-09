@@ -1,7 +1,15 @@
+import { updateSession } from "@/lib/supabase/middleware"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  const supabaseResponse = await updateSession(request)
+
+  // If Supabase middleware returned a redirect, use it
+  if (supabaseResponse.status === 307 || supabaseResponse.status === 308) {
+    return supabaseResponse
+  }
+
   const hostname = request.headers.get("host") || ""
   const pathname = request.nextUrl.pathname
 
@@ -12,26 +20,13 @@ export function middleware(request: NextRequest) {
     }
 
     // Rewrite root and other paths to /apps/clarity
-    // clarity.hearthsideworks.com/ → /apps/clarity
-    // clarity.hearthsideworks.com/draft → /apps/clarity/draft
     const rewritePath = pathname === "/" ? "/apps/clarity" : `/apps/clarity${pathname}`
-
     return NextResponse.rewrite(new URL(rewritePath, request.url))
   }
 
-  return NextResponse.next()
+  return supabaseResponse
 }
 
-// Configure which routes the middleware should run on
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 }
