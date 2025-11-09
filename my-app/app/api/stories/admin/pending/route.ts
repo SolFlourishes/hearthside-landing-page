@@ -1,10 +1,21 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/firebase-admin"
+import { checkAdminAuth } from "@/lib/admin-auth"
 
 export async function GET(request: NextRequest) {
   try {
-    // TODO: Add authentication check here
-    // For now, this is unprotected - you should add auth before deploying
+    const authResult = checkAdminAuth(request)
+
+    if (!authResult.isAuthenticated) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized",
+          details: authResult.error,
+        },
+        { status: 401 },
+      )
+    }
 
     const db = getDb()
     const snapshot = await db
@@ -24,7 +35,7 @@ export async function GET(request: NextRequest) {
       count: stories.length,
     })
   } catch (error) {
-    console.error("[v0] Error fetching pending stories:", error)
+    console.error("Error fetching pending stories:", error)
     return NextResponse.json(
       {
         success: false,

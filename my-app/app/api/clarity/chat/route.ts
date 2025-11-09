@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
-      console.error("[v0] Chat API error: GOOGLE_GENERATIVE_AI_API_KEY is not set")
+      console.error("Chat API error: GOOGLE_GENERATIVE_AI_API_KEY is not set")
       return NextResponse.json(
         {
           error: "API key not configured",
@@ -37,18 +37,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { history, audience = "adult-to-adult" } = body // Get audience for safety checks
 
-    console.log("[v0] Chat request received:", {
-      historyLength: history?.length,
-      historyType: Array.isArray(history) ? "array" : typeof history,
-      audience,
-      firstMessage: history?.[0],
-    })
-
     if (!history || !Array.isArray(history)) {
       return NextResponse.json({ error: "Invalid messages format", success: false }, { status: 400 })
     }
-
-    console.log("[v0] Chat request received with", history.length, "messages")
 
     const lastUserMessage = history.filter((msg: any) => msg.role === "user").pop()?.content || ""
     const lastUserFiles = history.filter((msg: any) => msg.role === "user").pop()?.files || []
@@ -56,7 +47,6 @@ export async function POST(request: NextRequest) {
     const safetyCheck = checkContentSafety(lastUserMessage, audience)
 
     if (safetyCheck.shouldBlock) {
-      console.log("[v0] Content blocked due to safety concerns:", safetyCheck.category)
       return NextResponse.json({
         reply: generateSafetyResponse(safetyCheck),
         success: true,
@@ -66,19 +56,11 @@ export async function POST(request: NextRequest) {
 
     const showSafetyResources = !safetyCheck.isSafe && !safetyCheck.shouldBlock
 
-    console.log("[v0] Retrieving relevant expert knowledge for query:", lastUserMessage.substring(0, 100))
-
     const relevantDocs = await retrieveRelevantDocuments(lastUserMessage, 3)
     const expertContext = formatContextForPrompt(relevantDocs)
 
-    console.log("[v0] Retrieved", relevantDocs.length, "relevant documents:")
-    relevantDocs.forEach((doc, i) => {
-      console.log(`  ${i + 1}. ${doc.title} (similarity: ${doc.similarity?.toFixed(3) || "N/A"})`)
-    })
-
     let filesContext = ""
     if (lastUserFiles.length > 0) {
-      console.log("[v0] Processing", lastUserFiles.length, "attached files in chat")
       filesContext = "\n\n=== ATTACHED DOCUMENTS (MUST BE ANALYZED) ===\n"
       filesContext += "The user has attached documents. You MUST:\n"
       filesContext += "1. Acknowledge the attachments in your response\n"
@@ -129,8 +111,6 @@ Remember: You're having a conversation, not writing a manual. Keep it brief, foc
 
 Format your responses in HTML with proper paragraph tags for readability.${expertContext}${filesContext}`
 
-    console.log("[v0] Calling Google AI with model: gemini-2.0-flash-exp")
-
     const { text } = await generateText({
       model: google("gemini-2.0-flash-exp"),
       messages: [
@@ -143,8 +123,6 @@ Format your responses in HTML with proper paragraph tags for readability.${exper
       temperature: 0.8,
     })
 
-    console.log("[v0] Chat response generated, length:", text.length)
-
     const formattedResponse = text
       .split("\n\n")
       .map((para) => `<p>${para}</p>`)
@@ -153,7 +131,6 @@ Format your responses in HTML with proper paragraph tags for readability.${exper
     const outputValidation = validateOutput(formattedResponse, audience)
 
     if (outputValidation.hasIssues) {
-      console.log("[v0] Output validation found issues:", outputValidation.issues)
       // Log but don't block - the AI should have already handled this appropriately
     }
 
@@ -163,11 +140,9 @@ Format your responses in HTML with proper paragraph tags for readability.${exper
       safetyWarning: showSafetyResources ? safetyCheck : null,
     })
   } catch (error) {
-    console.error("[v0] Chat API error:", {
+    console.error("Chat API error:", {
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
-      name: error instanceof Error ? error.name : undefined,
-      fullError: error,
     })
 
     return NextResponse.json(

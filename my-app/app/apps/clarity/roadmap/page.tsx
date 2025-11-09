@@ -385,6 +385,34 @@ export default function RoadmapPage() {
             </div>
           </Card>
 
+          {/* Beta 3.10 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 3.10</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Quality of Life Improvements</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Fixed critical loading errors and type safety issues in political identity system</li>
+                  <li>Added comprehensive error boundaries for graceful error recovery</li>
+                  <li>Removed debug console logs and improved production error handling</li>
+                  <li>
+                    Implemented admin authentication for secure admin API routes (temporary until Beta 4.0 role system)
+                  </li>
+                  <li>Added privacy consent banner and age verification for COPPA compliance</li>
+                  <li>Created reusable EmptyState and LoadingState components for consistent UX</li>
+                  <li>Enhanced security, performance, and user experience across the application</li>
+                  <li>Prepared codebase for Beta 4.0 accounts and role-based permissions system</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
           {/* Beta 4.0 - Planning */}
           <Card className="p-6">
             <div className="flex items-start gap-3 mb-4">

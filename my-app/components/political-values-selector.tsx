@@ -15,9 +15,9 @@ interface PoliticalValuesSelectorProps {
 
 export function PoliticalValuesSelector({
   label,
-  selectedValues,
+  selectedValues = [], // Default to empty array to prevent undefined errors
   onChange,
-  disabled,
+  disabled = false, // Default disabled to false
   tooltip,
 }: PoliticalValuesSelectorProps) {
   const availableValues: Array<{ value: PoliticalValue; label: string; description: string }> = [
@@ -43,7 +43,8 @@ export function PoliticalValuesSelector({
   ]
 
   const handleToggle = (value: PoliticalValue) => {
-    const currentValues = selectedValues || []
+    const currentValues = Array.isArray(selectedValues) ? selectedValues : []
+
     if (currentValues.includes(value)) {
       onChange(currentValues.filter((v) => v !== value))
     } else {
@@ -62,7 +63,7 @@ export function PoliticalValuesSelector({
           <div key={item.value} className="flex items-start gap-2">
             <Checkbox
               id={`${label}-${item.value}`}
-              checked={selectedValues?.includes(item.value) || false}
+              checked={Array.isArray(selectedValues) && selectedValues.includes(item.value)} // Added array check
               onCheckedChange={() => handleToggle(item.value)}
               disabled={disabled}
               className="mt-0.5"

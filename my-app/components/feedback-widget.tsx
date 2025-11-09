@@ -21,8 +21,6 @@ export function FeedbackWidget() {
     // TODO: Replace with actual API call to your feedback service
     // Example: await fetch('/api/feedback', { method: 'POST', body: JSON.stringify({ rating, feedback }) })
 
-    console.log("[v0] Feedback submitted:", { rating, feedback })
-
     setSubmitted(true)
     setTimeout(() => {
       setIsOpen(false)

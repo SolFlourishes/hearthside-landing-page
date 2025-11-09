@@ -8,11 +8,111 @@ export default function ChangelogPage() {
         <p className="text-muted-foreground mb-8">Track updates, improvements, and new features.</p>
 
         <div className="space-y-6">
+          {/* Beta v3.10 */}
+          <Card className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.10</h2>
+              <span className="text-sm text-muted-foreground">Current Version</span>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-3">Quality of Life Improvements</h3>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Critical Fixes</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Fixed critical loading error in political values selector that caused application crashes when selecting
+                political identities
+              </li>
+              <li>
+                Resolved type safety issues with RadioPillGroup components - added proper null checks and default values
+              </li>
+              <li>
+                Enhanced error handling with proper default parameters and type guards throughout political identity
+                system
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Error Handling & Debugging</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Added comprehensive ErrorBoundary component to Clarity layout for graceful error recovery with
+                user-friendly fallback UI
+              </li>
+              <li>
+                Removed 80+ debug console.log statements across the application to improve performance and security
+              </li>
+              <li>
+                Preserved error console.error statements for production debugging while cleaning up development-only
+                logs
+              </li>
+              <li>
+                ErrorBoundary shows detailed error info in development and clean error message in production with
+                refresh option
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Security Improvements</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Implemented admin authentication system using environment variable tokens and Bearer auth for secure
+                admin API routes
+              </li>
+              <li>Protected admin endpoints (pending stories, review system) from unauthorized access</li>
+              <li>
+                Added admin auth middleware that will be replaced with role-based permissions in Beta 4.0 account system
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Privacy & Compliance</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Added comprehensive consent banner for cookie and analytics preferences with "Accept All" and "Essential
+                Only" options
+              </li>
+              <li>
+                Implemented age verification modal for COPPA compliance with content filtering for children, teens, and
+                adults
+              </li>
+              <li>
+                Created consent manager utility for handling user privacy preferences with localStorage persistence
+              </li>
+              <li>Integrated consent flow into Clarity Coach layout for full privacy law compliance</li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">User Experience Enhancements</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Created reusable EmptyState component with icon, title, description, and action button for consistent
+                empty state UX
+              </li>
+              <li>
+                Added LoadingState component with spinner for improved loading feedback throughout the application
+              </li>
+              <li>Enhanced Tales from the White Room page with polished empty state when no stories are available</li>
+              <li>Improved error messages and user feedback across all forms and interactions</li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Code Quality & Maintenance</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>Standardized error handling patterns across API routes and client components</li>
+              <li>
+                Cleaned up TODO comments and implemented missing functionality (admin auth, feedback widget planning)
+              </li>
+              <li>Improved type safety throughout political identity and communication profile systems</li>
+              <li>Enhanced code documentation and added change comments for better maintainability</li>
+            </ul>
+
+            <p className="mt-4 text-sm text-muted-foreground italic">
+              Beta 3.10 focused on production readiness, addressing critical bugs, security vulnerabilities, and UX
+              polish before moving to the Beta 4.0 accounts phase. All improvements maintain backward compatibility and
+              accessibility standards.
+            </p>
+          </Card>
+
           {/* Beta v3.9 */}
           <Card className="p-6">
             <div className="flex items-start justify-between mb-4">
               <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.9</h2>
-              <span className="text-sm text-muted-foreground">Current Version</span>
+              <span className="text-sm text-muted-foreground">January 2025</span>
             </div>
             <h3 className="text-lg font-semibold text-primary mb-3">Positionality & Lived Experience</h3>
 

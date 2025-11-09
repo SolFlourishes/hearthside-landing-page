@@ -61,23 +61,11 @@ export async function POST(request: NextRequest) {
       receiverPoliticalValues = [],
     } = body
 
-    console.log("[v0] Translation request received:", {
-      mode,
-      text,
-      context,
-      sender,
-      receiver,
-      audience,
-      communicationMode,
-      filesCount: attachedFiles?.length || 0,
-    })
-
     const inputText =
       mode === "draft" ? `${context || ""} ${text}` : `${analyzeContext || ""} ${text} ${interpretation || ""}`
     const safetyCheck = checkContentSafety(inputText, audience)
 
     if (safetyCheck.shouldBlock) {
-      console.log("[v0] Content blocked due to safety concerns:", safetyCheck.category)
       return NextResponse.json({
         explanation: generateSafetyResponse(safetyCheck),
         response: "",
@@ -90,19 +78,12 @@ export async function POST(request: NextRequest) {
     const showSafetyResources = !safetyCheck.isSafe && !safetyCheck.shouldBlock
 
     const queryText = mode === "draft" ? `${context || ""} ${text}` : `${analyzeContext || ""} ${text}`
-    console.log("[v0] Retrieving expert knowledge for translation:", queryText.substring(0, 100))
 
     const relevantDocs = await retrieveRelevantDocuments(queryText, 2)
     const expertContext = formatContextForPrompt(relevantDocs)
 
-    console.log("[v0] Retrieved", relevantDocs.length, "relevant documents for translation:")
-    relevantDocs.forEach((doc, i) => {
-      console.log(`  ${i + 1}. ${doc.title} (similarity: ${doc.similarity?.toFixed(3) || "N/A"})`)
-    })
-
     let filesContext = ""
     if (attachedFiles && attachedFiles.length > 0) {
-      console.log("[v0] Processing", attachedFiles.length, "attached files")
       filesContext = "\n\n=== ATTACHED DOCUMENTS (MUST BE ANALYZED) ===\n"
       filesContext += "The user has attached the following documents. You MUST:\n"
       filesContext += "1. Acknowledge each attachment in your explanation\n"
@@ -324,9 +305,6 @@ ${
       temperature: 0.7,
     })
 
-    console.log("[v0] AI response received, length:", aiText.length)
-    console.log("[v0] Raw AI response:", aiText)
-
     let cleanedText = aiText.trim()
 
     if (cleanedText.startsWith("```json")) {
@@ -340,26 +318,22 @@ ${
       cleanedText = jsonMatch[0]
     }
 
-    console.log("[v0] Cleaned text for parsing:", cleanedText)
-
     let parsed
     try {
       parsed = JSON.parse(cleanedText)
     } catch (parseError) {
-      console.error("[v0] JSON parse error:", parseError)
-      console.error("[v0] Failed to parse text:", cleanedText)
+      console.error("JSON parse error:", parseError)
       throw new Error(`Invalid JSON response: ${parseError instanceof Error ? parseError.message : String(parseError)}`)
     }
 
     if (!parsed.explanation || !parsed.translation) {
-      console.error("[v0] Missing required fields in response:", parsed)
+      console.error("Missing required fields in response:", parsed)
       throw new Error("Response missing required fields (explanation or translation)")
     }
 
     const outputValidation = validateOutput(parsed.explanation + " " + parsed.translation, audience)
 
     if (!outputValidation.isSafe) {
-      console.log("[v0] Output validation failed:", outputValidation.issues)
       return NextResponse.json({
         explanation:
           "I apologize, but I need to reconsider my response to ensure it's helpful and appropriate. Please try rephrasing your request, or contact support if you believe this is an error.",
@@ -379,7 +353,7 @@ ${
       safetyWarning: showSafetyResources ? safetyCheck : null,
     })
   } catch (error) {
-    console.error("[v0] Translation API error:", error)
+    console.error("Translation API error:", error)
     return NextResponse.json(
       {
         error: "Failed to generate translation",

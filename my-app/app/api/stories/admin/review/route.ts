@@ -1,10 +1,21 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/firebase-admin"
+import { checkAdminAuth } from "@/lib/admin-auth"
 
 export async function POST(request: NextRequest) {
   try {
-    // TODO: Add authentication check here
-    // For now, this is unprotected - you should add auth before deploying
+    const authResult = checkAdminAuth(request)
+
+    if (!authResult.isAuthenticated) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized",
+          details: authResult.error,
+        },
+        { status: 401 },
+      )
+    }
 
     const body = await request.json()
     const { storyId, action, reviewNotes, reviewedBy } = body
@@ -47,7 +58,7 @@ export async function POST(request: NextRequest) {
       message: `Story ${action === "approve" ? "approved and published" : "rejected"}`,
     })
   } catch (error) {
-    console.error("[v0] Error reviewing story:", error)
+    console.error("Error reviewing story:", error)
     return NextResponse.json(
       {
         success: false,

@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, Sparkles, Users, Eye } from "lucide-react"
 import Link from "next/link"
+import { EmptyState } from "@/components/empty-state"
+import { LoadingState } from "@/components/loading-state"
 
 interface Story {
   id: string
@@ -149,13 +151,36 @@ export default function TalesFromTheWhiteRoomPage() {
         <section className="py-12 bg-slate-900/30">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {loading ? (
-              <div className="text-center text-slate-400 py-12">Loading stories...</div>
+              <LoadingState message="Loading stories from the White Room..." size="lg" />
             ) : stories.length === 0 ? (
-              <div className="text-center py-12">
-                <BookOpen className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                <p className="text-slate-400 text-lg mb-4">No stories yet in this category.</p>
-                <p className="text-slate-500">Be the first to submit a story from your playthrough!</p>
-              </div>
+              <EmptyState
+                icon={BookOpen}
+                title={
+                  filter === "all"
+                    ? "No Stories Yet"
+                    : `No ${filter === "ai-generated" ? "AI-Generated" : "Player-Submitted"} Stories`
+                }
+                description={
+                  filter === "all"
+                    ? "Be the first to share your journey through the White Room. Your story could inspire others and help build our community."
+                    : `No ${filter === "ai-generated" ? "AI-generated" : "player-submitted"} stories are available yet. Try another category or submit your own tale.`
+                }
+                action={{
+                  label: "Submit Your Story",
+                  onClick: () => (window.location.href = "/stories/tales-from-the-white-room/submit"),
+                }}
+                secondaryAction={
+                  filter !== "all"
+                    ? {
+                        label: "View All Stories",
+                        onClick: () => setFilter("all"),
+                      }
+                    : {
+                        label: "Learn About Project: Cohesion",
+                        onClick: () => (window.location.href = "/games/project-cohesion"),
+                      }
+                }
+              />
             ) : (
               <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                 {stories.map((story) => (
