@@ -4,6 +4,7 @@ import { Inter, Merriweather } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Header } from "@/components/header"
+import { ClarityHeader } from "@/components/clarity-header"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { SupabaseProvider } from "@/components/supabase-provider"
@@ -26,6 +27,15 @@ export const metadata: Metadata = {
     generator: 'v0.app'
 }
 
+function ConditionalHeader() {
+  return (
+    <>
+      <Header />
+      <ClarityHeader />
+    </>
+  )
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -36,7 +46,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <SupabaseProvider>
-            <Header />
+            <ConditionalHeader />
             {children}
             <Analytics />
             <SpeedInsights />

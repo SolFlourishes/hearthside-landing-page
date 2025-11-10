@@ -18,7 +18,7 @@ export function ClarityHeader() {
   const isActive = (path: string) => pathname === path
 
   return (
-    <header className="sticky top-16 z-40 w-full border-b bg-background">
+    <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="container mx-auto px-4">
         <div className="flex h-8 items-center justify-between">
           <div className="flex items-center gap-3">
