@@ -2,8 +2,6 @@ import { NextResponse } from "next/server"
 import { getDb } from "@/lib/firebase-admin"
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function POST(request: Request) {
   try {
     const body = await request.json()
@@ -37,27 +35,32 @@ export async function POST(request: Request) {
 
     const docRef = await db.collection("contact-submissions").add(contactSubmission)
 
-    try {
-      await resend.emails.send({
-        from: "Hearthside Works <contact@hearthsideworks.com>",
-        to: "sol@hearthsideworks.com",
-        replyTo: email,
-        subject: `New Contact Form: ${subject}`,
-        html: `
-          <h2>New Contact Form Submission</h2>
-          <p><strong>From:</strong> ${name} (${email})</p>
-          <p><strong>Subject:</strong> ${subject}</p>
-          <p><strong>Message:</strong></p>
-          <p>${message.replace(/\n/g, "<br>")}</p>
-          <hr>
-          <p><small>Submitted: ${new Date().toLocaleString()}</small></p>
-          <p><small>Submission ID: ${docRef.id}</small></p>
-        `,
-      })
-      console.log("[v0] Email notification sent for submission:", docRef.id)
-    } catch (emailError) {
-      console.error("[v0] Failed to send email notification:", emailError)
-      // Continue even if email fails - form is still saved to Firebase
+    if (process.env.RESEND_API_KEY) {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY)
+        await resend.emails.send({
+          from: "Hearthside Works <contact@hearthsideworks.com>",
+          to: "sol@hearthsideworks.com",
+          replyTo: email,
+          subject: `New Contact Form: ${subject}`,
+          html: `
+            <h2>New Contact Form Submission</h2>
+            <p><strong>From:</strong> ${name} (${email})</p>
+            <p><strong>Subject:</strong> ${subject}</p>
+            <p><strong>Message:</strong></p>
+            <p>${message.replace(/\n/g, "<br>")}</p>
+            <hr>
+            <p><small>Submitted: ${new Date().toLocaleString()}</small></p>
+            <p><small>Submission ID: ${docRef.id}</small></p>
+          `,
+        })
+        console.log("[v0] Email notification sent for submission:", docRef.id)
+      } catch (emailError) {
+        console.error("[v0] Failed to send email notification:", emailError)
+        // Continue even if email fails - form is still saved to Firebase
+      }
+    } else {
+      console.log("[v0] Resend API key not configured - skipping email notification")
     }
 
     return NextResponse.json(
