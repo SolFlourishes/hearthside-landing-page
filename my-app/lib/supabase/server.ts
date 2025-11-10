@@ -36,3 +36,5 @@ export const createClient = cache(async () => {
   cachedServerClient = client
   return client
 })
+
+export { createClient as createServerClient }

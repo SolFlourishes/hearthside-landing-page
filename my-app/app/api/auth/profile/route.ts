@@ -1,8 +1,8 @@
-import { createClient } from "@/lib/supabase/server"
+import { createServerClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
 export async function GET() {
-  const supabase = await createClient()
+  const supabase = await createServerClient()
 
   const {
     data: { user },
@@ -13,7 +13,11 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { data: profile, error: profileError } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+  const { data: profile, error: profileError } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single()
 
   if (profileError) {
     return NextResponse.json({ error: profileError.message }, { status: 500 })
@@ -23,7 +27,7 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
-  const supabase = await createClient()
+  const supabase = await createServerClient()
 
   const {
     data: { user },
@@ -36,18 +40,17 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json()
-    const { display_name, avatar_url, bio, communication_style } = body
+    const { display_name, avatar_url, bio, preferences } = body
 
     const updates: Record<string, unknown> = {}
     if (display_name !== undefined) updates.display_name = display_name
     if (avatar_url !== undefined) updates.avatar_url = avatar_url
     if (bio !== undefined) updates.bio = bio
-    if (communication_style !== undefined) updates.communication_style = communication_style
+    if (preferences !== undefined) updates.preferences = preferences
 
     const { data: profile, error: updateError } = await supabase
-      .from("profiles")
-      .update(updates)
-      .eq("id", user.id)
+      .from("user_profiles")
+      .upsert({ id: user.id, ...updates }, { onConflict: "id" })
       .select()
       .single()
 

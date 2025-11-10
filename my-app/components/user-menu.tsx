@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { User, LogOut, Settings, History, BarChart3, Users } from "lucide-react"
+import { User, LogOut, Settings, CreditCard, MessageSquare } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -15,13 +15,13 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { useSupabase } from "@/components/supabase-provider"
+import { useRouter } from "next/navigation"
 
 interface UserProfile {
   id: string
   display_name: string
   avatar_url?: string
-  role: string
-  tier: string
+  subscription_tier?: string
   email?: string
 }
 
@@ -29,6 +29,7 @@ export function UserMenu() {
   const [user, setUser] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = useSupabase()
+  const router = useRouter()
 
   useEffect(() => {
     if (!supabase) {
@@ -43,16 +44,23 @@ export function UserMenu() {
         } = await supabase.auth.getUser()
 
         if (authUser) {
-          const { data: profile } = await supabase.from("profiles").select("*").eq("id", authUser.id).single()
+          const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", authUser.id).single()
 
           if (profile) {
             setUser({
               id: profile.id,
-              display_name: profile.display_name,
+              display_name: profile.display_name || authUser.email?.split("@")[0] || "User",
               avatar_url: profile.avatar_url,
-              role: profile.role,
-              tier: profile.tier,
+              subscription_tier: profile.subscription_tier,
               email: authUser.email,
+            })
+          } else {
+            // If no profile exists, use auth user data
+            setUser({
+              id: authUser.id,
+              display_name: authUser.email?.split("@")[0] || "User",
+              email: authUser.email,
+              subscription_tier: "free",
             })
           }
         }
@@ -68,23 +76,9 @@ export function UserMenu() {
 
   const handleLogout = async () => {
     if (!supabase) return
-    await fetch("/api/auth/logout", { method: "POST" })
-    window.location.href = "/"
-  }
-
-  const getRoleBadgeColor = (role: string) => {
-    switch (role) {
-      case "admin":
-        return "bg-red-500/10 text-red-500 border-red-500/20"
-      case "moderator":
-        return "bg-blue-500/10 text-blue-500 border-blue-500/20"
-      case "author":
-        return "bg-purple-500/10 text-purple-500 border-purple-500/20"
-      case "elder":
-        return "bg-amber-500/10 text-amber-500 border-amber-500/20"
-      default:
-        return "bg-muted/10 text-muted-foreground border-muted/20"
-    }
+    await supabase.auth.signOut()
+    router.push("/")
+    router.refresh()
   }
 
   if (loading) {
@@ -119,14 +113,9 @@ export function UserMenu() {
           <div className="flex flex-col space-y-2">
             <p className="text-sm font-medium leading-none">{user.display_name}</p>
             <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-            <div className="flex gap-1">
-              <Badge variant="outline" className={getRoleBadgeColor(user.role)}>
-                {user.role}
-              </Badge>
-              <Badge variant="outline" className="text-xs">
-                {user.tier}
-              </Badge>
-            </div>
+            <Badge variant={user.subscription_tier === "premium" ? "default" : "secondary"} className="w-fit">
+              {user.subscription_tier === "premium" ? "Premium" : "Free"}
+            </Badge>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -138,30 +127,28 @@ export function UserMenu() {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/account/profile" className="cursor-pointer">
+            <User className="mr-2 h-4 w-4" />
+            <span>Profile</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/account/settings" className="cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />
-            <span>Profile Settings</span>
+            <span>Settings</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/account/recipients" className="cursor-pointer">
-            <Users className="mr-2 h-4 w-4" />
-            <span>My Recipients</span>
+          <Link href="/account/conversations" className="cursor-pointer">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            <span>Conversations</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/account/history" className="cursor-pointer">
-            <History className="mr-2 h-4 w-4" />
-            <span>History</span>
+          <Link href="/account/subscription" className="cursor-pointer">
+            <CreditCard className="mr-2 h-4 w-4" />
+            <span>Subscription</span>
           </Link>
         </DropdownMenuItem>
-        {user.tier === "premium" && (
-          <DropdownMenuItem asChild>
-            <Link href="/account/analytics" className="cursor-pointer">
-              <BarChart3 className="mr-2 h-4 w-4" />
-              <span>Analytics</span>
-            </Link>
-          </DropdownMenuItem>
-        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
           <LogOut className="mr-2 h-4 w-4" />

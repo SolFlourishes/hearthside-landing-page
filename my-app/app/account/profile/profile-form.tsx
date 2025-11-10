@@ -6,21 +6,32 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import type { User } from "@supabase/supabase-js"
 
 interface ProfileFormProps {
   profile: {
     display_name: string | null
     bio: string | null
     avatar_url: string | null
+    preferences: Record<string, unknown>
   } | null
+  user: User
 }
 
-export function ProfileForm({ profile }: ProfileFormProps) {
+export function ProfileForm({ profile, user }: ProfileFormProps) {
   const [displayName, setDisplayName] = useState(profile?.display_name || "")
   const [bio, setBio] = useState(profile?.bio || "")
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "")
+
+  const preferences = (profile?.preferences as Record<string, unknown>) || {}
+  const [theme, setTheme] = useState((preferences.theme as string) || "system")
+  const [emailNotifications, setEmailNotifications] = useState((preferences.email_notifications as boolean) ?? true)
+  const [clarityAutoSave, setClarityAutoSave] = useState((preferences.clarity_auto_save as boolean) ?? true)
+
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -40,6 +51,11 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           display_name: displayName,
           bio,
           avatar_url: avatarUrl || null,
+          preferences: {
+            theme,
+            email_notifications: emailNotifications,
+            clarity_auto_save: clarityAutoSave,
+          },
         }),
       })
 
@@ -59,6 +75,12 @@ export function ProfileForm({ profile }: ProfileFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" value={user.email} disabled />
+        <p className="text-xs text-muted-foreground">Email cannot be changed</p>
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="display-name">Display Name</Label>
         <Input
@@ -90,6 +112,42 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           placeholder="https://example.com/avatar.jpg"
         />
         <p className="text-xs text-muted-foreground">Optional: Enter a URL to your profile picture</p>
+      </div>
+
+      <div className="border-t pt-6">
+        <h3 className="text-lg font-medium mb-4">Preferences</h3>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="theme">Theme</Label>
+            <Select value={theme} onValueChange={setTheme}>
+              <SelectTrigger id="theme">
+                <SelectValue placeholder="Select theme" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+                <SelectItem value="system">System</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="email-notifications">Email Notifications</Label>
+              <p className="text-xs text-muted-foreground">Receive updates and announcements</p>
+            </div>
+            <Switch id="email-notifications" checked={emailNotifications} onCheckedChange={setEmailNotifications} />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="clarity-auto-save">Clarity Coach Auto-Save</Label>
+              <p className="text-xs text-muted-foreground">Automatically save your work</p>
+            </div>
+            <Switch id="clarity-auto-save" checked={clarityAutoSave} onCheckedChange={setClarityAutoSave} />
+          </div>
+        </div>
       </div>
 
       {error && (

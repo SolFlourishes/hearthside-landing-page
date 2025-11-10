@@ -1,20 +1,20 @@
-import { createClient } from "@/lib/supabase/server"
+import { createServerClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ProfileForm } from "./profile-form"
 
 export default async function ProfilePage() {
-  const supabase = await createClient()
+  const supabase = await createServerClient()
 
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/auth/login")
+    redirect("/auth/login?redirectTo=/account/profile")
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+  const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", user.id).single()
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-2xl">
@@ -29,7 +29,7 @@ export default async function ProfilePage() {
           <CardDescription>This information will be visible across Hearthside Works apps</CardDescription>
         </CardHeader>
         <CardContent>
-          <ProfileForm profile={profile} />
+          <ProfileForm profile={profile} user={user} />
         </CardContent>
       </Card>
     </div>
