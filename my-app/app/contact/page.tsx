@@ -5,7 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
-import { Mail, MessageSquare, Users, Briefcase, MapPin, Phone, Clock } from "lucide-react"
+import { Mail, MessageSquare, Users, Briefcase, MapPin, Clock } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 export default function ContactPage() {
@@ -220,93 +220,57 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* Map and Location Section */}
         <section className="py-16 bg-[#F9FAFB] dark:bg-[#111827]">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-4xl mx-auto">
               <h2 className="font-serif text-3xl font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-12 text-center">
                 Visit Us
               </h2>
 
-              <div className="grid lg:grid-cols-2 gap-8">
-                {/* Map */}
-                <div className="rounded-xl overflow-hidden border border-[#E5E7EB] dark:border-[#374151] h-[400px]">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.2412648718453!2d-73.98823492346469!3d40.74844097138558!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1704891234567!5m2!1sen!2sus"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Hearthside Works Location"
-                  ></iframe>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white dark:bg-[#1F2937] rounded-xl p-6 border border-[#E5E7EB] dark:border-[#374151]">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-[#007B8C]/10 dark:bg-[#007B8C]/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-6 h-6 text-[#007B8C] dark:text-[#4DB8C9]" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-2">
+                        Office Address
+                      </h3>
+                      <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed">Aberdeen, Maryland</p>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Contact Information */}
-                <div className="space-y-6">
-                  <div className="bg-white dark:bg-[#1F2937] rounded-xl p-6 border border-[#E5E7EB] dark:border-[#374151]">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-[#007B8C]/10 dark:bg-[#007B8C]/20 rounded-full flex items-center justify-center flex-shrink-0">
-                        <MapPin className="w-6 h-6 text-[#007B8C] dark:text-[#4DB8C9]" aria-hidden="true" />
-                      </div>
-                      <div>
-                        <h3 className="font-serif text-lg font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-2">
-                          Office Address
-                        </h3>
-                        <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed">
-                          350 Fifth Avenue
-                          <br />
-                          New York, NY 10118
-                          <br />
-                          United States
-                        </p>
-                      </div>
+                <div className="bg-white dark:bg-[#1F2937] rounded-xl p-6 border border-[#E5E7EB] dark:border-[#374151]">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-[#E28A6D]/10 dark:bg-[#E28A6D]/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-6 h-6 text-[#E28A6D]" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-2">Email</h3>
+                      <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed">
+                        <a
+                          href="mailto:sol@hearthsideworks.com"
+                          className="hover:text-[#007B8C] dark:hover:text-[#4DB8C9]"
+                        >
+                          sol@hearthsideworks.com
+                        </a>
+                      </p>
                     </div>
                   </div>
+                </div>
 
-                  <div className="bg-white dark:bg-[#1F2937] rounded-xl p-6 border border-[#E5E7EB] dark:border-[#374151]">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-[#E28A6D]/10 dark:bg-[#E28A6D]/20 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Phone className="w-6 h-6 text-[#E28A6D]" aria-hidden="true" />
-                      </div>
-                      <div>
-                        <h3 className="font-serif text-lg font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-2">
-                          Phone & Email
-                        </h3>
-                        <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed">
-                          <a href="tel:+15551234567" className="hover:text-[#007B8C] dark:hover:text-[#4DB8C9]">
-                            +1 (555) 123-4567
-                          </a>
-                          <br />
-                          <a
-                            href="mailto:info@hearthsideworks.com"
-                            className="hover:text-[#007B8C] dark:hover:text-[#4DB8C9]"
-                          >
-                            info@hearthsideworks.com
-                          </a>
-                        </p>
-                      </div>
+                <div className="bg-white dark:bg-[#1F2937] rounded-xl p-6 border border-[#E5E7EB] dark:border-[#374151] md:col-span-2">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-[#FFC72C]/10 dark:bg-[#FFC72C]/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Clock className="w-6 h-6 text-[#FFC72C]" aria-hidden="true" />
                     </div>
-                  </div>
-
-                  <div className="bg-white dark:bg-[#1F2937] rounded-xl p-6 border border-[#E5E7EB] dark:border-[#374151]">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-[#FFC72C]/10 dark:bg-[#FFC72C]/20 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Clock className="w-6 h-6 text-[#FFC72C]" aria-hidden="true" />
-                      </div>
-                      <div>
-                        <h3 className="font-serif text-lg font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-2">
-                          Business Hours
-                        </h3>
-                        <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed">
-                          Monday - Friday: 9:00 AM - 6:00 PM
-                          <br />
-                          Saturday: 10:00 AM - 4:00 PM
-                          <br />
-                          Sunday: Closed
-                        </p>
-                      </div>
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-2">
+                        Business Hours
+                      </h3>
+                      <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed">Variable</p>
                     </div>
                   </div>
                 </div>
