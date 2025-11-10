@@ -3,8 +3,7 @@ import type { Metadata } from "next"
 import { Inter, Merriweather } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Header } from "@/components/header"
-import { ClarityHeader } from "@/components/clarity-header"
+import { ConditionalHeader } from "@/components/conditional-header"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { SupabaseProvider } from "@/components/supabase-provider"
@@ -25,15 +24,6 @@ export const metadata: Metadata = {
   description:
     "A safe space for connection and understanding. Discover tools, resources, and services to help you flourish through meaningful relationships.",
     generator: 'v0.app'
-}
-
-function ConditionalHeader() {
-  return (
-    <>
-      <Header />
-      <ClarityHeader />
-    </>
-  )
 }
 
 export default function RootLayout({

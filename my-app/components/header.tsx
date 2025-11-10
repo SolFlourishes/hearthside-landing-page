@@ -100,6 +100,13 @@ export function Header() {
               Our Commitments
             </Link>
 
+            <Link
+              href="/contact"
+              className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors"
+            >
+              Contact
+            </Link>
+
             <ThemeToggle />
 
             <UserMenu />
@@ -174,6 +181,13 @@ export function Header() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Our Commitments
+              </Link>
+              <Link
+                href="/contact"
+                className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#007B8C] dark:hover:text-[#4DB8C9] transition-colors py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact
               </Link>
               <div className="flex items-center justify-between py-2">
                 <span className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF]">Theme</span>
