@@ -41,11 +41,16 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
                 const [name, ...rest] = cookie.trim().split("=")
                 return { name, value: rest.join("=") }
               })
-              console.log("[v0] Getting cookies, count:", cookies.length)
+              console.log(
+                "[v0] Browser getAll cookies, count:",
+                cookies.length,
+                "sb-cookies:",
+                cookies.filter((c) => c.name.startsWith("sb-")).map((c) => c.name),
+              )
               return cookies
             },
             setAll(cookiesToSet) {
-              console.log("[v0] Setting cookies, count:", cookiesToSet.length)
+              console.log("[v0] Browser setAll cookies, count:", cookiesToSet.length)
               cookiesToSet.forEach(({ name, value, options }) => {
                 let cookie = `${name}=${value}`
                 if (options?.path) cookie += `; path=${options.path}`
@@ -54,7 +59,7 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
                 if (options?.sameSite) cookie += `; samesite=${options.sameSite}`
                 if (options?.secure) cookie += "; secure"
                 document.cookie = cookie
-                console.log("[v0] Set cookie:", name)
+                console.log("[v0] Browser set cookie:", name, "value length:", value?.length || 0)
               })
             },
           },
@@ -63,14 +68,6 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
             flowType: "pkce",
             persistSession: true,
             autoRefreshToken: true,
-            storageKey: "sb-auth-token",
-          },
-          cookieOptions: {
-            name: "sb-auth-token",
-            domain: process.env.NODE_ENV === "production" ? ".hearthsideworks.com" : undefined,
-            path: "/",
-            sameSite: "lax",
-            secure: process.env.NODE_ENV === "production",
           },
         })
         console.log("[v0] Supabase browser client created")
@@ -89,7 +86,7 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = browserClient.auth.onAuthStateChange((event, session) => {
-      console.log("[v0] Auth state change:", event, session ? "Session exists" : "No session")
+      console.log("[v0] Auth state change:", event, session ? `User ${session?.user?.id}` : "No session")
       if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
         console.log("[v0] Refreshing router after auth change")
         router.refresh()
@@ -107,7 +104,12 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     // Small delay to allow cookies to be set
     const timer = setTimeout(() => {
       browserClient.auth.getSession().then(({ data: { session } }) => {
-        console.log("[v0] Session check after navigation to", pathname, ":", session ? "Found" : "Not found")
+        console.log(
+          "[v0] Session check after navigation to",
+          pathname,
+          ":",
+          session ? `Found user ${session.user.id}` : "Not found",
+        )
         if (session) {
           console.log("[v0] Triggering refresh to update UI state")
           router.refresh()

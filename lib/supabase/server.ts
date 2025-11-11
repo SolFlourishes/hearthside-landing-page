@@ -6,12 +6,12 @@ export async function createServerClient() {
   const allCookies = cookieStore.getAll()
 
   console.log(
-    "[v0] createServerClient - All cookies:",
-    allCookies.map((c) => ({
-      name: c.name,
-      valueLength: c.value?.length || 0,
-      startsWithSb: c.name.startsWith("sb-"),
-    })),
+    "[v0] Server createServerClient - Cookies:",
+    allCookies.length,
+    "sb-cookies:",
+    allCookies
+      .filter((c) => c.name.startsWith("sb-"))
+      .map((c) => ({ name: c.name, valueLength: c.value?.length || 0 })),
   )
 
   const client = createSupabaseServerClient(
@@ -21,24 +21,24 @@ export async function createServerClient() {
       cookies: {
         getAll() {
           const cookies = cookieStore.getAll()
-          console.log("[v0] Server client getAll() called, returning", cookies.length, "cookies")
+          console.log("[v0] Server getAll() called, returning", cookies.length, "cookies")
           return cookies
         },
         setAll(cookiesToSet) {
           try {
-            console.log("[v0] Server client setAll() called with", cookiesToSet.length, "cookies")
+            console.log("[v0] Server setAll() called with", cookiesToSet.length, "cookies")
             cookiesToSet.forEach(({ name, value, options }) => {
+              console.log("[v0] Server setting cookie:", name, "value length:", value?.length || 0)
               cookieStore.set(name, value, options)
             })
           } catch (error) {
-            console.error("[v0] Server client setAll() error:", error)
+            console.error("[v0] Server setAll() error:", error)
           }
         },
       },
       auth: {
         detectSessionInUrl: false,
         flowType: "pkce",
-        storageKey: "sb-auth-token", // Match middleware and client
       },
     },
   )
@@ -47,7 +47,7 @@ export async function createServerClient() {
     data: { session },
     error,
   } = await client.auth.getSession()
-  console.log("[v0] createServerClient - Session check:", {
+  console.log("[v0] Server session check:", {
     hasSession: !!session,
     userId: session?.user?.id,
     error: error?.message,

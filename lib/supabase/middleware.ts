@@ -18,20 +18,22 @@ export async function updateSession(request: NextRequest) {
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
-        return request.cookies.getAll()
+        const cookies = request.cookies.getAll()
+        return cookies
       },
       setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
         supabaseResponse = NextResponse.next({
           request,
         })
-        cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
+        cookiesToSet.forEach(({ name, value, options }) => {
+          supabaseResponse.cookies.set(name, value, options)
+        })
       },
     },
     auth: {
       detectSessionInUrl: false,
       flowType: "pkce",
-      storageKey: "sb-auth-token",
     },
   })
 
@@ -40,7 +42,14 @@ export async function updateSession(request: NextRequest) {
       data: { session },
     } = await supabase.auth.getSession()
 
-    console.log("[v0] Middleware - pathname:", request.nextUrl.pathname, "user:", session?.user?.id || "none")
+    console.log(
+      "[v0] Middleware - pathname:",
+      request.nextUrl.pathname,
+      "user:",
+      session?.user?.id || "none",
+      "cookies:",
+      request.cookies.getAll().filter((c) => c.name.startsWith("sb-")).length,
+    )
 
     // Only refresh if we have a session
     if (session) {
