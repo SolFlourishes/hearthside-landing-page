@@ -4,7 +4,7 @@ import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
 import type { SupabaseClient } from "@supabase/ssr"
 import { createBrowserClient } from "@supabase/ssr"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 
 type SupabaseContext = {
   supabase: SupabaseClient | null
@@ -17,6 +17,7 @@ let browserClient: SupabaseClient | null = null
 export function SupabaseProvider({ children }: { children: React.ReactNode }) {
   const [supabase, setSupabase] = useState<SupabaseClient | null>(null)
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -99,6 +100,23 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe()
     }
   }, [router])
+
+  useEffect(() => {
+    if (!browserClient) return
+
+    // Small delay to allow cookies to be set
+    const timer = setTimeout(() => {
+      browserClient.auth.getSession().then(({ data: { session } }) => {
+        console.log("[v0] Session check after navigation to", pathname, ":", session ? "Found" : "Not found")
+        if (session) {
+          console.log("[v0] Triggering refresh to update UI state")
+          router.refresh()
+        }
+      })
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [pathname, router])
 
   return <Context.Provider value={{ supabase }}>{children}</Context.Provider>
 }
