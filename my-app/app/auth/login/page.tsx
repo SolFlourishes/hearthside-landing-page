@@ -1,14 +1,14 @@
 "use client"
 
 import type React from "react"
-
+import { loginAction } from "./actions"
 import { useSupabase } from "@/components/supabase-provider"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { useState } from "react"
 
 export default function LoginPage() {
@@ -16,33 +16,27 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get("redirectTo") || "/account/dashboard"
   const supabase = useSupabase()
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
 
-    if (!supabase) {
-      setError("Authentication service is not available")
-      setIsLoading(false)
-      return
-    }
+    const formData = new FormData(e.currentTarget)
+    formData.append("redirectTo", redirectTo)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-      if (error) throw error
-      router.push(redirectTo)
-      router.refresh()
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred")
-    } finally {
+      const result = await loginAction(formData)
+      if (result?.error) {
+        setError(result.error)
+        setIsLoading(false)
+      }
+      // If successful, loginAction will redirect
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred")
       setIsLoading(false)
     }
   }
@@ -149,6 +143,7 @@ export default function LoginPage() {
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     placeholder="you@example.com"
                     required
@@ -160,6 +155,7 @@ export default function LoginPage() {
                   <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
+                    name="password"
                     type="password"
                     required
                     value={password}
