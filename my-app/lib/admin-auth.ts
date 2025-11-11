@@ -30,13 +30,29 @@ export async function checkRoleAuth(requiredRole: UserRole): Promise<AdminAuthRe
     }
   }
 
-  const { data: profile, error: profileError } = await supabase
+  let { data: profile, error: profileError } = await supabase
     .from("user_profiles")
     .select("role, email")
     .eq("id", user.id)
     .single()
 
-  if (profileError || !profile) {
+  // If profile doesn't exist, try to create it
+  if (!profile && profileError?.code === "PGRST116") {
+    const { data: newProfile } = await supabase
+      .from("user_profiles")
+      .insert({
+        id: user.id,
+        email: user.email,
+        display_name: user.email?.split("@")[0] || "User",
+        role: "user",
+      })
+      .select("role, email")
+      .single()
+
+    profile = newProfile
+  }
+
+  if (!profile) {
     return {
       isAuthenticated: false,
       error: "User profile not found",

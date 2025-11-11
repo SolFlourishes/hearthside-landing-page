@@ -47,9 +47,36 @@ export function UserMenu() {
         console.log("[v0] Auth user:", authUser?.id)
 
         if (authUser) {
-          const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", authUser.id).single()
+          let { data: profile, error: profileError } = await supabase
+            .from("user_profiles")
+            .select("*")
+            .eq("id", authUser.id)
+            .single()
 
-          console.log("[v0] User profile:", profile)
+          console.log("[v0] User profile:", profile, "Error:", profileError)
+
+          // If profile doesn't exist, create it
+          if (!profile && profileError?.code === "PGRST116") {
+            console.log("[v0] Profile not found, creating...")
+            const { data: newProfile, error: insertError } = await supabase
+              .from("user_profiles")
+              .insert({
+                id: authUser.id,
+                email: authUser.email,
+                display_name: authUser.email?.split("@")[0] || "User",
+              })
+              .select()
+              .single()
+
+            if (insertError) {
+              console.error("[v0] Error creating profile:", insertError)
+              // Even if insert fails, use auth user data
+              profile = null
+            } else {
+              console.log("[v0] Profile created:", newProfile)
+              profile = newProfile
+            }
+          }
 
           if (profile) {
             setUser({
@@ -60,7 +87,7 @@ export function UserMenu() {
               email: authUser.email,
             })
           } else {
-            // If no profile exists, use auth user data
+            // Fallback to auth user data
             setUser({
               id: authUser.id,
               display_name: authUser.email?.split("@")[0] || "User",
