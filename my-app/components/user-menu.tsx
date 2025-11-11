@@ -1,8 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
-import { User, LogOut, Settings, CreditCard, MessageSquare } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -16,6 +14,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { useSupabase } from "@/components/supabase-provider"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { User, LogOut, Settings, CreditCard, MessageSquare } from "lucide-react"
 
 interface UserProfile {
   id: string
@@ -38,13 +38,18 @@ export function UserMenu() {
     }
 
     const loadUser = async () => {
+      console.log("[v0] Loading user profile...")
       try {
         const {
           data: { user: authUser },
         } = await supabase.auth.getUser()
 
+        console.log("[v0] Auth user:", authUser?.id)
+
         if (authUser) {
           const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", authUser.id).single()
+
+          console.log("[v0] User profile:", profile)
 
           if (profile) {
             setUser({
@@ -76,6 +81,7 @@ export function UserMenu() {
 
   const handleLogout = async () => {
     if (!supabase) return
+    console.log("[v0] Logging out...")
     await supabase.auth.signOut()
     router.push("/")
     router.refresh()
@@ -119,35 +125,25 @@ export function UserMenu() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/account/dashboard" className="cursor-pointer">
-            <User className="mr-2 h-4 w-4" />
-            <span>Dashboard</span>
-          </Link>
+        <DropdownMenuItem onClick={() => router.push("/account/dashboard")} className="cursor-pointer">
+          <User className="mr-2 h-4 w-4" />
+          <span>Dashboard</span>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/account/profile" className="cursor-pointer">
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-          </Link>
+        <DropdownMenuItem onClick={() => router.push("/account/profile")} className="cursor-pointer">
+          <User className="mr-2 h-4 w-4" />
+          <span>Profile</span>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/account/settings" className="cursor-pointer">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-          </Link>
+        <DropdownMenuItem onClick={() => router.push("/account/settings")} className="cursor-pointer">
+          <Settings className="mr-2 h-4 w-4" />
+          <span>Settings</span>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/account/conversations" className="cursor-pointer">
-            <MessageSquare className="mr-2 h-4 w-4" />
-            <span>Conversations</span>
-          </Link>
+        <DropdownMenuItem onClick={() => router.push("/account/conversations")} className="cursor-pointer">
+          <MessageSquare className="mr-2 h-4 w-4" />
+          <span>Conversations</span>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/account/subscription" className="cursor-pointer">
-            <CreditCard className="mr-2 h-4 w-4" />
-            <span>Subscription</span>
-          </Link>
+        <DropdownMenuItem onClick={() => router.push("/account/subscription")} className="cursor-pointer">
+          <CreditCard className="mr-2 h-4 w-4" />
+          <span>Subscription</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
