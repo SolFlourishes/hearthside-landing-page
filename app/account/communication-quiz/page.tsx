@@ -17,7 +17,7 @@ export default async function CommunicationQuizPage() {
     redirect("/auth/login")
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+  const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", user.id).single()
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-3xl">

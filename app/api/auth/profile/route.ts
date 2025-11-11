@@ -13,7 +13,11 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { data: profile, error: profileError } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+  const { data: profile, error: profileError } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single()
 
   if (profileError) {
     return NextResponse.json({ error: profileError.message }, { status: 500 })
@@ -51,7 +55,7 @@ export async function PATCH(request: Request) {
     if (communication_style !== undefined) updates.communication_style = communication_style
 
     const { data: profile, error: updateError } = await supabase
-      .from("profiles")
+      .from("user_profiles")
       .upsert({ id: user.id, ...updates }, { onConflict: "id" })
       .select()
       .single()

@@ -40,7 +40,10 @@ export async function POST(request: Request) {
 
     console.log("[v0] Avatar uploaded to Blob successfully:", blob.url)
 
-    const { error: updateError } = await supabase.from("profiles").update({ avatar_url: blob.url }).eq("id", user.id)
+    const { error: updateError } = await supabase
+      .from("user_profiles")
+      .update({ avatar_url: blob.url })
+      .eq("id", user.id)
 
     if (updateError) {
       console.error("[v0] Error updating profile with avatar URL:", updateError)

@@ -14,7 +14,7 @@ export default async function AnalyticsPage() {
     redirect("/auth/login")
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+  const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", user.id).single()
 
   // Get communication history stats
   const { data: history } = await supabase.from("communication_history").select("*").eq("user_id", user.id)
