@@ -43,8 +43,7 @@ export default function SignUpPage() {
         email,
         password,
         options: {
-          emailRedirectTo:
-            process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/account/dashboard`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?redirectTo=/account/dashboard`,
           data: {
             display_name: displayName,
           },
@@ -147,6 +146,11 @@ export default function SignUpPage() {
                     Continue with LinkedIn
                   </Button>
                 </div>
+
+                <p className="text-xs text-muted-foreground text-center">
+                  OAuth sign-in is currently undergoing verification with providers. You may see technical details
+                  during the process.
+                </p>
 
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
