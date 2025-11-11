@@ -382,6 +382,22 @@ export default function AnalyzeModePage() {
 
               {showContextOptions && (
                 <div id="context-options" className="p-4 pt-0 border-t space-y-4">
+                  {profileLoaded && (
+                    <Card className="p-3 bg-primary/10 border-primary/30">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                        <p className="text-xs font-medium text-foreground">
+                          Using your saved profile: {receiverNeurotype !== "Unsure" && `${receiverNeurotype}`}
+                          {receiverNeurotype !== "Unsure" && receiverGeneration !== "unsure" && " • "}
+                          {receiverGeneration !== "unsure" && `${receiverGeneration}`}
+                        </p>
+                        <a href="/account/profile" className="ml-auto text-xs text-primary hover:underline">
+                          Edit Profile
+                        </a>
+                      </div>
+                    </Card>
+                  )}
+
                   <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
                     <p className="text-xs text-muted-foreground">
                       <strong className="text-foreground">How this helps:</strong>{" "}
@@ -474,7 +490,14 @@ export default function AnalyzeModePage() {
 
                       {/* About You (Receiver) */}
                       <div className="space-y-3">
-                        <h4 className="font-semibold text-sm pb-2 border-b">About You (Receiver)</h4>
+                        <h4 className="font-semibold text-sm pb-2 border-b flex items-center gap-2">
+                          About You (Receiver)
+                          {profileLoaded && (receiverNeurotype !== "Unsure" || receiverGeneration !== "unsure") && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-normal">
+                              From your profile
+                            </span>
+                          )}
+                        </h4>
                         <div>
                           <Label className="text-xs font-medium mb-2 flex items-center gap-1">
                             Your Neurotype
