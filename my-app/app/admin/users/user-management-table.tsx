@@ -10,7 +10,7 @@ interface User {
   email: string
   display_name: string | null
   role: string
-  tier: string
+  subscription_tier: string // Updated from 'tier' to 'subscription_tier'
   created_at: string
 }
 
@@ -42,7 +42,7 @@ export function UserManagementTable({ users }: { users: User[] }) {
       })
 
       if (response.ok) {
-        setLocalUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, tier: newTier } : u)))
+        setLocalUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, subscription_tier: newTier } : u)))
       }
     } catch (error) {
       console.error("Failed to update tier:", error)
@@ -83,7 +83,7 @@ export function UserManagementTable({ users }: { users: User[] }) {
               </Select>
             </TableCell>
             <TableCell>
-              <Select value={user.tier} onValueChange={(value) => handleTierChange(user.id, value)}>
+              <Select value={user.subscription_tier} onValueChange={(value) => handleTierChange(user.id, value)}>
                 <SelectTrigger className="w-[120px]">
                   <SelectValue />
                 </SelectTrigger>

@@ -15,7 +15,7 @@ export default async function AdminDashboardPage() {
     redirect("/auth/login?redirectTo=/admin")
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+  const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", user.id).single()
 
   // Check if user has admin/moderator role
   if (!profile || (profile.role !== "admin" && profile.role !== "moderator")) {
@@ -24,9 +24,14 @@ export default async function AdminDashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Access Denied</CardTitle>
-            <CardDescription>You do not have permission to access the admin dashboard</CardDescription>
+            <CardDescription>
+              {!profile
+                ? "Your profile is being set up. Please refresh the page in a moment."
+                : "You do not have permission to access the admin dashboard. Contact sol@hearthsideworks.com if you need admin access."}
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">Current role: {profile?.role || "No profile found"}</p>
             <Button asChild>
               <Link href="/">Return Home</Link>
             </Button>

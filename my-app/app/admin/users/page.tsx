@@ -14,15 +14,14 @@ export default async function UserManagementPage() {
     redirect("/auth/login?redirectTo=/admin/users")
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+  const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", user.id).single()
 
   // Only admins can manage users
   if (!profile || profile.role !== "admin") {
     redirect("/admin")
   }
 
-  // Get all users
-  const { data: users } = await supabase.from("profiles").select("*").order("created_at", { ascending: false })
+  const { data: users } = await supabase.from("user_profiles").select("*").order("created_at", { ascending: false })
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-6xl">

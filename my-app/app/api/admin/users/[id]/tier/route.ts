@@ -16,7 +16,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const body = await request.json()
     const { tier } = body
 
-    const { data, error } = await supabase.from("profiles").update({ tier }).eq("id", id).select().single()
+    const { data, error } = await supabase
+      .from("user_profiles")
+      .update({ subscription_tier: tier })
+      .eq("id", id)
+      .select()
+      .single()
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })

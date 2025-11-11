@@ -31,7 +31,7 @@ export async function checkRoleAuth(requiredRole: UserRole): Promise<AdminAuthRe
   }
 
   const { data: profile, error: profileError } = await supabase
-    .from("profiles")
+    .from("user_profiles")
     .select("role, email")
     .eq("id", user.id)
     .single()
