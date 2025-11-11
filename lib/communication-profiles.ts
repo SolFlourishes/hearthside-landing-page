@@ -261,3 +261,5 @@ export function getCommunicationArchetype(communicationStyle: any): string | nul
   // The Adapter: Balanced across dimensions
   return "The Adapter"
 }
+
+export const calculateArchetype = getCommunicationArchetype

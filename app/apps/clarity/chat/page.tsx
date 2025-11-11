@@ -11,6 +11,8 @@ import { AudienceSelector } from "@/components/audience-selector"
 import { AccessGate, type AccessTier } from "@/components/access-gate"
 import { ReportButton } from "@/components/report-button"
 import { getAccessTier, setAccessTier as storeAccessTier } from "@/lib/access-storage"
+import { createBrowserClient } from "@supabase/ssr"
+import { calculateArchetype } from "@/lib/communication-profiles"
 
 interface Message {
   role: "user" | "model"
@@ -28,6 +30,8 @@ const CONVERSATION_STARTERS = [
 
 export default function ChatModePage() {
   const [accessTier, setAccessTier] = useState<AccessTier | null>(null)
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const [profileLoaded, setProfileLoaded] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "model",
@@ -67,6 +71,38 @@ export default function ChatModePage() {
     }
   }, [])
 
+  useEffect(() => {
+    async function loadUserProfile() {
+      try {
+        const supabase = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        )
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (user) {
+          const { data: profile } = await supabase
+            .from("user_profiles")
+            .select("neurotype, generation, communication_style")
+            .eq("id", user.id)
+            .single()
+
+          if (profile) {
+            setUserProfile(profile)
+            setProfileLoaded(true)
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user profile:", error)
+      }
+    }
+
+    loadUserProfile()
+  }, [])
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
 
@@ -86,7 +122,11 @@ export default function ChatModePage() {
       const response = await fetch(`/api/clarity/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ history: newHistory, audience }),
+        body: JSON.stringify({
+          history: newHistory,
+          audience,
+          userProfile: profileLoaded ? userProfile : null,
+        }),
       })
 
       if (!response.ok) {
@@ -134,7 +174,28 @@ export default function ChatModePage() {
         </div>
 
         <div className="flex-1 flex flex-col min-h-0 py-4">
-          <div className="mb-4">
+          <div className="mb-4 space-y-3">
+            {profileLoaded && userProfile && (
+              <Card className="p-3 bg-primary/5 border-primary/20">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-muted-foreground">Using your profile:</span>
+                    {userProfile.communication_style && (
+                      <span className="text-sm font-semibold text-primary">
+                        {calculateArchetype(userProfile.communication_style)}
+                      </span>
+                    )}
+                    {userProfile.generation && (
+                      <span className="text-sm text-foreground">{userProfile.generation}</span>
+                    )}
+                    {userProfile.neurotype && <span className="text-sm text-foreground">{userProfile.neurotype}</span>}
+                  </div>
+                  <a href="/account/profile" className="text-xs text-primary hover:underline">
+                    Edit Profile
+                  </a>
+                </div>
+              </Card>
+            )}
             <Card className="p-3 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
               <AudienceSelector value={audience} onChange={setAudience} disabled={isLoading} />
             </Card>

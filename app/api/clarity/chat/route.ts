@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { history, audience = "adult-to-adult" } = body // Get audience for safety checks
+    const { history, audience = "adult-to-adult", userProfile = null } = body // Get audience for safety checks
 
     if (!history || !Array.isArray(history)) {
       return NextResponse.json({ error: "Invalid messages format", success: false }, { status: 400 })
@@ -85,6 +85,30 @@ export async function POST(request: NextRequest) {
       filesContext += "\n=== END ATTACHED DOCUMENTS ===\n"
     }
 
+    let userContext = ""
+    if (userProfile) {
+      userContext = "\n\n=== USER COMMUNICATION PROFILE ===\n"
+      userContext += "Tailor your coaching advice to this user's communication style:\n"
+
+      if (userProfile.neurotype) {
+        userContext += `Neurotype: ${userProfile.neurotype}\n`
+      }
+      if (userProfile.generation) {
+        userContext += `Generation: ${userProfile.generation}\n`
+      }
+      if (userProfile.communication_style) {
+        const style = userProfile.communication_style
+        userContext += `Communication preferences:\n`
+        userContext += `- Formality: ${style.formality}/5\n`
+        userContext += `- Directness: ${style.directness}/5\n`
+        userContext += `- Detail level: ${style.detailLevel}/5\n`
+        userContext += `- Emotional expression: ${style.emotionalExpression}/5\n`
+        userContext += `- Conflict style: ${style.conflictStyle}/5\n`
+      }
+      userContext += "\nUse this information to personalize your coaching approach.\n"
+      userContext += "=== END USER PROFILE ===\n"
+    }
+
     const safetyGuidelines = getSafetySystemPrompt(audience)
 
     const systemPrompt = `You are the Clarity Coach, a supportive communication expert who helps people navigate difficult conversations and build identity cohesion.
@@ -109,7 +133,7 @@ When relevant expert knowledge is provided below, use it to inform your response
 
 Remember: You're having a conversation, not writing a manual. Keep it brief, focused, and engaging. Users can always ask follow-up questions if they want more detail.
 
-Format your responses in HTML with proper paragraph tags for readability.${expertContext}${filesContext}`
+Format your responses in HTML with proper paragraph tags for readability.${expertContext}${filesContext}${userContext}`
 
     const { text } = await generateText({
       model: google("gemini-2.0-flash-exp"),
