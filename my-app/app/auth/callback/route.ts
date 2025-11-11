@@ -1,52 +1,34 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { createServerClient } from "@/lib/supabase/server"
+import { NextResponse } from "next/server"
 
-export default async function AuthErrorPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string; error_description?: string; error_code?: string }>
-}) {
-  const params = await searchParams
+export async function GET(request: Request) {
+  const requestUrl = new URL(request.url)
+  const code = requestUrl.searchParams.get("code")
+  const error = requestUrl.searchParams.get("error")
+  const error_description = requestUrl.searchParams.get("error_description")
+  const redirectTo = requestUrl.searchParams.get("redirectTo") || "/account/dashboard"
 
-  const getErrorMessage = () => {
-    if (params.error_code === "otp_expired") {
-      return "Your confirmation link has expired. Please request a new one by signing up again."
-    }
-    if (params.error === "access_denied") {
-      return "Access was denied. This may be because the link expired or was already used."
-    }
-    if (params.error_description) {
-      return decodeURIComponent(params.error_description)
-    }
-    if (params.error) {
-      return `Error: ${params.error}`
-    }
-    return "An authentication error occurred. Please try again."
+  if (error) {
+    console.log("[v0] Auth callback error:", error, error_description)
+    return NextResponse.redirect(
+      new URL(`/auth/error?error=${error}&error_description=${error_description || ""}`, requestUrl.origin),
+    )
   }
 
-  return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Authentication Error</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">{getErrorMessage()}</p>
-            <div className="flex flex-col gap-2">
-              <Button asChild className="w-full">
-                <Link href="/auth/login">Return to Sign In</Link>
-              </Button>
-              {params.error_code === "otp_expired" && (
-                <Button asChild variant="outline" className="w-full bg-transparent">
-                  <Link href="/auth/sign-up">Sign Up Again</Link>
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  )
+  if (code) {
+    const supabase = await createServerClient()
+
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+
+    if (exchangeError) {
+      console.log("[v0] Code exchange error:", exchangeError)
+      return NextResponse.redirect(
+        new URL(`/auth/error?error=exchange_failed&error_description=${exchangeError.message}`, requestUrl.origin),
+      )
+    }
+
+    return NextResponse.redirect(new URL(redirectTo, requestUrl.origin))
+  }
+
+  return NextResponse.redirect(new URL("/auth/login", requestUrl.origin))
 }

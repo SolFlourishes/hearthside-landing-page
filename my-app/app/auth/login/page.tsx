@@ -131,6 +131,11 @@ export default function LoginPage() {
                   </Button>
                 </div>
 
+                <p className="text-xs text-muted-foreground text-center">
+                  OAuth sign-in is currently undergoing verification with providers. You may see technical details
+                  during the process.
+                </p>
+
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
