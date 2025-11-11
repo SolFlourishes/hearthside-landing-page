@@ -2,6 +2,9 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { CommunicationQuiz } from "./communication-quiz"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
 
 export default async function CommunicationQuizPage() {
   const supabase = await createClient()
@@ -18,6 +21,13 @@ export default async function CommunicationQuizPage() {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-3xl">
+      <Link href="/account/dashboard">
+        <Button variant="ghost" className="mb-4">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Dashboard
+        </Button>
+      </Link>
+
       <div className="mb-8">
         <h1 className="text-3xl font-serif font-bold mb-2">Communication Style Quiz</h1>
         <p className="text-muted-foreground">

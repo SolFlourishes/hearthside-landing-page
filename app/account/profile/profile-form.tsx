@@ -11,12 +11,15 @@ import { Switch } from "@/components/ui/switch"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import type { User } from "@supabase/supabase-js"
+import { Upload } from "lucide-react"
 
 interface ProfileFormProps {
   profile: {
     display_name: string | null
     bio?: string | null
     avatar_url?: string | null
+    neurotype?: string | null
+    generation?: string | null
     preferences: Record<string, unknown>
   } | null
   user: User
@@ -26,6 +29,9 @@ export function ProfileForm({ profile, user }: ProfileFormProps) {
   const [displayName, setDisplayName] = useState(profile?.display_name || "")
   const [bio, setBio] = useState(profile?.bio || "")
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "")
+  const [neurotype, setNeurotype] = useState(profile?.neurotype || "prefer_not_to_say")
+  const [generation, setGeneration] = useState(profile?.generation || "prefer_not_to_say")
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
 
   const preferences = (profile?.preferences as Record<string, unknown>) || {}
   const [theme, setTheme] = useState((preferences.theme as string) || "system")
@@ -36,6 +42,35 @@ export function ProfileForm({ profile, user }: ProfileFormProps) {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const router = useRouter()
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsUploadingAvatar(true)
+    setError(null)
+
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const response = await fetch("/api/upload/avatar", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to upload avatar")
+      }
+
+      const { url } = await response.json()
+      setAvatarUrl(url)
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to upload avatar")
+    } finally {
+      setIsUploadingAvatar(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,6 +86,8 @@ export function ProfileForm({ profile, user }: ProfileFormProps) {
           display_name: displayName,
           bio,
           avatar_url: avatarUrl || null,
+          neurotype: neurotype || null,
+          generation: generation || null,
           preferences: {
             theme,
             email_notifications: emailNotifications,
@@ -103,15 +140,83 @@ export function ProfileForm({ profile, user }: ProfileFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="avatar-url">Avatar URL</Label>
-        <Input
-          id="avatar-url"
-          type="url"
-          value={avatarUrl}
-          onChange={(e) => setAvatarUrl(e.target.value)}
-          placeholder="https://example.com/avatar.jpg"
-        />
-        <p className="text-xs text-muted-foreground">Optional: Enter a URL to your profile picture</p>
+        <Label htmlFor="avatar">Profile Picture</Label>
+        <div className="flex items-center gap-4">
+          {avatarUrl && (
+            <img
+              src={avatarUrl || "/placeholder.svg"}
+              alt="Avatar preview"
+              className="w-16 h-16 rounded-full object-cover"
+            />
+          )}
+          <div className="flex-1 space-y-2">
+            <div className="flex gap-2">
+              <Input
+                id="avatar-url"
+                type="url"
+                value={avatarUrl}
+                onChange={(e) => setAvatarUrl(e.target.value)}
+                placeholder="https://example.com/avatar.jpg"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => document.getElementById("avatar-file")?.click()}
+                disabled={isUploadingAvatar}
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                {isUploadingAvatar ? "Uploading..." : "Upload"}
+              </Button>
+              <input id="avatar-file" type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+            </div>
+            <p className="text-xs text-muted-foreground">Enter a URL or upload an image</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t pt-6">
+        <h3 className="text-lg font-medium mb-4">Communication Context</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          This information helps Clarity Coach provide more personalized guidance
+        </p>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="neurotype">Neurotype</Label>
+            <Select value={neurotype} onValueChange={setNeurotype}>
+              <SelectTrigger id="neurotype">
+                <SelectValue placeholder="Select your neurotype" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
+                <SelectItem value="neurotypical">Neurotypical</SelectItem>
+                <SelectItem value="autistic">Autistic</SelectItem>
+                <SelectItem value="adhd">ADHD</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">Helps understand your communication style and preferences</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="generation">Generation</Label>
+            <Select value={generation} onValueChange={setGeneration}>
+              <SelectTrigger id="generation">
+                <SelectValue placeholder="Select your generation" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
+                <SelectItem value="silent">Silent Generation (1928-1945)</SelectItem>
+                <SelectItem value="boomer">Baby Boomer (1946-1964)</SelectItem>
+                <SelectItem value="genx">Generation X (1965-1980)</SelectItem>
+                <SelectItem value="millennial">Millennial (1981-1996)</SelectItem>
+                <SelectItem value="genz">Generation Z (1997-2012)</SelectItem>
+                <SelectItem value="genalpha">Generation Alpha (2013+)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">Helps understand generational communication differences</p>
+          </div>
+        </div>
       </div>
 
       <div className="border-t pt-6">

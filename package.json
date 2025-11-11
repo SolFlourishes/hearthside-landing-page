@@ -44,6 +44,7 @@
     "@supabase/supabase-js": "latest",
     "@upstash/redis": "latest",
     "@vercel/analytics": "latest",
+    "@vercel/blob": "latest",
     "@vercel/speed-insights": "latest",
     "ai": "latest",
     "autoprefixer": "^10.4.20",
