@@ -13,7 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { useSupabase } from "@/components/supabase-provider"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { User, LogOut, Settings, CreditCard, MessageSquare } from "lucide-react"
 
@@ -30,6 +30,7 @@ export function UserMenu() {
   const [loading, setLoading] = useState(true)
   const supabase = useSupabase()
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     console.log("[v0] UserMenu - Supabase client exists:", !!supabase)
@@ -58,7 +59,6 @@ export function UserMenu() {
             .eq("id", authUser.id)
             .single()
 
-          // If profile doesn't exist, we still show the user menu with basic info
           if (profileError && profileError.code !== "PGRST116") {
             console.error("[v0] Error loading profile:", profileError)
           } else if (profile) {
@@ -102,6 +102,40 @@ export function UserMenu() {
       subscription?.unsubscribe()
     }
   }, [supabase])
+
+  useEffect(() => {
+    if (!supabase) return
+
+    console.log("[v0] UserMenu - Pathname changed to:", pathname)
+
+    // Small delay to ensure cookies are fully set after server redirect
+    const timer = setTimeout(async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      console.log("[v0] UserMenu - Session after pathname change:", session ? "Found" : "Not found")
+
+      if (session && !user) {
+        console.log("[v0] UserMenu - Found session but no user state, reloading user")
+        const authUser = session.user
+
+        const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", authUser.id).single()
+
+        setUser({
+          id: authUser.id,
+          display_name:
+            profile?.display_name || authUser.user_metadata?.full_name || authUser.email?.split("@")[0] || "User",
+          avatar_url: profile?.avatar_url,
+          subscription_tier: profile?.subscription_tier || "free",
+          email: authUser.email,
+        })
+        setLoading(false)
+      }
+    }, 150)
+
+    return () => clearTimeout(timer)
+  }, [pathname, supabase, user])
 
   const handleLogout = async () => {
     if (!supabase) return
