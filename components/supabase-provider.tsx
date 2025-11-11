@@ -4,6 +4,7 @@ import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
 import type { SupabaseClient } from "@supabase/ssr"
 import { createBrowserClient } from "@supabase/ssr"
+import { useRouter } from "next/navigation"
 
 type SupabaseContext = {
   supabase: SupabaseClient | null
@@ -15,6 +16,7 @@ let browserClient: SupabaseClient | null = null
 
 export function SupabaseProvider({ children }: { children: React.ReactNode }) {
   const [supabase, setSupabase] = useState<SupabaseClient | null>(null)
+  const router = useRouter()
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -56,11 +58,18 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
             },
           },
           auth: {
-            detectSessionInUrl: true, // Enable URL detection for callback
+            detectSessionInUrl: true,
             flowType: "pkce",
             persistSession: true,
             autoRefreshToken: true,
-            storageKey: "sb-auth-token", // Match middleware storage key
+            storageKey: "sb-auth-token",
+          },
+          cookieOptions: {
+            name: "sb-auth-token",
+            domain: process.env.NODE_ENV === "production" ? ".hearthsideworks.com" : undefined,
+            path: "/",
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
           },
         })
         console.log("[v0] Supabase browser client created")
@@ -75,7 +84,21 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     browserClient.auth.getSession().then(({ data: { session } }) => {
       console.log("[v0] Initial session check:", session ? `User ${session.user.id}` : "No session")
     })
-  }, [])
+
+    const {
+      data: { subscription },
+    } = browserClient.auth.onAuthStateChange((event, session) => {
+      console.log("[v0] Auth state change:", event, session ? "Session exists" : "No session")
+      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        console.log("[v0] Refreshing router after auth change")
+        router.refresh()
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [router])
 
   return <Context.Provider value={{ supabase }}>{children}</Context.Provider>
 }
