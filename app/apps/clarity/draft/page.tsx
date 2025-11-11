@@ -23,6 +23,7 @@ import { CommunicationModeSelector, type CommunicationMode } from "@/components/
 import { PoliticalIdentitySelector } from "@/components/political-identity-selector"
 import { PoliticalValuesSelector } from "@/components/political-values-selector"
 import type { PoliticalIdentity } from "@/lib/political-profiles"
+import { createBrowserClient } from "@supabase/ssr"
 
 const loadingTips = [
   "Average translation time is 5-10 seconds.",
@@ -100,6 +101,7 @@ export default function DraftModePage() {
   const [receiverPolitical, setReceiverPolitical] = useState<PoliticalIdentity>("unsure")
   const [senderPoliticalValues, setSenderPoliticalValues] = useState<string[]>([])
   const [receiverPoliticalValues, setReceiverPoliticalValues] = useState<string[]>([])
+  const [profileLoaded, setProfileLoaded] = useState(false)
 
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
@@ -141,6 +143,48 @@ export default function DraftModePage() {
         setCommunicationMode("personal")
       }
     }
+  }, [])
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const supabase = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        )
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (user) {
+          const { data: profile } = await supabase
+            .from("user_profiles")
+            .select("communication_style, neurotype, generation")
+            .eq("id", user.id)
+            .single()
+
+          if (profile) {
+            // Auto-populate sender fields from profile
+            if (profile.neurotype) setSenderNeurotype(profile.neurotype)
+            if (profile.generation) setSenderGeneration(profile.generation)
+
+            // Parse communication style if available
+            if (profile.communication_style) {
+              const style = profile.communication_style
+              // The quiz stores detailed scores, but we can infer preferences
+              console.log("[v0] Loaded communication profile:", style)
+            }
+
+            setProfileLoaded(true)
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user profile:", error)
+      }
+    }
+
+    loadUserProfile()
   }, [])
 
   const handleTranslate = async (e: React.FormEvent) => {

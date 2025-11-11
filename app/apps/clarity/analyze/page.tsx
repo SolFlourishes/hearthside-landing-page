@@ -21,6 +21,7 @@ import type { RelationshipContext } from "@/lib/communication-profiles"
 import type { PoliticalIdentity } from "@/lib/political-profiles"
 import { getAccessTier, setAccessTier as storeAccessTier } from "@/lib/access-storage"
 import { InfoTooltip } from "@/components/info-tooltip"
+import { createBrowserClient } from "@supabase/ssr"
 
 const loadingTips = [
   "Average analysis time is 5-10 seconds.",
@@ -51,6 +52,7 @@ export default function AnalyzeModePage() {
   const [explanationFeedback, setExplanationFeedback] = useState({ rating: 0, comment: "" })
   const [responseFeedback, setResponseFeedback] = useState({ rating: 0, comment: "" })
   const [feedbackSuccess, setFeedbackSuccess] = useState({ explanation: false, response: false })
+  const [profileLoaded, setProfileLoaded] = useState(false)
 
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
@@ -184,6 +186,45 @@ export default function AnalyzeModePage() {
   const [receiverPolitical, setReceiverPolitical] = useState<PoliticalIdentity>("unsure")
   const [senderPoliticalValues, setSenderPoliticalValues] = useState<string[]>([])
   const [receiverPoliticalValues, setReceiverPoliticalValues] = useState<string[]>([])
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const supabase = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        )
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (user) {
+          const { data: profile } = await supabase
+            .from("user_profiles")
+            .select("communication_style, neurotype, generation")
+            .eq("id", user.id)
+            .single()
+
+          if (profile) {
+            // Auto-populate receiver fields (you are receiving the message)
+            if (profile.neurotype) setReceiverNeurotype(profile.neurotype)
+            if (profile.generation) setReceiverGeneration(profile.generation)
+
+            if (profile.communication_style) {
+              console.log("[v0] Loaded communication profile for analysis:", profile.communication_style)
+            }
+
+            setProfileLoaded(true)
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user profile:", error)
+      }
+    }
+
+    loadUserProfile()
+  }, [])
 
   if (!accessTier) {
     return <AccessGate mode="analyze" onAccessGranted={handleAccessGranted} />
