@@ -36,25 +36,31 @@ export async function updateSession(request: NextRequest) {
 
   try {
     const {
-      data: { user },
-    } = await supabase.auth.getUser()
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    const user = session?.user
 
     console.log("[v0] Auth check - pathname:", request.nextUrl.pathname, "user:", user?.id || "none")
+
+    if (request.nextUrl.pathname.startsWith("/auth/callback")) {
+      console.log("[v0] Skipping auth check for callback route")
+      return supabaseResponse
+    }
 
     const isProtectedRoute =
       request.nextUrl.pathname.startsWith("/account") || request.nextUrl.pathname.startsWith("/admin")
 
     if (!user && isProtectedRoute) {
-      if (request.nextUrl.pathname.startsWith("/auth/callback")) {
-        console.log("[v0] Skipping redirect for auth callback")
-        return supabaseResponse
-      }
-
       console.log("[v0] No user found, redirecting to login")
       const url = request.nextUrl.clone()
       url.pathname = "/auth/login"
       url.searchParams.set("redirectTo", request.nextUrl.pathname)
       return NextResponse.redirect(url)
+    }
+
+    if (session) {
+      await supabase.auth.refreshSession()
     }
   } catch (error) {
     console.error("[v0] Supabase middleware error:", error)

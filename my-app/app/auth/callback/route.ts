@@ -1,4 +1,5 @@
-import { createServerClient } from "@/lib/supabase/server"
+import { createServerClient } from "@supabase/ssr"
+import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 
 export async function GET(request: Request) {
@@ -18,7 +19,32 @@ export async function GET(request: Request) {
   }
 
   if (code) {
-    const supabase = await createServerClient()
+    const cookieStore = await cookies()
+
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll(cookiesToSet) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                cookieStore.set(name, value, options)
+              })
+            } catch (error) {
+              console.error("[v0] Error setting cookies:", error)
+            }
+          },
+        },
+        auth: {
+          detectSessionInUrl: true, // Enable URL detection for callback
+          flowType: "pkce",
+        },
+      },
+    )
 
     const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
 
@@ -66,28 +92,7 @@ export async function GET(request: Request) {
     }
 
     const redirectUrl = new URL(redirectTo, requestUrl.origin)
-    const response = NextResponse.redirect(redirectUrl)
-
-    if (data.session) {
-      response.cookies.set({
-        name: "sb-access-token",
-        value: data.session.access_token,
-        path: "/",
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-      })
-      response.cookies.set({
-        name: "sb-refresh-token",
-        value: data.session.refresh_token,
-        path: "/",
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-      })
-    }
-
-    return response
+    return NextResponse.redirect(redirectUrl)
   }
 
   console.log("[v0] No code provided, redirecting to login")
