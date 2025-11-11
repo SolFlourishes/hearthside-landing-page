@@ -1,3 +1,4 @@
+import { put } from "@vercel/blob"
 import { createServerClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
@@ -22,9 +23,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
     }
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "File must be an image" }, { status: 400 })
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
+    if (!validTypes.includes(file.type)) {
+      return NextResponse.json({ error: "File must be a valid image (JPEG, PNG, GIF, or WebP)" }, { status: 400 })
     }
 
     // Validate file size (max 5MB)
@@ -32,31 +33,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "File size must be less than 5MB" }, { status: 400 })
     }
 
-    const fileExt = file.name.split(".").pop()
-    const fileName = `${user.id}-${Date.now()}.${fileExt}`
-    const filePath = `avatars/${fileName}`
-
-    // Convert file to buffer
-    const buffer = await file.arrayBuffer()
-
-    // Upload to Supabase Storage
-    const { data, error } = await supabase.storage.from("avatars").upload(filePath, buffer, {
-      contentType: file.type,
-      upsert: true,
+    const filename = `avatars/${user.id}-${Date.now()}-${file.name}`
+    const blob = await put(filename, file, {
+      access: "public",
     })
 
-    if (error) {
-      console.error("[v0] Avatar upload error:", error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+    console.log("[v0] Avatar uploaded to Blob successfully:", blob.url)
+
+    const { error: updateError } = await supabase.from("profiles").update({ avatar_url: blob.url }).eq("id", user.id)
+
+    if (updateError) {
+      console.error("[v0] Error updating profile with avatar URL:", updateError)
+      // Don't fail the upload if profile update fails, just log it
     }
 
-    // Get public URL
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("avatars").getPublicUrl(data.path)
-
-    console.log("[v0] Avatar uploaded successfully:", publicUrl)
-    return NextResponse.json({ url: publicUrl })
+    return NextResponse.json({ url: blob.url })
   } catch (error) {
     console.error("[v0] Avatar upload error:", error)
     return NextResponse.json(

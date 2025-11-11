@@ -56,16 +56,19 @@ export function ProfileForm({ profile, user }: ProfileFormProps) {
 
       const response = await fetch("/api/upload/avatar", {
         method: "POST",
+        credentials: "include",
         body: formData,
       })
 
       if (!response.ok) {
-        throw new Error("Failed to upload avatar")
+        const data = await response.json()
+        throw new Error(data.error || "Failed to upload avatar")
       }
 
       const { url } = await response.json()
       setAvatarUrl(url)
     } catch (error) {
+      console.error("[v0] Avatar upload error:", error)
       setError(error instanceof Error ? error.message : "Failed to upload avatar")
     } finally {
       setIsUploadingAvatar(false)
@@ -82,6 +85,7 @@ export function ProfileForm({ profile, user }: ProfileFormProps) {
       const response = await fetch("/api/auth/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           display_name: displayName,
           bio,
@@ -104,6 +108,7 @@ export function ProfileForm({ profile, user }: ProfileFormProps) {
       setSuccess(true)
       router.refresh()
     } catch (error) {
+      console.error("[v0] Profile update error:", error)
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
@@ -209,6 +214,7 @@ export function ProfileForm({ profile, user }: ProfileFormProps) {
                 <SelectItem value="silent">Silent Generation (1928-1945)</SelectItem>
                 <SelectItem value="boomer">Baby Boomer (1946-1964)</SelectItem>
                 <SelectItem value="genx">Generation X (1965-1980)</SelectItem>
+                <SelectItem value="xennial">Xennial (1977-1983)</SelectItem>
                 <SelectItem value="millennial">Millennial (1981-1996)</SelectItem>
                 <SelectItem value="genz">Generation Z (1997-2012)</SelectItem>
                 <SelectItem value="genalpha">Generation Alpha (2013+)</SelectItem>

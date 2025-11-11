@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { User, Settings, MessageSquare, BookOpen, Users, BookMarked } from "lucide-react"
 
 export const dynamic = "force-dynamic"
 
@@ -30,7 +31,10 @@ export default async function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Profile</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Profile
+              </CardTitle>
               <CardDescription>Manage your profile and preferences</CardDescription>
             </CardHeader>
             <CardContent>
@@ -42,7 +46,10 @@ export default async function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Account Settings</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Account Settings
+              </CardTitle>
               <CardDescription>Security and account settings</CardDescription>
             </CardHeader>
             <CardContent>
@@ -54,7 +61,25 @@ export default async function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Clarity Coach</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" />
+                Communication Quiz
+              </CardTitle>
+              <CardDescription>Discover your communication style</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild variant="outline" className="w-full bg-transparent">
+                <Link href="/account/communication-quiz">Take Quiz</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                Clarity Coach
+              </CardTitle>
               <CardDescription>AI-powered writing assistant</CardDescription>
             </CardHeader>
             <CardContent>
@@ -66,7 +91,10 @@ export default async function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Elder Program</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Elder Program
+              </CardTitle>
               <CardDescription>Support and resources</CardDescription>
             </CardHeader>
             <CardContent>
@@ -90,7 +118,10 @@ export default async function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Stories</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <BookMarked className="h-5 w-5" />
+                Stories
+              </CardTitle>
               <CardDescription>Tales from the White Room</CardDescription>
             </CardHeader>
             <CardContent>

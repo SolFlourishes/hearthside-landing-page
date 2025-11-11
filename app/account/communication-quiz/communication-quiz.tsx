@@ -96,6 +96,7 @@ export function CommunicationQuiz({ existingResults }: CommunicationQuizProps) {
       const response = await fetch("/api/auth/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // Ensure cookies are sent with the request
         body: JSON.stringify({
           communication_style: answers,
         }),
@@ -106,9 +107,12 @@ export function CommunicationQuiz({ existingResults }: CommunicationQuizProps) {
         throw new Error(data.error || "Failed to save quiz results")
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 100)) // Add a small delay before navigation to ensure session is persisted
+
       router.push("/account/dashboard")
       router.refresh()
     } catch (error) {
+      console.error("[v0] Quiz submission error:", error)
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
