@@ -22,6 +22,8 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+    console.log("[v0] SupabaseProvider - URL exists:", !!url, "Key exists:", !!key)
+
     if (!url || !key) {
       console.warn("[Supabase] Missing environment variables, auth features disabled")
       return
@@ -32,12 +34,15 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
         browserClient = createBrowserClient(url, key, {
           cookies: {
             getAll() {
-              return document.cookie.split(";").map((cookie) => {
+              const cookies = document.cookie.split(";").map((cookie) => {
                 const [name, ...rest] = cookie.trim().split("=")
                 return { name, value: rest.join("=") }
               })
+              console.log("[v0] Getting cookies, count:", cookies.length)
+              return cookies
             },
             setAll(cookiesToSet) {
+              console.log("[v0] Setting cookies, count:", cookiesToSet.length)
               cookiesToSet.forEach(({ name, value, options }) => {
                 let cookie = `${name}=${value}`
                 if (options?.path) cookie += `; path=${options.path}`
@@ -46,17 +51,19 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
                 if (options?.sameSite) cookie += `; samesite=${options.sameSite}`
                 if (options?.secure) cookie += "; secure"
                 document.cookie = cookie
+                console.log("[v0] Set cookie:", name)
               })
             },
           },
           auth: {
-            detectSessionInUrl: false,
+            detectSessionInUrl: true, // Enable URL detection for callback
             flowType: "pkce",
             persistSession: true,
             autoRefreshToken: true,
-            storageKey: "sb-auth-token",
+            storageKey: "sb-auth-token", // Match middleware storage key
           },
         })
+        console.log("[v0] Supabase browser client created")
       } catch (error) {
         console.error("[Supabase] Failed to create client:", error)
         return
@@ -64,6 +71,10 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     }
 
     setSupabase(browserClient)
+
+    browserClient.auth.getSession().then(({ data: { session } }) => {
+      console.log("[v0] Initial session check:", session ? `User ${session.user.id}` : "No session")
+    })
   }, [])
 
   return <Context.Provider value={{ supabase }}>{children}</Context.Provider>

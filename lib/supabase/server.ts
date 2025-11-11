@@ -20,6 +20,7 @@ export async function createServerClient() {
     auth: {
       detectSessionInUrl: false,
       flowType: "pkce",
+      storageKey: "sb-auth-token", // Match middleware and client
     },
   })
 }

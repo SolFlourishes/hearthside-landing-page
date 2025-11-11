@@ -32,16 +32,22 @@ export function UserMenu() {
   const router = useRouter()
 
   useEffect(() => {
+    console.log("[v0] UserMenu - Supabase client exists:", !!supabase)
+
     if (!supabase) {
+      console.log("[v0] UserMenu - No supabase client, setting loading to false")
       setLoading(false)
       return
     }
 
     const loadUser = async () => {
       try {
+        console.log("[v0] UserMenu - Loading user session...")
         const {
           data: { session },
         } = await supabase.auth.getSession()
+
+        console.log("[v0] UserMenu - Session:", session ? `User ${session.user.id}` : "No session")
 
         if (session?.user) {
           const authUser = session.user
@@ -55,6 +61,8 @@ export function UserMenu() {
           // If profile doesn't exist, we still show the user menu with basic info
           if (profileError && profileError.code !== "PGRST116") {
             console.error("[v0] Error loading profile:", profileError)
+          } else if (profile) {
+            console.log("[v0] UserMenu - Profile loaded:", profile.display_name)
           }
 
           setUser({
@@ -66,6 +74,7 @@ export function UserMenu() {
             email: authUser.email,
           })
         } else {
+          console.log("[v0] UserMenu - No session, setting user to null")
           setUser(null)
         }
       } catch (error) {
@@ -81,6 +90,7 @@ export function UserMenu() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("[v0] UserMenu - Auth state changed:", event, session ? `User ${session.user.id}` : "No session")
       if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "INITIAL_SESSION") {
         loadUser()
       } else if (event === "SIGNED_OUT") {
