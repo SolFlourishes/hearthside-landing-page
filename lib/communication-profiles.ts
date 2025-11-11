@@ -227,3 +227,37 @@ export const getRelationshipGuidance = (relationship: RelationshipContext): stri
 - Will provide guidance appropriate to the specific situation you describe`
   }
 }
+
+export function getCommunicationArchetype(communicationStyle: any): string | null {
+  if (!communicationStyle) return null
+
+  const { formality, directness, detailLevel, emotionalExpression, conflictStyle } = communicationStyle
+
+  // Calculate archetype based on quiz scores
+  const avgDirectness = (directness + conflictStyle) / 2
+  const avgDetail = detailLevel
+  const avgEmotional = emotionalExpression
+
+  // The Analyzer: Direct, concise, low emotional expression
+  if (avgDirectness >= 4 && avgDetail <= 2 && avgEmotional <= 2) {
+    return "The Analyzer"
+  }
+
+  // The Harmonizer: Indirect, high emotional expression, avoids conflict
+  if (avgDirectness <= 2 && avgEmotional >= 4 && conflictStyle <= 2) {
+    return "The Harmonizer"
+  }
+
+  // The Strategist: Thorough, detailed, methodical
+  if (avgDetail >= 4 && formality >= 3) {
+    return "The Strategist"
+  }
+
+  // The Advocate: Direct but collaborative, moderate emotional expression
+  if (avgDirectness >= 3 && conflictStyle >= 3 && avgEmotional >= 3) {
+    return "The Advocate"
+  }
+
+  // The Adapter: Balanced across dimensions
+  return "The Adapter"
+}

@@ -24,6 +24,7 @@ import { PoliticalIdentitySelector } from "@/components/political-identity-selec
 import { PoliticalValuesSelector } from "@/components/political-values-selector"
 import type { PoliticalIdentity } from "@/lib/political-profiles"
 import { createBrowserClient } from "@supabase/ssr"
+import { getCommunicationArchetype } from "@/lib/communication-profiles"
 
 const loadingTips = [
   "Average translation time is 5-10 seconds.",
@@ -102,6 +103,7 @@ export default function DraftModePage() {
   const [senderPoliticalValues, setSenderPoliticalValues] = useState<string[]>([])
   const [receiverPoliticalValues, setReceiverPoliticalValues] = useState<string[]>([])
   const [profileLoaded, setProfileLoaded] = useState(false)
+  const [communicationArchetype, setCommunicationArchetype] = useState<string | null>(null)
 
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
@@ -174,6 +176,9 @@ export default function DraftModePage() {
               const style = profile.communication_style
               // The quiz stores detailed scores, but we can infer preferences
               console.log("[v0] Loaded communication profile:", style)
+              const archetype = getCommunicationArchetype(profile.communication_style)
+              setCommunicationArchetype(archetype)
+              console.log("[v0] Loaded communication archetype:", archetype)
             }
 
             setProfileLoaded(true)
@@ -375,6 +380,7 @@ export default function DraftModePage() {
     setReceiverPolitical("unsure")
     setSenderPoliticalValues([])
     setReceiverPoliticalValues([])
+    setCommunicationArchetype(null)
   }
 
   const handleAccessGranted = (tier: AccessTier) => {
@@ -534,7 +540,12 @@ export default function DraftModePage() {
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                         <p className="text-xs font-medium text-foreground">
-                          Using your saved profile: {senderNeurotype !== "Unsure" && `${senderNeurotype}`}
+                          Using your saved profile:
+                          {communicationArchetype && <span className="text-primary"> {communicationArchetype}</span>}
+                          {communicationArchetype &&
+                            (senderNeurotype !== "Unsure" || senderGeneration !== "unsure") &&
+                            " • "}
+                          {senderNeurotype !== "Unsure" && `${senderNeurotype}`}
                           {senderNeurotype !== "Unsure" && senderGeneration !== "unsure" && " • "}
                           {senderGeneration !== "unsure" && `${senderGeneration}`}
                         </p>

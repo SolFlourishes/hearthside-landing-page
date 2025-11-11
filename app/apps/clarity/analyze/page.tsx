@@ -22,6 +22,7 @@ import type { PoliticalIdentity } from "@/lib/political-profiles"
 import { getAccessTier, setAccessTier as storeAccessTier } from "@/lib/access-storage"
 import { InfoTooltip } from "@/components/info-tooltip"
 import { createBrowserClient } from "@supabase/ssr"
+import { getCommunicationArchetype } from "@/lib/communication-profiles"
 
 const loadingTips = [
   "Average analysis time is 5-10 seconds.",
@@ -53,6 +54,7 @@ export default function AnalyzeModePage() {
   const [responseFeedback, setResponseFeedback] = useState({ rating: 0, comment: "" })
   const [feedbackSuccess, setFeedbackSuccess] = useState({ explanation: false, response: false })
   const [profileLoaded, setProfileLoaded] = useState(false)
+  const [communicationArchetype, setCommunicationArchetype] = useState<string | null>(null)
 
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
@@ -212,7 +214,9 @@ export default function AnalyzeModePage() {
             if (profile.generation) setReceiverGeneration(profile.generation)
 
             if (profile.communication_style) {
-              console.log("[v0] Loaded communication profile for analysis:", profile.communication_style)
+              const archetype = getCommunicationArchetype(profile.communication_style)
+              setCommunicationArchetype(archetype)
+              console.log("[v0] Loaded communication archetype for analysis:", archetype)
             }
 
             setProfileLoaded(true)
@@ -387,7 +391,12 @@ export default function AnalyzeModePage() {
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                         <p className="text-xs font-medium text-foreground">
-                          Using your saved profile: {receiverNeurotype !== "Unsure" && `${receiverNeurotype}`}
+                          Using your saved profile:
+                          {communicationArchetype && <span className="text-primary"> {communicationArchetype}</span>}
+                          {communicationArchetype &&
+                            (receiverNeurotype !== "Unsure" || receiverGeneration !== "unsure") &&
+                            " • "}
+                          {receiverNeurotype !== "Unsure" && `${receiverNeurotype}`}
                           {receiverNeurotype !== "Unsure" && receiverGeneration !== "unsure" && " • "}
                           {receiverGeneration !== "unsure" && `${receiverGeneration}`}
                         </p>
