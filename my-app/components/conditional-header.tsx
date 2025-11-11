@@ -9,7 +9,12 @@ export function ConditionalHeader() {
   const isClarityApp = pathname?.startsWith("/apps/clarity")
 
   if (isClarityApp) {
-    return <ClarityHeader />
+    return (
+      <>
+        <Header />
+        <ClarityHeader />
+      </>
+    )
   }
 
   return <Header />

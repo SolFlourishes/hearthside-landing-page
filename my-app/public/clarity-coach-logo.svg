@@ -1,0 +1,47 @@
+<!-- Replaced entire logo to incorporate Hearthside Works arch -->
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hearthside Works arch base -->
+  <path 
+    d="M 40 160 A 60 60 0 0 1 160 160" 
+    stroke="#E28A6D" 
+    stroke-width="8" 
+    fill="none" 
+    stroke-linecap="round"
+  />
+  
+  <!-- Speech bubble on top of arch representing communication -->
+  <g transform="translate(100, 80)">
+    <!-- Speech bubble body -->
+    <rect 
+      x="-35" 
+      y="-25" 
+      width="70" 
+      height="40" 
+      rx="8" 
+      fill="#007B8C"
+    />
+    <!-- Speech bubble tail -->
+    <path 
+      d="M -10 15 L -15 25 L 0 15 Z" 
+      fill="#007B8C"
+    />
+    
+    <!-- Three dots representing conversation/clarity -->
+    <circle cx="-15" cy="0" r="4" fill="white" />
+    <circle cx="0" cy="0" r="4" fill="white" />
+    <circle cx="15" cy="0" r="4" fill="white" />
+  </g>
+  
+  <!-- Text below -->
+  <text 
+    x="100" 
+    y="185" 
+    font-family="Georgia, serif" 
+    font-size="18" 
+    font-weight="bold" 
+    fill="#1F2937" 
+    text-anchor="middle"
+  >
+    Clarity Coach
+  </text>
+</svg>

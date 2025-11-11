@@ -1,0 +1,31 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hearthside Works arch -->
+  <path 
+    d="M 20 80 A 30 30 0 0 1 80 80" 
+    stroke="#E28A6D" 
+    stroke-width="6" 
+    fill="none" 
+    stroke-linecap="round"
+  />
+  
+  <!-- Speech bubble -->
+  <g transform="translate(50, 35)">
+    <rect 
+      x="-20" 
+      y="-15" 
+      width="40" 
+      height="24" 
+      rx="6" 
+      fill="#007B8C"
+    />
+    <path 
+      d="M -6 9 L -9 16 L 0 9 Z" 
+      fill="#007B8C"
+    />
+    
+    <!-- Three dots -->
+    <circle cx="-8" cy="0" r="2.5" fill="white" />
+    <circle cx="0" cy="0" r="2.5" fill="white" />
+    <circle cx="8" cy="0" r="2.5" fill="white" />
+  </g>
+</svg>
