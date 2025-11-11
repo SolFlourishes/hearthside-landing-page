@@ -35,12 +35,22 @@ export async function updateSession(request: NextRequest) {
   })
 
   try {
-    // Check auth and redirect if necessary
     const {
       data: { user },
     } = await supabase.auth.getUser()
 
-    if (!user && (request.nextUrl.pathname.startsWith("/account") || request.nextUrl.pathname.startsWith("/admin"))) {
+    console.log("[v0] Auth check - pathname:", request.nextUrl.pathname, "user:", user?.id || "none")
+
+    const isProtectedRoute =
+      request.nextUrl.pathname.startsWith("/account") || request.nextUrl.pathname.startsWith("/admin")
+
+    if (!user && isProtectedRoute) {
+      if (request.nextUrl.pathname.startsWith("/auth/callback")) {
+        console.log("[v0] Skipping redirect for auth callback")
+        return supabaseResponse
+      }
+
+      console.log("[v0] No user found, redirecting to login")
       const url = request.nextUrl.clone()
       url.pathname = "/auth/login"
       url.searchParams.set("redirectTo", request.nextUrl.pathname)
