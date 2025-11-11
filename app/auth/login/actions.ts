@@ -1,6 +1,7 @@
 "use server"
 
-import { createServerClient } from "@/lib/supabase/server"
+import { createServerClient } from "@supabase/ssr"
+import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
 export async function loginAction(formData: FormData) {
@@ -10,7 +11,28 @@ export async function loginAction(formData: FormData) {
 
   console.log("[v0] Login attempt for:", email)
 
-  const supabase = await createServerClient()
+  const cookieStore = await cookies()
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options)
+            })
+          } catch (error) {
+            console.error("[v0] Error setting cookies:", error)
+          }
+        },
+      },
+    },
+  )
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -23,6 +45,7 @@ export async function loginAction(formData: FormData) {
   }
 
   console.log("[v0] Login success for user:", data.user.id)
+  console.log("[v0] Session token set:", !!data.session?.access_token)
 
   // Ensure profile exists
   const { data: profile, error: profileError } = await supabase
