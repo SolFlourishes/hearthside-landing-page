@@ -716,6 +716,16 @@ export default function DraftModePage() {
 
         {aiResponse && !isLoading && (
           <div className="mt-6 space-y-4">
+            <Card className="p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
+              <h3 className="text-sm font-semibold text-amber-900 dark:text-amber-100 mb-2">Your Original Draft</h3>
+              <div className="p-3 bg-white dark:bg-gray-900 rounded border border-amber-200 dark:border-amber-800">
+                <p className="text-sm text-foreground whitespace-pre-wrap">{draft}</p>
+              </div>
+              <p className="text-xs text-amber-700 dark:text-amber-300 mt-2">
+                Compare this with the translation below to see how your message was refined for clarity.
+              </p>
+            </Card>
+
             <AnalysisInfoCard
               detectedStyle={aiResponse.detectedStyle || "auto-detected from your message"}
               yourNeurotype={senderNeurotype}
