@@ -73,12 +73,13 @@ export function TranslationTester() {
       const forwardData = await forwardResponse.json()
       console.log("[v0] Translation tester - Forward data:", forwardData)
 
-      if (!forwardData.translation) {
+      const forwardTranslation = forwardData.translation || forwardData.response
+      if (!forwardTranslation) {
         console.error("[v0] Translation tester - No translation in response:", forwardData)
         throw new Error("No translation returned from API")
       }
 
-      setFirstTranslation(forwardData.translation)
+      setFirstTranslation(forwardTranslation)
       console.log("[v0] Translation tester - First translation set, moving to reverse")
       setStep("reverse")
 
@@ -89,7 +90,7 @@ export function TranslationTester() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          text: forwardData.translation,
+          text: forwardTranslation,
           senderNeurotype: receiverNeurotype,
           senderGeneration: receiverGeneration,
           receiverNeurotype: senderNeurotype,
@@ -109,12 +110,13 @@ export function TranslationTester() {
       const reverseData = await reverseResponse.json()
       console.log("[v0] Translation tester - Reverse data:", reverseData)
 
-      if (!reverseData.translation) {
+      const reverseTranslation = reverseData.translation || reverseData.response
+      if (!reverseTranslation) {
         console.error("[v0] Translation tester - No translation in reverse response:", reverseData)
         throw new Error("No reverse translation returned from API")
       }
 
-      setReverseTranslation(reverseData.translation)
+      setReverseTranslation(reverseTranslation)
       console.log("[v0] Translation tester - Test complete!")
     } catch (error) {
       console.error("[v0] Translation test error:", error)
