@@ -7,16 +7,16 @@ export function Services() {
       category: "Products",
       title: "The Clarity Coach",
       description:
-        "Bridge communication gaps with AI-powered translation between different communication styles. Understand what others truly mean and express yourself with clarity across diverse perspectives.",
+        "Bridge communication gaps with AI-powered translation between different communication styles. Create an account to save your communication preferences and get personalized translations that match your unique style.",
       features: [
         "Draft, Analyze & Chat modes",
-        "Document upload & analysis",
-        "Clarity Coach Junior for kids",
-        "Comprehensive safety protections",
+        "User accounts with saved profiles",
+        "Communication Style Quiz",
+        "Auto-populated personal context",
       ],
-      image: "/clarity-coach-communication-translation.jpg",
+      image: "/clarity-coach-logo-square.jpg",
       link: "/apps/clarity",
-      badge: "Beta 3.7",
+      badge: "Beta 4.0",
     },
     {
       category: "Services",
@@ -64,11 +64,11 @@ export function Services() {
             >
               {/* Image */}
               <div className={`${index % 2 === 1 ? "lg:order-2" : ""}`}>
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl max-h-[300px]">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl max-h-[300px] bg-white">
                   <img
                     src={service.image || "/placeholder.svg"}
                     alt={`${service.title} - ${service.description}`}
-                    className="w-full h-full object-cover max-h-[300px]"
+                    className={`w-full h-full max-h-[300px] ${index === 0 ? "object-contain p-6" : "object-cover"}`}
                   />
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full">
                     <span className="text-xs font-semibold text-[#007B8C] uppercase tracking-wide">

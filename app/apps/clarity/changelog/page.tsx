@@ -8,11 +8,127 @@ export default function ChangelogPage() {
         <p className="text-muted-foreground mb-8">Track updates, improvements, and new features.</p>
 
         <div className="space-y-6">
+          {/* Beta v4.0 */}
+          <Card className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v4.0</h2>
+              <span className="text-sm text-muted-foreground">Current Version</span>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-3">User Accounts & Personalization</h3>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Authentication System</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>Implemented full user authentication with email/password and OAuth support (Google, LinkedIn)</li>
+              <li>
+                Fixed critical session persistence issues - authentication state now properly maintained across page
+                navigation
+              </li>
+              <li>
+                Resolved cookie synchronization problems between browser, server, and middleware for consistent session
+                handling
+              </li>
+              <li>
+                Added secure session management using Supabase SSR with proper cookie chunking for large session data
+              </li>
+              <li>User menu in header now correctly displays logged-in state with profile avatar</li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">User Profiles</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Created comprehensive user profile system with neurotype (Autism, ADHD, Neurotypical), generation
+                (Boomer through Gen Alpha, including Xennial), and bio fields
+              </li>
+              <li>
+                Implemented avatar upload using Vercel Blob with image validation, size limits, and secure storage
+              </li>
+              <li>
+                Added database migrations to create user_profiles table with all necessary fields including
+                communication_style JSONB column
+              </li>
+              <li>Profile editing interface with communication context section for neurotype and generation</li>
+              <li>Back buttons on profile, settings, and quiz pages for easy navigation to dashboard</li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Communication Style Quiz</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Built interactive 5-question quiz analyzing communication preferences across formality, directness,
+                detail level, emotional expression, and conflict style
+              </li>
+              <li>
+                Created comprehensive results page displaying your communication archetype (Analyzer, Harmonizer,
+                Strategist, Advocate, or Adapter)
+              </li>
+              <li>
+                Results show strengths, considerations, detailed dimension breakdowns, and impact on Clarity Coach
+              </li>
+              <li>Quiz results saved to user profile and automatically applied to all Clarity Coach interactions</li>
+              <li>Personalized examples showing how your style affects message translations</li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Auto-Population in Clarity Coach</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Draft, Analyze, and Chat modes now automatically load user profile data (neurotype, generation,
+                communication style)
+              </li>
+              <li>
+                Added prominent profile indicator banners showing which information is being used from your saved
+                profile
+              </li>
+              <li>Visual badges on section headers display "From your profile" when fields are auto-populated</li>
+              <li>
+                Communication archetype (e.g., "The Analyzer") displayed alongside neurotype and generation for full
+                transparency
+              </li>
+              <li>Users can still manually override any auto-populated fields for specific scenarios</li>
+              <li>Link to edit profile directly from Clarity Coach for quick updates to communication preferences</li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">User Dashboard</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Created user dashboard with quick access cards for Profile, Account Settings, Clarity Coach, Elder
+                Program, and Stories
+              </li>
+              <li>
+                Added Communication Quiz card to dashboard for easy access to discover or retake communication style
+                quiz
+              </li>
+              <li>Dashboard displays current user information including email, display name, and member since date</li>
+              <li>
+                Protected account routes with authentication checks and proper redirects for unauthenticated users
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Bug Fixes & Technical Improvements</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>Fixed "Could not find table 'public.profiles'" error by standardizing on user_profiles table name</li>
+              <li>
+                Fixed "Could not find column 'communication_style'" and 'generation' errors by adding missing database
+                columns
+              </li>
+              <li>Resolved avatar upload failures by implementing correct Vercel Blob API integration</li>
+              <li>
+                Fixed session loss during navigation by ensuring consistent cookie handling across all Supabase clients
+              </li>
+              <li>Enhanced error handling with detailed logging for debugging authentication and profile issues</li>
+              <li>Improved form validation and user feedback throughout profile management flows</li>
+            </ul>
+
+            <p className="mt-4 text-sm text-muted-foreground italic">
+              Beta 4.0 introduces full user account functionality, enabling personalized Clarity Coach experiences with
+              saved preferences and communication profiles. This foundation prepares for subscription management and
+              premium features in the Gamma phase.
+            </p>
+          </Card>
+
           {/* Beta v3.10 */}
           <Card className="p-6">
             <div className="flex items-start justify-between mb-4">
               <h2 className="font-serif text-2xl font-bold text-primary">Beta v3.10</h2>
-              <span className="text-sm text-muted-foreground">Current Version</span>
+              <span className="text-sm text-muted-foreground">January 2025</span>
             </div>
             <h3 className="text-lg font-semibold text-primary mb-3">Quality of Life Improvements</h3>
 

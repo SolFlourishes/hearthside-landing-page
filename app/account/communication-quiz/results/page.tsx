@@ -127,8 +127,10 @@ export default async function CommunicationQuizResultsPage() {
         </Button>
       </Link>
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-serif font-bold mb-2">Your Communication Profile</h1>
+      <div className="mb-8" role="region" aria-labelledby="results-heading">
+        <h1 id="results-heading" className="text-3xl font-serif font-bold mb-2">
+          Your Communication Profile
+        </h1>
         <p className="text-muted-foreground">Understanding how you communicate and how it affects translations</p>
       </div>
 
@@ -138,38 +140,49 @@ export default async function CommunicationQuizResultsPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-2xl">{profileSummary.archetype}</CardTitle>
+                <CardTitle className="text-2xl" id="archetype-title">
+                  {profileSummary.archetype}
+                </CardTitle>
                 <CardDescription className="mt-2 text-base">{profileSummary.description}</CardDescription>
               </div>
-              <Badge variant="secondary" className="text-lg px-4 py-2">
+              <Badge variant="secondary" className="text-lg px-4 py-2" aria-label="Your communication style">
                 Your Style
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div>
-              <h3 className="font-semibold mb-3 text-teal-700 dark:text-teal-400">Your Strengths</h3>
-              <ul className="space-y-2">
+            <section aria-labelledby="strengths-heading">
+              <h2 id="strengths-heading" className="font-semibold mb-3 text-teal-700 dark:text-teal-400">
+                Your Strengths
+              </h2>
+              <ul className="space-y-2" role="list">
                 {profileSummary.strengths.map((strength, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                    <Check
+                      className="h-5 w-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5"
+                      aria-hidden="true"
+                    />
                     <span>{strength}</span>
                   </li>
                 ))}
               </ul>
-            </div>
+            </section>
 
-            <div>
-              <h3 className="font-semibold mb-3 text-amber-700 dark:text-amber-400">Things to Consider</h3>
-              <ul className="space-y-2 text-muted-foreground">
+            <section aria-labelledby="considerations-heading">
+              <h2 id="considerations-heading" className="font-semibold mb-3 text-amber-700 dark:text-amber-400">
+                Things to Consider
+              </h2>
+              <ul className="space-y-2 text-muted-foreground" role="list">
                 {profileSummary.considerations.map((consideration, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <span className="text-amber-600 dark:text-amber-400">•</span>
+                    <span className="text-amber-600 dark:text-amber-400" aria-hidden="true">
+                      •
+                    </span>
                     <span>{consideration}</span>
                   </li>
                 ))}
               </ul>
-            </div>
+            </section>
           </CardContent>
         </Card>
 
@@ -208,25 +221,29 @@ export default async function CommunicationQuizResultsPage() {
         {/* How It Impacts Clarity Coach */}
         <Card className="border-teal-200 dark:border-teal-800 bg-teal-50/50 dark:bg-teal-950/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">How This Affects Clarity Coach</CardTitle>
+            <h2 className="text-xl font-serif font-bold">How This Affects Clarity Coach</h2>
             <CardDescription>Your profile helps us provide better translations</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div>
-              <h4 className="font-semibold mb-2">Automatic Detection</h4>
+            <section aria-labelledby="auto-detection">
+              <h3 id="auto-detection" className="font-semibold mb-2">
+                Automatic Detection
+              </h3>
               <p className="text-sm text-muted-foreground">
                 Clarity Coach will automatically detect your communication style from your actual message, but knowing
                 your baseline helps us understand when you're adapting your style vs. communicating naturally.
               </p>
-            </div>
+            </section>
 
-            <div>
-              <h4 className="font-semibold mb-2">Personalized Translations</h4>
+            <section aria-labelledby="personalized-translations">
+              <h3 id="personalized-translations" className="font-semibold mb-2">
+                Personalized Translations
+              </h3>
               <p className="text-sm text-muted-foreground">
                 When translating messages, we'll consider your natural style to help you bridge gaps with people who
                 communicate differently. For example:
               </p>
-              <ul className="mt-2 space-y-1 text-sm text-muted-foreground ml-4">
+              <ul className="mt-2 space-y-1 text-sm text-muted-foreground ml-4" role="list">
                 {profileSummary.directness.includes("direct") ? (
                   <li>
                     • We'll help you add context and softening language when communicating with indirect communicators
@@ -243,15 +260,17 @@ export default async function CommunicationQuizResultsPage() {
                   • We'll adapt your tone to match different relationships (professional, casual, cross-generational)
                 </li>
               </ul>
-            </div>
+            </section>
 
-            <div>
-              <h4 className="font-semibold mb-2">Better Context Understanding</h4>
+            <section aria-labelledby="better-context">
+              <h3 id="better-context" className="font-semibold mb-2">
+                Better Context Understanding
+              </h3>
               <p className="text-sm text-muted-foreground">
                 Combined with your neurotype and generation context (if provided), this creates a comprehensive profile
                 that helps Clarity Coach give you highly personalized communication guidance.
               </p>
-            </div>
+            </section>
           </CardContent>
         </Card>
 
