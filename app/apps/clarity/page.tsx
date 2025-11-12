@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { PenLine, Search, MessageCircle } from "lucide-react"
+import { PenLine, Search, MessageCircle, Lightbulb } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Footer } from "@/components/footer"
 import { useEffect } from "react"
@@ -36,7 +36,7 @@ export default function ClarityCoachPage() {
 
         {/* Three Modes */}
         <section className="container mx-auto px-4 py-6">
-          <div className="grid md:grid-cols-3 gap-4 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
             {/* Draft Mode */}
             <Link
               href="/apps/clarity/draft"
@@ -84,6 +84,22 @@ export default function ClarityCoachPage() {
                 </p>
               </div>
             </Link>
+
+            {/* PoliTalk Explorer */}
+            <Link
+              href="/apps/clarity/politalk-explorer"
+              className="group bg-gradient-to-br from-purple-500/10 to-card border-2 border-purple-500/30 rounded-lg p-6 hover:border-purple-500 hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="p-3 bg-purple-500/20 rounded-full mb-3 group-hover:bg-purple-500/30 transition-colors">
+                  <Lightbulb className="w-7 h-7 text-purple-500" />
+                </div>
+                <h2 className="font-serif text-xl font-bold text-purple-500 mb-2">PoliTalk Explorer</h2>
+                <p className="text-sm text-muted-foreground">
+                  Understand the moral frameworks behind political positions.
+                </p>
+              </div>
+            </Link>
           </div>
         </section>
 
@@ -95,7 +111,7 @@ export default function ClarityCoachPage() {
               Not sure where to start? Click an example to see how Clarity Coach works.
             </p>
 
-            <div className="grid md:grid-cols-3 gap-3">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Draft Example */}
               <a
                 href="/apps/clarity/draft?example=promotion"
@@ -140,6 +156,22 @@ export default function ClarityCoachPage() {
                   <div>
                     <h3 className="font-semibold text-sm text-[#FFC72C] mb-1">Resolving Conflict</h3>
                     <p className="text-xs text-muted-foreground">Get advice on handling difficult conversations</p>
+                  </div>
+                </div>
+              </a>
+
+              {/* PoliTalk Example */}
+              <a
+                href="/apps/clarity/politalk-explorer"
+                className="group bg-card border border-border rounded-lg p-4 hover:border-purple-500 hover:shadow-lg transition-all"
+              >
+                <div className="flex items-start gap-2 mb-2">
+                  <div className="p-1.5 bg-purple-500/10 rounded-lg">
+                    <Lightbulb className="w-4 h-4 text-purple-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm text-purple-500 mb-1">Political Worldviews</h3>
+                    <p className="text-xs text-muted-foreground">Explore why people believe what they believe</p>
                   </div>
                 </div>
               </a>

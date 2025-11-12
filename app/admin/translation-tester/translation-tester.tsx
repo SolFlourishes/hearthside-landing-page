@@ -40,9 +40,14 @@ export function TranslationTester() {
   const runTest = async () => {
     setLoading(true)
     setStep("forward")
+    console.log("[v0] Translation tester - Starting test")
+    console.log("[v0] Original message:", originalMessage)
+    console.log("[v0] Sender:", { neurotype: senderNeurotype, generation: senderGeneration })
+    console.log("[v0] Receiver:", { neurotype: receiverNeurotype, generation: receiverGeneration })
 
     try {
       // Step 1: Translate from sender to receiver
+      console.log("[v0] Translation tester - Step 1: Forward translation")
       const forwardResponse = await fetch("/api/clarity/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,15 +62,28 @@ export function TranslationTester() {
         }),
       })
 
+      console.log("[v0] Translation tester - Forward response status:", forwardResponse.status)
+
       if (!forwardResponse.ok) {
-        throw new Error("Forward translation failed")
+        const errorText = await forwardResponse.text()
+        console.error("[v0] Translation tester - Forward translation failed:", errorText)
+        throw new Error(`Forward translation failed: ${forwardResponse.status}`)
       }
 
       const forwardData = await forwardResponse.json()
+      console.log("[v0] Translation tester - Forward data:", forwardData)
+
+      if (!forwardData.translation) {
+        console.error("[v0] Translation tester - No translation in response:", forwardData)
+        throw new Error("No translation returned from API")
+      }
+
       setFirstTranslation(forwardData.translation)
+      console.log("[v0] Translation tester - First translation set, moving to reverse")
       setStep("reverse")
 
       // Step 2: Translate back (swap sender and receiver)
+      console.log("[v0] Translation tester - Step 2: Reverse translation")
       const reverseResponse = await fetch("/api/clarity/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -80,15 +98,30 @@ export function TranslationTester() {
         }),
       })
 
+      console.log("[v0] Translation tester - Reverse response status:", reverseResponse.status)
+
       if (!reverseResponse.ok) {
-        throw new Error("Reverse translation failed")
+        const errorText = await reverseResponse.text()
+        console.error("[v0] Translation tester - Reverse translation failed:", errorText)
+        throw new Error(`Reverse translation failed: ${reverseResponse.status}`)
       }
 
       const reverseData = await reverseResponse.json()
+      console.log("[v0] Translation tester - Reverse data:", reverseData)
+
+      if (!reverseData.translation) {
+        console.error("[v0] Translation tester - No translation in reverse response:", reverseData)
+        throw new Error("No reverse translation returned from API")
+      }
+
       setReverseTranslation(reverseData.translation)
+      console.log("[v0] Translation tester - Test complete!")
     } catch (error) {
-      console.error("Translation test error:", error)
-      alert("Translation test failed. Please try again.")
+      console.error("[v0] Translation test error:", error)
+      alert(
+        `Translation test failed: ${error instanceof Error ? error.message : "Unknown error"}. Check console for details.`,
+      )
+      setStep("setup")
     } finally {
       setLoading(false)
     }
