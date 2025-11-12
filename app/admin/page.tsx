@@ -62,17 +62,31 @@ export default async function AdminDashboardPage() {
         </Card>
 
         {profile.role === "admin" && (
-          <Card>
-            <CardHeader>
-              <CardTitle>User Management</CardTitle>
-              <CardDescription>Manage user roles and permissions</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild className="w-full">
-                <Link href="/admin/users">Manage Users</Link>
-              </Button>
-            </CardContent>
-          </Card>
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle>User Management</CardTitle>
+                <CardDescription>Manage user roles and permissions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full">
+                  <Link href="/admin/users">Manage Users</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Translation Consistency Tester</CardTitle>
+                <CardDescription>Test bidirectional translation validity for Clarity Coach</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full">
+                  <Link href="/admin/translation-tester">Run Tests</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </>
         )}
 
         <Card>

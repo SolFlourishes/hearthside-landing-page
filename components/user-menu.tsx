@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge"
 import { useSupabase } from "@/components/supabase-provider"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { User, LogOut, Settings, CreditCard, MessageSquare } from "lucide-react"
+import { User, LogOut, Settings, CreditCard, MessageSquare, Shield } from "lucide-react"
 
 interface UserProfile {
   id: string
@@ -23,6 +23,7 @@ interface UserProfile {
   avatar_url?: string
   subscription_tier?: string
   email?: string
+  role?: string
 }
 
 export function UserMenu() {
@@ -72,6 +73,7 @@ export function UserMenu() {
             avatar_url: profile?.avatar_url,
             subscription_tier: profile?.subscription_tier || "free",
             email: authUser.email,
+            role: profile?.role || "user",
           })
         } else {
           console.log("[v0] UserMenu - No session, setting user to null")
@@ -129,6 +131,7 @@ export function UserMenu() {
           avatar_url: profile?.avatar_url,
           subscription_tier: profile?.subscription_tier || "free",
           email: authUser.email,
+          role: profile?.role || "user",
         })
         setLoading(false)
       }
@@ -207,6 +210,15 @@ export function UserMenu() {
           <CreditCard className="mr-2 h-4 w-4" />
           <span>Subscription</span>
         </DropdownMenuItem>
+        {(user.role === "admin" || user.role === "moderator") && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => router.push("/admin")} className="cursor-pointer">
+              <Shield className="mr-2 h-4 w-4" />
+              <span>Admin Panel</span>
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
           <LogOut className="mr-2 h-4 w-4" />
