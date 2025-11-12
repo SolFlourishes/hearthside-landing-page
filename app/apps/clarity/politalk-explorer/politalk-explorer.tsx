@@ -162,25 +162,85 @@ export function PolitalkExplorer() {
 
     const posLower = position.toLowerCase()
 
+    // Conservative indicators (support these positions)
+    const conservativeIndicators = [
+      "pro-life",
+      "border security",
+      "second amendment",
+      "personal responsibility",
+      "religious freedom",
+      "law and order",
+      "traditional family",
+    ]
+
+    // Progressive indicators (support these positions)
+    const progressiveIndicators = [
+      "sanctuary cit",
+      "defund",
+      "climate action",
+      "living wage",
+      "taxing the rich",
+      "wealth redistribution",
+    ]
+
+    // Check for negation words that flip the meaning
+    const hasNegation = (text: string, keyword: string) => {
+      const keywordIndex = text.indexOf(keyword)
+      if (keywordIndex === -1) return false
+
+      const beforeKeyword = text.substring(Math.max(0, keywordIndex - 50), keywordIndex)
+      return (
+        beforeKeyword.includes("don't support") ||
+        beforeKeyword.includes("oppose") ||
+        beforeKeyword.includes("against") ||
+        beforeKeyword.includes("don't think") ||
+        beforeKeyword.includes("shouldn't") ||
+        beforeKeyword.includes("don't believe")
+      )
+    }
+
+    // Count conservative vs progressive indicators (accounting for negations)
+    let conservativeScore = 0
+    let progressiveScore = 0
+
+    conservativeIndicators.forEach((indicator) => {
+      if (posLower.includes(indicator)) {
+        conservativeScore++
+      }
+    })
+
+    progressiveIndicators.forEach((indicator) => {
+      if (posLower.includes(indicator) && !hasNegation(posLower, indicator)) {
+        progressiveScore++
+      }
+    })
+
+    // Also check for opposition to progressive policies (counts as conservative)
     if (
-      (posLower.includes("pro-life") ||
-        posLower.includes("border security") ||
-        posLower.includes("second amendment") ||
-        posLower.includes("personal responsibility")) &&
-      (speakerIdentity === "progressive" || speakerIdentity === "liberal")
+      posLower.includes("universal healthcare") &&
+      (hasNegation(posLower, "universal healthcare") || posLower.includes("don't think") || posLower.includes("oppose"))
     ) {
-      return "The position you entered seems conservative, but you selected a liberal/progressive identity for the speaker. Did you mean to swap the identities?"
+      conservativeScore++
     }
 
     if (
-      (posLower.includes("sanctuary cit") ||
-        posLower.includes("defund") ||
-        posLower.includes("climate change") ||
-        posLower.includes("living wage") ||
-        posLower.includes("universal healthcare")) &&
-      speakerIdentity === "conservative"
+      posLower.includes("welfare") &&
+      (hasNegation(posLower, "welfare") || posLower.includes("handout") || posLower.includes("oppose"))
     ) {
-      return "The position you entered seems progressive/liberal, but you selected a conservative identity for the speaker. Did you mean to swap the identities?"
+      conservativeScore++
+    }
+
+    // Only show warning if there's a clear mismatch (score difference > 1)
+    if (conservativeScore > progressiveScore + 1) {
+      if (speakerIdentity === "progressive" || speakerIdentity === "liberal") {
+        return "The position you entered seems conservative, but you selected a liberal/progressive identity for the speaker. Did you mean to swap the identities?"
+      }
+    }
+
+    if (progressiveScore > conservativeScore + 1) {
+      if (speakerIdentity === "conservative") {
+        return "The position you entered seems progressive/liberal, but you selected a conservative identity for the speaker. Did you mean to swap the identities?"
+      }
     }
 
     return null
