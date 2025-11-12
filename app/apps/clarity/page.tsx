@@ -21,7 +21,8 @@ export default function ClarityCoachPage() {
               Welcome to the <span className="text-primary">Clarity Coach</span>
             </h1>
             <p className="text-base text-muted-foreground mb-4">
-              Bridge communication gaps, say what you mean, and understand what others truly mean.
+              Bridge communication gaps, understand political worldviews, and say what you truly mean. Now with
+              personalized accounts and PoliTalk Explorer.
             </p>
 
             {/* Quote */}

@@ -8,11 +8,113 @@ export default function ChangelogPage() {
         <p className="text-muted-foreground mb-8">Track updates, improvements, and new features.</p>
 
         <div className="space-y-6">
+          {/* Beta v4.1 */}
+          <Card className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v4.1</h2>
+              <span className="text-sm text-muted-foreground">Current Version</span>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-3">PoliTalk Explorer & Validity Testing</h3>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">PoliTalk Explorer</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Created conversational PoliTalk Explorer tool that goes beyond message translation to explore the
+                underlying moral frameworks, value hierarchies, and worldviews that shape political beliefs
+              </li>
+              <li>
+                Implemented granular political identity selection matching Draft/Analyze modes - Progressive, Liberal,
+                Moderate, Conservative, Libertarian identities plus additional values (anti-establishment,
+                social-justice, law-and-order, nationalist, globalist, etc.)
+              </li>
+              <li>
+                Added "About You" section where users specify their own political identity so AI can tailor explanations
+                to bridge the specific gap between their moral framework and the speaker's perspective
+              </li>
+              <li>
+                Built curated topic library with 20+ common divisive political positions organized into six categories:
+                Life & Ethics, Immigration & Security, Economy & Welfare, Rights & Freedoms, Environment & Energy, and
+                Justice & Policing
+              </li>
+              <li>
+                Users can click "Browse Topic Library" to select pre-written controversial statements and automatically
+                populate the exploration field
+              </li>
+              <li>
+                Enhanced AI responses using research from George Lakoff's Moral Politics and Moral Foundations Theory to
+                explain how seemingly contradictory positions (e.g., "pro-life" but opposing welfare) are internally
+                consistent within different moral frameworks
+              </li>
+              <li>
+                Added intelligent validation that detects mismatches between selected position and political identity
+                (e.g., conservative position paired with liberal identity) and prompts user to confirm or swap
+              </li>
+              <li>
+                Clear visual distinction with color-coded cards - blue for "The Person Holding This Belief" and green
+                for "Your Perspective"
+              </li>
+              <li>
+                PoliTalk Explorer accessible from main Clarity Coach page alongside Draft, Analyze, and Chat modes
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">
+              Translation Consistency Tester (Admin Tool)
+            </h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Built Translation Consistency Tester in admin panel for validity research and quality assurance testing
+              </li>
+              <li>
+                Performs bidirectional translation testing: forward translation (sender→receiver) followed by reverse
+                translation (receiver→sender) to measure semantic preservation
+              </li>
+              <li>
+                Calculates word overlap percentage between original message and final reverse-translated message as
+                quantitative consistency metric
+              </li>
+              <li>
+                Provides manual review checklist evaluating core meaning preservation, intent accuracy,
+                tone/relationship maintenance, and style appropriateness
+              </li>
+              <li>
+                Displays all three versions (original, forward translation, reverse translation) for qualitative
+                comparison
+              </li>
+              <li>Added to admin dashboard with easy access for administrators</li>
+              <li>Admin users now see "Admin Panel" link in profile dropdown menu with shield icon</li>
+              <li>
+                Validates that Clarity Coach maintains semantic consistency across translation cycles while
+                appropriately adapting communication styles
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">UX Improvements</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Fixed Draft mode to display original draft message alongside translation results for easy comparison
+              </li>
+              <li>
+                Added prominent "Your Original Draft" card showing the exact message user submitted before seeing AI
+                translation
+              </li>
+              <li>Optimized UserMenu component to reduce excessive re-renders and eliminate ResizeObserver warnings</li>
+              <li>Removed redundant pathname-based auth checks that were causing layout thrashing</li>
+              <li>Cleaned up debug logging throughout the application for better performance</li>
+            </ul>
+
+            <p className="mt-4 text-sm text-muted-foreground italic">
+              Beta 4.1 introduces PoliTalk Explorer for understanding political worldviews and the Translation
+              Consistency Tester for research validation, advancing Clarity Coach's mission to bridge communication gaps
+              across diverse perspectives.
+            </p>
+          </Card>
+
           {/* Beta v4.0 */}
           <Card className="p-6">
             <div className="flex items-start justify-between mb-4">
               <h2 className="font-serif text-2xl font-bold text-primary">Beta v4.0</h2>
-              <span className="text-sm text-muted-foreground">Current Version</span>
+              <span className="text-sm text-muted-foreground">January 2025</span>
             </div>
             <h3 className="text-lg font-semibold text-primary mb-3">User Accounts & Personalization</h3>
 

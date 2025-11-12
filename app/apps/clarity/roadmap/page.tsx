@@ -12,6 +12,58 @@ export default function RoadmapPage() {
         </p>
 
         <div className="space-y-6">
+          {/* Beta 4.1 - PoliTalk Explorer & Consistency Check */}
+          {/* Beta 4.1 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 4.1</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Completed
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">PoliTalk Explorer & Validity Testing</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>
+                    Created PoliTalk Explorer conversational tool for understanding underlying moral frameworks behind
+                    political positions
+                  </li>
+                  <li>
+                    Added granular political identity selection (Progressive, Liberal, Moderate, Conservative,
+                    Libertarian) with additional values
+                  </li>
+                  <li>
+                    Implemented "About You" and "About Them" sections to bridge understanding between different
+                    political worldviews
+                  </li>
+                  <li>
+                    Curated topic library with 20+ common divisive political issues organized by category (Life &
+                    Ethics, Immigration, Economy, Rights, Environment, Justice)
+                  </li>
+                  <li>
+                    Enhanced responses using Moral Foundations Theory to explain how different value hierarchies create
+                    internally consistent but conflicting positions
+                  </li>
+                  <li>
+                    Built Translation Consistency Tester in admin panel for validity research and quality assurance
+                  </li>
+                  <li>
+                    Tester performs forward translation (sender→receiver) and reverse translation (receiver→sender) to
+                    measure semantic consistency
+                  </li>
+                  <li>
+                    Added word overlap metrics and manual review checklist for comprehensive translation quality
+                    assessment
+                  </li>
+                  <li>Admin users now have quick access to admin panel from profile menu</li>
+                  <li>Fixed original draft message display in translation results for easy comparison</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
           {/* Beta 4.0 - Completed */}
           <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
             <div className="flex items-start gap-3 mb-4">

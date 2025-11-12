@@ -1,13 +1,52 @@
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Sparkles } from "lucide-react"
+import { Sparkles, User, Lightbulb } from "lucide-react"
 
 export default function HowToUsePage() {
   return (
     <main className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="font-serif text-4xl font-bold text-foreground mb-6">How to Use Clarity Coach</h1>
+
+        <Card className="p-6 bg-primary/5 border-primary/20 mb-6">
+          <div className="flex items-start gap-3">
+            <User className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
+            <div>
+              <h2 className="font-serif text-xl font-bold text-primary mb-2">✨ New: Personalized Accounts</h2>
+              <p className="text-muted-foreground mb-3">
+                Create an account to save your communication profile and get personalized coaching across all features.
+              </p>
+              <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-2">
+                <li>
+                  <strong>Take the Communication Quiz</strong> to discover your style (Analyzer, Harmonizer, etc.)
+                </li>
+                <li>
+                  <strong>Save your profile</strong> (neurotype, generation, communication preferences)
+                </li>
+                <li>
+                  <strong>Auto-populated context</strong> in Draft, Analyze, and Chat modes
+                </li>
+                <li>
+                  <strong>Track your communication growth</strong> over time
+                </li>
+              </ul>
+              <div className="flex gap-2 mt-4">
+                <Link href="/account/communication-quiz">
+                  <Button size="sm">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Take Communication Quiz
+                  </Button>
+                </Link>
+                <Link href="/account/profile">
+                  <Button size="sm" variant="outline">
+                    Manage Profile
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </Card>
 
         <div className="space-y-6">
           <Card className="p-6">
@@ -107,6 +146,45 @@ export default function HowToUsePage() {
             </Link>
           </Card>
 
+          <Card className="p-6">
+            <h2 className="font-serif text-2xl font-bold text-primary mb-4">PoliTalk Explorer</h2>
+            <p className="text-muted-foreground mb-4">
+              Use PoliTalk Explorer to understand why people across the political spectrum hold different beliefs and
+              what their words really mean.
+            </p>
+            <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+              <li>
+                <strong>Select a position</strong> from the topic library or enter your own
+              </li>
+              <li>
+                <strong>Choose their identity</strong> — Political stance and values of the person holding this belief
+              </li>
+              <li>
+                <strong>Choose your identity</strong> — Your own political perspective and values
+              </li>
+              <li>Click "Explore" to receive an analysis</li>
+              <li>
+                Review <strong>"The Underlying Framework"</strong> to understand their moral foundations
+              </li>
+              <li>
+                See <strong>"Bridging the Gap"</strong> for connection strategies across worldviews
+              </li>
+            </ol>
+            <div className="bg-muted/50 p-4 rounded-lg mt-4">
+              <p className="text-sm text-muted-foreground">
+                <strong>Example:</strong> Why might a conservative be "pro-life" yet oppose welfare programs? PoliTalk
+                Explorer explains the internal consistency of different moral frameworks using research from George
+                Lakoff's Moral Politics and Moral Foundations Theory.
+              </p>
+            </div>
+            <Link href="/apps/clarity/politalk-explorer">
+              <Button className="mt-4">
+                <Lightbulb className="w-4 h-4 mr-2" />
+                Try PoliTalk Explorer
+              </Button>
+            </Link>
+          </Card>
+
           <Card className="p-6 bg-muted/50">
             <h2 className="font-serif text-2xl font-bold text-primary mb-4">Understanding Context Options</h2>
             <div className="space-y-3 text-muted-foreground text-sm">
@@ -162,12 +240,19 @@ export default function HowToUsePage() {
             <h2 className="font-serif text-2xl font-bold text-primary mb-4">Tips for Best Results</h2>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
               <li>
+                <strong>Create an account</strong> — Save your communication profile to get personalized coaching
+                automatically
+              </li>
+              <li>
+                <strong>Take the Communication Quiz</strong> — Discover your archetype and how it affects your
+                interactions
+              </li>
+              <li>
                 <strong>Be specific about your goal</strong> — The more detail about what you want to achieve, the
                 better the guidance
               </li>
               <li>
-                <strong>Context is optional but powerful</strong> — If you know neurotype/generation details, adding
-                them significantly improves accuracy
+                <strong>Context is optional but powerful</strong> — Profile data auto-populates if you're logged in
               </li>
               <li>
                 <strong>Start simple</strong> — You don't need to fill out every field. The core inputs are enough for
