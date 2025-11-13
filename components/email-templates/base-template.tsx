@@ -105,7 +105,7 @@ export function BaseEmailTemplate({ children, preheader }: BaseEmailTemplateProp
   ${preheader ? `<div style="display: none; max-height: 0; overflow: hidden;">${preheader}</div>` : ""}
   <div class="email-container">
     <div class="header">
-      <img src="https://hearthsideworks.com/hearthside-arch-logo.png" alt="Hearthside Works" class="logo" />
+      <img src="/images/design-mode/hearthside-arch-logo.png" alt="Hearthside Works" class="logo" />
       <h1 class="header-title">Hearthside Works</h1>
     </div>
     <div class="content">

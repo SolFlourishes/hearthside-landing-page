@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
-
 import { createContext, useContext, useEffect, useState } from "react"
+import { createBrowserClient } from "@/lib/supabase/client"
 
 type Theme = "light" | "dark"
 
@@ -22,14 +22,41 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true)
-    const savedTheme = localStorage.getItem("theme") as Theme | null
-    if (savedTheme) {
-      setTheme(savedTheme)
-      document.documentElement.classList.toggle("dark", savedTheme === "dark")
-    } else {
-      setTheme("light")
-      document.documentElement.classList.remove("dark")
+
+    const loadTheme = async () => {
+      const supabase = createBrowserClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (user) {
+        const { data: profile } = await supabase
+          .from("user_profiles")
+          .select("theme_preferences")
+          .eq("id", user.id)
+          .single()
+
+        if (profile?.theme_preferences) {
+          const savedMode = profile.theme_preferences.mode as Theme
+          setTheme(savedMode)
+          document.documentElement.classList.toggle("dark", savedMode === "dark")
+
+          if (profile.theme_preferences.fontSize) {
+            document.documentElement.setAttribute("data-font-size", profile.theme_preferences.fontSize)
+          }
+
+          return
+        }
+      }
+
+      const savedTheme = localStorage.getItem("theme") as Theme | null
+      if (savedTheme) {
+        setTheme(savedTheme)
+        document.documentElement.classList.toggle("dark", savedTheme === "dark")
+      }
     }
+
+    loadTheme()
   }, [])
 
   const toggleTheme = () => {

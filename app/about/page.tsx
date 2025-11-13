@@ -78,7 +78,7 @@ export default function AboutPage() {
                         and understand one another in an increasingly complex world.
                       </p>
                       <p>
-                        Drawing from years of working with diverse teams and communities, they recognized that emotional
+                        Drawing from years of working with diverse teams and communities, he recognized that emotional
                         safety and effective communication are not just nice-to-haves—they're essential for both
                         personal flourishing and professional success.
                       </p>

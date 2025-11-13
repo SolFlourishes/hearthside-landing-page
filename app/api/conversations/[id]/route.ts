@@ -58,12 +58,13 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   }
 
   const body = await request.json()
-  const { title, messages, is_draft } = body
+  const { title, messages, is_draft, is_favorited } = body
 
   const updates: Record<string, unknown> = {}
   if (title !== undefined) updates.title = title
   if (messages !== undefined) updates.messages = messages
   if (is_draft !== undefined) updates.is_draft = is_draft
+  if (is_favorited !== undefined) updates.is_favorited = is_favorited
 
   const { data: conversation, error } = await supabase
     .from("clarity_conversations")

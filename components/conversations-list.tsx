@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { TrashIcon, FileTextIcon } from "lucide-react"
+import { TrashIcon, FileTextIcon, Star } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -17,6 +17,7 @@ interface Conversation {
   created_at: string
   updated_at: string
   mode?: string
+  is_favorited?: boolean
 }
 
 interface ConversationsListProps {
@@ -27,6 +28,25 @@ interface ConversationsListProps {
 export function ConversationsList({ conversations, isDraft }: ConversationsListProps) {
   const router = useRouter()
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [localConversations, setLocalConversations] = useState(conversations)
+
+  const toggleFavorite = async (id: string, currentState: boolean) => {
+    try {
+      const response = await fetch(`/api/conversations/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_favorited: !currentState }),
+      })
+
+      if (!response.ok) throw new Error("Failed to toggle favorite")
+
+      setLocalConversations(
+        localConversations.map((conv) => (conv.id === id ? { ...conv, is_favorited: !currentState } : conv)),
+      )
+    } catch (error) {
+      console.error("Failed to toggle favorite:", error)
+    }
+  }
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this conversation?")) {
@@ -54,7 +74,7 @@ export function ConversationsList({ conversations, isDraft }: ConversationsListP
 
   return (
     <div className="space-y-3">
-      {conversations.map((conversation) => {
+      {localConversations.map((conversation) => {
         const messageCount = Array.isArray(conversation.messages) ? conversation.messages.length : 0
         const conversationLink = conversation.mode
           ? `/apps/clarity/${conversation.mode}?conversation=${conversation.id}`
@@ -81,6 +101,16 @@ export function ConversationsList({ conversations, isDraft }: ConversationsListP
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => toggleFavorite(conversation.id, conversation.is_favorited || false)}
+                className="px-2"
+              >
+                <Star
+                  className={`h-4 w-4 ${conversation.is_favorited ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
+                />
+              </Button>
               <ExportMenu
                 onExport={(format) => exportConversation(conversation, { format })}
                 label=""

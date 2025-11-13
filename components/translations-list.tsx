@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FileText, Trash2, ChevronDown, ChevronUp } from "lucide-react"
+import { FileText, Trash2, ChevronDown, ChevronUp, Star } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { useState } from "react"
 import { createBrowserClient } from "@supabase/ssr"
@@ -20,6 +20,7 @@ interface Translation {
   created_at: string
   sender_context?: any
   receiver_context?: any
+  is_favorited?: boolean
 }
 
 interface TranslationsListProps {
@@ -29,6 +30,26 @@ interface TranslationsListProps {
 export function TranslationsList({ translations }: TranslationsListProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [localTranslations, setLocalTranslations] = useState(translations)
+
+  const toggleFavorite = async (id: string, currentState: boolean) => {
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      )
+
+      const { error } = await supabase.from("clarity_translations").update({ is_favorited: !currentState }).eq("id", id)
+
+      if (error) throw error
+
+      setLocalTranslations(
+        localTranslations.map((trans) => (trans.id === id ? { ...trans, is_favorited: !currentState } : trans)),
+      )
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err)
+    }
+  }
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this translation?")) return
@@ -44,7 +65,6 @@ export function TranslationsList({ translations }: TranslationsListProps) {
 
       if (error) throw error
 
-      // Refresh the page to show updated list
       window.location.reload()
     } catch (err) {
       console.error("Error deleting translation:", err)
@@ -60,7 +80,7 @@ export function TranslationsList({ translations }: TranslationsListProps) {
 
   return (
     <div className="space-y-3">
-      {translations.map((trans) => {
+      {localTranslations.map((trans) => {
         const isExpanded = expandedId === trans.id
         const preview = trans.original_message.substring(0, 100) + (trans.original_message.length > 100 ? "..." : "")
 
@@ -84,6 +104,16 @@ export function TranslationsList({ translations }: TranslationsListProps) {
               </div>
 
               <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toggleFavorite(trans.id, trans.is_favorited || false)}
+                  className="px-2"
+                >
+                  <Star
+                    className={`h-4 w-4 ${trans.is_favorited ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
+                  />
+                </Button>
                 <ExportMenu
                   onExport={(format) => exportTranslation(trans, { format })}
                   label=""
