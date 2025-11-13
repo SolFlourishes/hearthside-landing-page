@@ -91,40 +91,38 @@ export function OnboardingTutorial({ userId }: { userId: string }) {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       )
 
-      console.log("[v0] Checking tutorial status for user:", userId)
+      const { data, error } = await supabase
+        .from("user_profiles")
+        .select("tutorial_completed")
+        .eq("id", userId)
+        .maybeSingle()
 
-      let attempts = 0
-      let profile = null
-
-      while (attempts < 3 && !profile) {
-        const { data, error } = await supabase
+      if (!data && !error) {
+        const { data: newProfile, error: createError } = await supabase
           .from("user_profiles")
+          .insert({ id: userId, tutorial_completed: false })
           .select("tutorial_completed")
-          .eq("id", userId)
           .single()
 
-        if (error) {
-          console.log("[v0] Tutorial check attempt", attempts + 1, "error:", error.message)
+        if (createError) {
+          console.error("[v0] Error creating profile:", createError)
+          setIsLoading(false)
+          return
         }
 
-        if (data) {
-          profile = data
-          break
-        }
-
-        attempts++
-        if (attempts < 3) {
-          await new Promise((resolve) => setTimeout(resolve, 1000)) // Wait 1 second
-        }
+        setIsVisible(true)
+        setIsLoading(false)
+        return
       }
 
-      console.log("[v0] Tutorial status check result:", profile)
+      if (error) {
+        console.error("[v0] Error fetching tutorial status:", error)
+        setIsLoading(false)
+        return
+      }
 
-      if (!profile || profile.tutorial_completed === false || profile.tutorial_completed === null) {
-        console.log("[v0] Showing tutorial")
+      if (!data.tutorial_completed) {
         setIsVisible(true)
-      } else {
-        console.log("[v0] Tutorial already completed")
       }
 
       setIsLoading(false)
@@ -134,8 +132,6 @@ export function OnboardingTutorial({ userId }: { userId: string }) {
   }, [userId])
 
   const handleComplete = async () => {
-    console.log("[v0] Marking tutorial as completed for user:", userId)
-
     const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -145,8 +141,6 @@ export function OnboardingTutorial({ userId }: { userId: string }) {
 
     if (error) {
       console.error("[v0] Error updating tutorial status:", error)
-    } else {
-      console.log("[v0] Tutorial marked as completed successfully")
     }
 
     setIsVisible(false)

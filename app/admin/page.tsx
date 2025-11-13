@@ -86,6 +86,18 @@ export default async function AdminDashboardPage() {
                 </Button>
               </CardContent>
             </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Notification Management</CardTitle>
+                <CardDescription>Send connection-focused communications to users</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full">
+                  <Link href="/admin/notifications">Manage Notifications</Link>
+                </Button>
+              </CardContent>
+            </Card>
           </>
         )}
 
