@@ -6,6 +6,7 @@ import Link from "next/link"
 import { ConversationsList } from "@/components/conversations-list"
 import { TranslationsList } from "@/components/translations-list"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { BatchExportActions } from "@/components/batch-export-actions"
 
 export default async function ConversationsPage() {
   const supabase = await createServerClient()
@@ -63,8 +64,15 @@ export default async function ConversationsPage() {
           <TabsContent value="conversations" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Saved Conversations</CardTitle>
-                <CardDescription>Your chat history with Clarity Coach</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Saved Conversations</CardTitle>
+                    <CardDescription>Your chat history with Clarity Coach</CardDescription>
+                  </div>
+                  {conversations && conversations.length > 0 && (
+                    <BatchExportActions data={conversations} type="conversations" />
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
                 {conversations && conversations.length > 0 ? (
@@ -84,8 +92,15 @@ export default async function ConversationsPage() {
           <TabsContent value="translations" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Saved Translations</CardTitle>
-                <CardDescription>Your draft and analyze message translations</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Saved Translations</CardTitle>
+                    <CardDescription>Your draft and analyze message translations</CardDescription>
+                  </div>
+                  {translations && translations.length > 0 && (
+                    <BatchExportActions data={translations} type="translations" />
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
                 {translations && translations.length > 0 ? (

@@ -6,6 +6,8 @@ import { TrashIcon, FileTextIcon } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { exportConversation } from "@/lib/export-utils"
+import { ExportMenu } from "@/components/export-menu"
 
 interface Conversation {
   id: string
@@ -79,6 +81,12 @@ export function ConversationsList({ conversations, isDraft }: ConversationsListP
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <ExportMenu
+                onExport={(format) => exportConversation(conversation, { format })}
+                label=""
+                variant="ghost"
+                size="sm"
+              />
               <Button asChild variant="outline" size="sm">
                 <Link href={conversationLink}>{isDraft ? "Resume" : "View"}</Link>
               </Button>

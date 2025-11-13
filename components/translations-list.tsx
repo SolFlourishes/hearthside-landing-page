@@ -7,6 +7,8 @@ import { FileText, Trash2, ChevronDown, ChevronUp } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { useState } from "react"
 import { createBrowserClient } from "@supabase/ssr"
+import { exportTranslation } from "@/lib/export-utils"
+import { ExportMenu } from "@/components/export-menu"
 
 interface Translation {
   id: string
@@ -82,6 +84,12 @@ export function TranslationsList({ translations }: TranslationsListProps) {
               </div>
 
               <div className="flex items-center gap-2">
+                <ExportMenu
+                  onExport={(format) => exportTranslation(trans, { format })}
+                  label=""
+                  variant="ghost"
+                  size="sm"
+                />
                 <Button variant="ghost" size="sm" onClick={() => toggleExpand(trans.id)}>
                   {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </Button>
