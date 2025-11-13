@@ -14,6 +14,7 @@ interface Conversation {
   is_draft: boolean
   created_at: string
   updated_at: string
+  mode?: string
 }
 
 interface ConversationsListProps {
@@ -53,6 +54,9 @@ export function ConversationsList({ conversations, isDraft }: ConversationsListP
     <div className="space-y-3">
       {conversations.map((conversation) => {
         const messageCount = Array.isArray(conversation.messages) ? conversation.messages.length : 0
+        const conversationLink = conversation.mode
+          ? `/apps/clarity/${conversation.mode}?conversation=${conversation.id}`
+          : `/apps/clarity?conversation=${conversation.id}`
 
         return (
           <div
@@ -61,11 +65,8 @@ export function ConversationsList({ conversations, isDraft }: ConversationsListP
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <Link
-                  href={`/apps/clarity?conversation=${conversation.id}`}
-                  className="font-medium hover:underline truncate"
-                >
-                  {conversation.title}
+                <Link href={conversationLink} className="font-medium hover:underline truncate">
+                  {conversation.title || `${conversation.mode || "Chat"} conversation`}
                 </Link>
                 {isDraft && <Badge variant="secondary">Draft</Badge>}
               </div>
@@ -79,7 +80,7 @@ export function ConversationsList({ conversations, isDraft }: ConversationsListP
             </div>
             <div className="flex items-center gap-2">
               <Button asChild variant="outline" size="sm">
-                <Link href={`/apps/clarity?conversation=${conversation.id}`}>{isDraft ? "Resume" : "View"}</Link>
+                <Link href={conversationLink}>{isDraft ? "Resume" : "View"}</Link>
               </Button>
               <Button
                 variant="ghost"

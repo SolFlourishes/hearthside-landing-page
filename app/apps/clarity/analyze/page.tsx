@@ -55,6 +55,8 @@ export default function AnalyzeModePage() {
   const [feedbackSuccess, setFeedbackSuccess] = useState({ explanation: false, response: false })
   const [profileLoaded, setProfileLoaded] = useState(false)
   const [communicationArchetype, setCommunicationArchetype] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
 
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
@@ -229,6 +231,62 @@ export default function AnalyzeModePage() {
 
     loadUserProfile()
   }, [])
+
+  const handleSaveTranslation = async () => {
+    setIsSaving(true)
+    setSaveSuccess(false)
+
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      )
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        setError("Please log in to save translations")
+        setIsSaving(false)
+        return
+      }
+
+      const { error: saveError } = await supabase.from("clarity_translations").insert({
+        user_id: user.id,
+        mode: "analyze",
+        original_message: message,
+        situation_context: situationContext,
+        interpretation: interpretation,
+        translation: aiResponse.response,
+        explanation: aiResponse.explanation,
+        communication_mode: communicationMode,
+        sender_context: {
+          neurotype: senderNeurotype,
+          generation: senderGeneration,
+          relationship: senderRelationship,
+          political: senderPolitical,
+          political_values: senderPoliticalValues,
+        },
+        receiver_context: {
+          neurotype: receiverNeurotype,
+          generation: receiverGeneration,
+          political: receiverPolitical,
+          political_values: receiverPoliticalValues,
+        },
+      })
+
+      if (saveError) throw saveError
+
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (err: any) {
+      console.error("Error saving translation:", err)
+      setError("Failed to save translation. Please try again.")
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   if (!accessTier) {
     return <AccessGate mode="analyze" onAccessGranted={handleAccessGranted} />
@@ -574,6 +632,26 @@ export default function AnalyzeModePage() {
         {/* Results - Unchanged */}
         {aiResponse && !isLoading && (
           <div className="mt-6 space-y-4">
+            <div className="flex justify-end">
+              <Button
+                onClick={handleSaveTranslation}
+                disabled={isSaving}
+                variant={saveSuccess ? "default" : "outline"}
+                size="sm"
+              >
+                {isSaving ? (
+                  <span className="flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    Saving...
+                  </span>
+                ) : saveSuccess ? (
+                  "Saved!"
+                ) : (
+                  "Save Translation"
+                )}
+              </Button>
+            </div>
+
             <AnalysisInfoCard
               detectedStyle={aiResponse.detectedStyle || "auto-detected from their message"}
               yourNeurotype={receiverNeurotype}

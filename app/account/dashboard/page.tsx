@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { User, MessageSquare, BookOpen, TrendingUp, Clock, CheckCircle2, Brain, Sparkles } from "lucide-react"
 import { getCommunicationArchetype } from "@/lib/communication-profiles"
+import { OnboardingTutorial } from "@/components/onboarding-tutorial"
 
 export const dynamic = "force-dynamic"
 
@@ -33,6 +34,8 @@ export default async function DashboardPage() {
 
   return (
     <div className="container mx-auto py-10 px-4">
+      <OnboardingTutorial userId={user.id} />
+
       <div className="max-w-6xl mx-auto space-y-8">
         <div>
           <h1 className="text-3xl font-bold">
