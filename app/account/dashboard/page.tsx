@@ -149,10 +149,10 @@ export default async function DashboardPage() {
                 <Link href="/apps/clarity/how-to-use">How to Use</Link>
               </Button>
               <Button asChild size="sm" variant="outline" className="w-full bg-transparent">
-                <Link href="/stories">Read Stories</Link>
+                <Link href="/becoming-elder">Becoming an Elder</Link>
               </Button>
               <Button asChild size="sm" variant="outline" className="w-full bg-transparent">
-                <Link href="/cultivates">Cultivates</Link>
+                <Link href="/account/conversations">Conversations</Link>
               </Button>
             </CardContent>
           </Card>

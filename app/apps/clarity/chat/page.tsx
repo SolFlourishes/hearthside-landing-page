@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
-import { Send, Lightbulb, Paperclip } from "lucide-react"
+import { Send, Lightbulb, Paperclip, Save } from "lucide-react"
 import { FileUpload } from "@/components/file-upload"
 import { AudienceSelector } from "@/components/audience-selector"
 import { AccessGate, type AccessTier } from "@/components/access-gate"
@@ -44,6 +44,8 @@ export default function ChatModePage() {
   const [audience, setAudience] = useState("adult-to-adult")
   const [isLoading, setIsLoading] = useState(false)
   const [showStarters, setShowStarters] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -161,6 +163,47 @@ export default function ChatModePage() {
     setAccessTier(tier)
   }
 
+  const handleSaveConversation = async () => {
+    setIsSaving(true)
+    setSaveSuccess(false)
+
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      )
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        throw new Error("Please log in to save conversations")
+      }
+
+      const { error } = await supabase.from("clarity_conversations").insert({
+        user_id: user.id,
+        mode: "chat",
+        conversation_data: {
+          messages,
+          audience,
+          userProfile: profileLoaded ? userProfile : null,
+        },
+        is_draft: false,
+      })
+
+      if (error) throw error
+
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (error) {
+      console.error("Error saving conversation:", error)
+      alert(error instanceof Error ? error.message : "Failed to save conversation")
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   if (!accessTier) {
     return <AccessGate mode="chat" onAccessGranted={handleAccessGranted} />
   }
@@ -169,8 +212,24 @@ export default function ChatModePage() {
     <main className="fixed inset-0 top-16 bg-background">
       <div className="h-full flex flex-col max-w-4xl mx-auto px-4">
         <div className="py-4 border-b border-border">
-          <h1 className="font-serif text-2xl font-bold text-foreground">Chat with the Coach</h1>
-          <p className="text-sm text-muted-foreground">Get real-time advice on communication challenges</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="font-serif text-2xl font-bold text-foreground">Chat with the Coach</h1>
+              <p className="text-sm text-muted-foreground">Get real-time advice on communication challenges</p>
+            </div>
+            {messages.length > 1 && (
+              <Button
+                onClick={handleSaveConversation}
+                disabled={isSaving}
+                size="sm"
+                variant="outline"
+                className="flex items-center gap-2 bg-transparent"
+              >
+                <Save className="w-4 h-4" />
+                {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save"}
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="flex-1 flex flex-col min-h-0 py-4">

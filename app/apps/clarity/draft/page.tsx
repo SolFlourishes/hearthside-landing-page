@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
-import { Edit, Save, X, RefreshCw, ChevronDown, ChevronUp, Sparkles } from "lucide-react"
+import { Edit, Save, X, RefreshCw, ChevronDown, ChevronUp, Sparkles, BookmarkPlus } from "lucide-react"
 import { RadioPillGroup } from "./RadioPillGroup"
 import { CopyButton } from "./CopyButton"
 import { FeedbackWidget } from "./FeedbackWidget"
@@ -104,6 +104,8 @@ export default function DraftModePage() {
   const [receiverPoliticalValues, setReceiverPoliticalValues] = useState<string[]>([])
   const [profileLoaded, setProfileLoaded] = useState(false)
   const [communicationArchetype, setCommunicationArchetype] = useState<string | null>(null)
+  const [isSavingTranslation, setIsSavingTranslation] = useState(false)
+  const [translationSaveSuccess, setTranslationSaveSuccess] = useState(false)
 
   const generations = ["Boomer", "Gen X", "Xennial", "Millennial", "Gen Z", "Gen Alpha", "unsure"]
   const neurotypes = ["Autism", "ADHD", "Neurotypical", "Unsure"]
@@ -386,6 +388,55 @@ export default function DraftModePage() {
   const handleAccessGranted = (tier: AccessTier) => {
     storeAccessTier(tier)
     setAccessTier(tier)
+  }
+
+  const handleSaveTranslation = async () => {
+    if (!aiResponse) return
+
+    setIsSavingTranslation(true)
+    setTranslationSaveSuccess(false)
+
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      )
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        throw new Error("Please log in to save translations")
+      }
+
+      const { error } = await supabase.from("clarity_translations").insert({
+        user_id: user.id,
+        mode: "draft",
+        original_text: draft,
+        translated_text: aiResponse.response,
+        context: intent,
+        translation_data: {
+          explanation: aiResponse.explanation,
+          detectedStyle: aiResponse.detectedStyle,
+          communicationMode,
+          senderNeurotype,
+          receiverNeurotype,
+          senderGeneration,
+          receiverGeneration,
+        },
+      })
+
+      if (error) throw error
+
+      setTranslationSaveSuccess(true)
+      setTimeout(() => setTranslationSaveSuccess(false), 3000)
+    } catch (error) {
+      console.error("Error saving translation:", error)
+      alert(error instanceof Error ? error.message : "Failed to save translation")
+    } finally {
+      setIsSavingTranslation(false)
+    }
   }
 
   if (!accessTier) {
@@ -716,6 +767,19 @@ export default function DraftModePage() {
 
         {aiResponse && !isLoading && (
           <div className="mt-6 space-y-4">
+            <div className="flex justify-end">
+              <Button
+                onClick={handleSaveTranslation}
+                disabled={isSavingTranslation}
+                size="sm"
+                variant="outline"
+                className="flex items-center gap-2 bg-transparent"
+              >
+                <BookmarkPlus className="w-4 h-4" />
+                {isSavingTranslation ? "Saving..." : translationSaveSuccess ? "Saved!" : "Save Translation"}
+              </Button>
+            </div>
+
             <Card className="p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
               <h3 className="text-sm font-semibold text-amber-900 dark:text-amber-100 mb-2">Your Original Draft</h3>
               <div className="p-3 bg-white dark:bg-gray-900 rounded border border-amber-200 dark:border-amber-800">
