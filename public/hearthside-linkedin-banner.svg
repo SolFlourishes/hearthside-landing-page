@@ -1,0 +1,31 @@
+<svg viewBox="0 0 1128 191" xmlns="http://www.w3.org/2000/svg" aria-label="Hearthside Works Banner">
+  <!-- Changed background from orange to light warm gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFF5F0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFEEE5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1128" height="191" fill="url(#bgGradient)"/>
+  
+  <!-- Changed arch stroke from white to orange -->
+  <g transform="translate(80, 45) scale(1)">
+    <path 
+      d="M 10 50 A 40 40 0 0 1 90 50" 
+      stroke="#E86C3C" 
+      stroke-width="12" 
+      fill="none" 
+      stroke-linecap="round"
+    />
+  </g>
+  
+  <!-- Changed text color from white to dark -->
+  <text x="220" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="600" fill="#1A1A1A">
+    Hearthside Works
+  </text>
+  
+  <!-- Changed tagline color from white to gray -->
+  <text x="220" y="145" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#666666">
+    Building Communities of Belonging
+  </text>
+</svg>
