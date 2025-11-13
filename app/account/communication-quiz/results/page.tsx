@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Check } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
+import { getCommunicationArchetype } from "@/lib/communication-profiles"
 
 export default async function CommunicationQuizResultsPage() {
   const supabase = await createClient()
@@ -25,98 +26,89 @@ export default async function CommunicationQuizResultsPage() {
     redirect("/account/communication-quiz")
   }
 
-  // Analyze the results to determine communication profile
-  const getProfileSummary = (results: Record<string, string>) => {
-    const formality = results.formality || ""
-    const directness = results.directness || ""
-    const detailLevel = results.detail_level || ""
-    const emotionalExpression = results.emotional_expression || ""
-    const conflictStyle = results.conflict_style || ""
+  const archetype = getCommunicationArchetype(results)
 
-    // Determine primary communication archetype
-    let archetype = ""
-    let description = ""
-    let strengths: string[] = []
-    let considerations: string[] = []
-
-    // Logic to determine archetype based on quiz answers
-    if (directness.includes("direct") && detailLevel === "minimal") {
-      archetype = "The Analyzer"
-      description = "You communicate with precision and efficiency, focusing on facts and key points."
-      strengths = [
+  const archetypeData: Record<
+    string,
+    {
+      description: string
+      strengths: string[]
+      considerations: string[]
+    }
+  > = {
+    "The Analyzer": {
+      description: "You communicate with precision and efficiency, focusing on facts and key points.",
+      strengths: [
         "Clear and concise communication",
         "Efficient use of time",
         "Direct problem-solving approach",
         "Logical and systematic thinking",
-      ]
-      considerations = [
+      ],
+      considerations: [
         "Some may need more context to feel comfortable",
         "Emotional aspects may need explicit attention",
         "Very indirect communicators may find your style too abrupt",
-      ]
-    } else if (directness.includes("indirect") && emotionalExpression.includes("expressive")) {
-      archetype = "The Harmonizer"
-      description = "You prioritize relationships and emotional connection in your communication."
-      strengths = [
+      ],
+    },
+    "The Harmonizer": {
+      description: "You prioritize relationships and emotional connection in your communication.",
+      strengths: [
         "Builds strong interpersonal relationships",
         "Sensitive to others' feelings and needs",
         "Skilled at conflict de-escalation",
         "Creates inclusive, welcoming environments",
-      ]
-      considerations = [
+      ],
+      considerations: [
         "Direct communicators may miss your intended message",
         "May need to be more explicit about needs and boundaries",
         "Risk of over-accommodating others at your own expense",
-      ]
-    } else if (detailLevel === "detailed" || (detailLevel === "comprehensive" && formality.includes("formal"))) {
-      archetype = "The Strategist"
-      description = "You provide thorough context and consider multiple perspectives before communicating."
-      strengths = [
+      ],
+    },
+    "The Strategist": {
+      description: "You provide thorough context and consider multiple perspectives before communicating.",
+      strengths: [
         "Comprehensive and well-thought-out messages",
         "Considers multiple angles and implications",
         "Provides helpful context for decision-making",
         "Builds credibility through detail",
-      ]
-      considerations = [
+      ],
+      considerations: [
         "Some readers may prefer more concise summaries",
         "Key points can get lost in detail",
         "May need to adapt for time-sensitive situations",
-      ]
-    } else if (conflictStyle === "collaborate" && directness.includes("direct")) {
-      archetype = "The Advocate"
-      description = "You communicate assertively while remaining open to others' perspectives."
-      strengths = [
+      ],
+    },
+    "The Advocate": {
+      description: "You communicate assertively while remaining open to others' perspectives.",
+      strengths: [
         "Balances directness with respect",
         "Stands up for needs and values",
         "Seeks collaborative solutions",
         "Clear about boundaries",
-      ]
-      considerations = [
+      ],
+      considerations: [
         "May come across as too assertive in hierarchical cultures",
         "Some may prefer more indirect approaches",
         "Balance advocacy with flexibility",
-      ]
-    } else {
-      // Balanced/Adaptive profile
-      archetype = "The Adapter"
-      description = "You balance different communication approaches based on context and audience."
-      strengths = [
+      ],
+    },
+    "The Adapter": {
+      description: "You balance different communication approaches based on context and audience.",
+      strengths: [
         "Flexible and context-aware",
         "Can code-switch between styles",
         "Comfortable with ambiguity",
         "Bridges different communication preferences",
-      ]
-      considerations = [
+      ],
+      considerations: [
         "May feel inconsistent if not intentional",
         "Can be exhausting to constantly adapt",
         "Risk of losing authentic voice",
-      ]
-    }
-
-    return { archetype, description, strengths, considerations, detailLevel, directness }
+      ],
+    },
   }
 
-  const profileSummary = getProfileSummary(results)
+  const profileSummary = archetype ? archetypeData[archetype] : archetypeData["The Adapter"]
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">
@@ -141,7 +133,7 @@ export default async function CommunicationQuizResultsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-2xl" id="archetype-title">
-                  {profileSummary.archetype}
+                  {archetype || "The Adapter"}
                 </CardTitle>
                 <CardDescription className="mt-2 text-base">{profileSummary.description}</CardDescription>
               </div>
@@ -244,14 +236,14 @@ export default async function CommunicationQuizResultsPage() {
                 communicate differently. For example:
               </p>
               <ul className="mt-2 space-y-1 text-sm text-muted-foreground ml-4" role="list">
-                {profileSummary.directness.includes("direct") ? (
+                {results.directness.includes("direct") ? (
                   <li>
                     • We'll help you add context and softening language when communicating with indirect communicators
                   </li>
                 ) : (
                   <li>• We'll help you be more concise and direct when needed for efficiency</li>
                 )}
-                {profileSummary.detailLevel === "minimal" || profileSummary.detailLevel === "moderate" ? (
+                {results.detail_level === "minimal" || results.detail_level === "moderate" ? (
                   <li>• We can expand your messages with more context when your audience needs it</li>
                 ) : (
                   <li>• We can help you distill your detailed thoughts into key points</li>
