@@ -5,7 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
-import { Mail, MessageSquare, Users, Briefcase, MapPin, Clock } from "lucide-react"
+import { Mail, MessageSquare, Users, Briefcase, MapPin, Clock, Linkedin } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 export default function ContactPage() {
@@ -261,7 +261,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#1F2937] rounded-xl p-6 border border-[#E5E7EB] dark:border-[#374151] md:col-span-2">
+                <div className="bg-white dark:bg-[#1F2937] rounded-xl p-6 border border-[#E5E7EB] dark:border-[#374151]">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-[#FFC72C]/10 dark:bg-[#FFC72C]/20 rounded-full flex items-center justify-center flex-shrink-0">
                       <Clock className="w-6 h-6 text-[#FFC72C]" aria-hidden="true" />
@@ -271,6 +271,29 @@ export default function ContactPage() {
                         Business Hours
                       </h3>
                       <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed">Variable</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-[#1F2937] rounded-xl p-6 border border-[#E5E7EB] dark:border-[#374151]">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-[#007B8C]/10 dark:bg-[#007B8C]/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Linkedin className="w-6 h-6 text-[#007B8C] dark:text-[#4DB8C9]" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-[#1F2937] dark:text-[#F9FAFB] mb-2">
+                        Follow Us
+                      </h3>
+                      <p className="text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed">
+                        <a
+                          href="https://www.linkedin.com/company/hearthside-works/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-[#007B8C] dark:hover:text-[#4DB8C9]"
+                        >
+                          Connect on LinkedIn
+                        </a>
+                      </p>
                     </div>
                   </div>
                 </div>

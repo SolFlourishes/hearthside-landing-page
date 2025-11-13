@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { Linkedin } from "lucide-react"
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -125,12 +126,23 @@ export function Footer() {
               Creating communities of belonging where everyone can flourish through meaningful connection.
             </p>
             <p
-              className="font-serif text-[#FFC72C] italic text-sm"
+              className="font-serif text-[#FFC72C] italic text-sm mb-4"
               role="text"
               aria-label="Our motto: Hear Me, See Me, Know Me"
             >
               Hear Me, See Me, Know Me.
             </p>
+            <div className="flex gap-3">
+              <a
+                href="https://www.linkedin.com/company/hearthside-works/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/70 hover:text-[#FFC72C] transition-colors"
+                aria-label="Follow us on LinkedIn"
+              >
+                <Linkedin className="w-5 h-5" />
+              </a>
+            </div>
           </div>
 
           {Object.entries(footerLinks).map(([category, links]) => (
