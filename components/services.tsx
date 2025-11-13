@@ -16,7 +16,7 @@ export function Services() {
       ],
       image: "/clarity-coach-logo-square.jpg",
       link: "/apps/clarity",
-      badge: "Beta 4.1", // Updated version badge to 4.1
+      badge: "Beta 4.5",
     },
     {
       category: "Services",

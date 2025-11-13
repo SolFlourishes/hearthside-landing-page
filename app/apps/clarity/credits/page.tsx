@@ -1,31 +1,138 @@
 import { Card } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Badge } from "@/components/ui/badge"
 
 export default function CreditsPage() {
   return (
     <main className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
-        <h1 className="font-serif text-4xl font-bold text-foreground mb-6">Credits</h1>
+        <div className="mb-6">
+          <h1 className="font-serif text-4xl font-bold text-foreground mb-2">Product & Technical Information</h1>
+          <p className="text-muted-foreground text-lg">
+            Technical architecture, research foundation, and infrastructure details for Clarity Coach
+          </p>
+        </div>
 
         <div className="space-y-6">
           <Card className="p-6">
-            <h2 className="font-serif text-2xl font-bold text-primary mb-4">Founder & Lead Architect</h2>
-            <p className="text-muted-foreground mb-2">
-              <strong>Sol Roberts-Lieb, Ed.D.</strong>
+            <h2 className="font-serif text-2xl font-bold text-primary mb-4">Product Status</h2>
+            <div className="flex items-center gap-2 mb-4">
+              <Badge variant="default" className="text-base">
+                Beta 4.5
+              </Badge>
+              <Badge variant="outline">Fully Functional</Badge>
+            </div>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              Clarity Coach is a fully functional SaaS application currently in active beta testing with real users. The
+              platform processes live translations, stores user preferences, and continuously improves based on user
+              feedback.
             </p>
-            <p className="text-muted-foreground leading-relaxed">
-              Dr. Roberts-Lieb is an educator, researcher, and advocate for neurodivergent communication. Their work
-              focuses on bridging the Double Empathy Problem and creating tools that foster genuine understanding across
-              communication differences.
+            <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <h3 className="font-semibold text-foreground mb-2">Current Capabilities:</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Draft Mode translation</li>
+                  <li>Analyze Mode feedback</li>
+                  <li>Interactive Chat coaching</li>
+                  <li>PoliTalk Explorer for political understanding</li>
+                  <li>User accounts with saved preferences</li>
+                  <li>Communication style profiles</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground mb-2">Business Model:</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Freemium SaaS platform</li>
+                  <li>Three-tier pricing (Free, Premium, Elder)</li>
+                  <li>Elder tier sponsors access for those in need</li>
+                  <li>Subscription-based revenue</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="font-serif text-2xl font-bold text-primary mb-4">Technology Stack</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="font-semibold text-foreground mb-3">Frontend & Infrastructure</h3>
+                <ul className="space-y-2 text-muted-foreground text-sm">
+                  <li>
+                    <strong>Framework:</strong> Next.js 16 (App Router)
+                  </li>
+                  <li>
+                    <strong>UI Library:</strong> React 19
+                  </li>
+                  <li>
+                    <strong>Styling:</strong> Tailwind CSS v4
+                  </li>
+                  <li>
+                    <strong>Components:</strong> shadcn/ui
+                  </li>
+                  <li>
+                    <strong>Hosting:</strong> Vercel
+                  </li>
+                  <li>
+                    <strong>Language:</strong> TypeScript
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground mb-3">Backend & Data</h3>
+                <ul className="space-y-2 text-muted-foreground text-sm">
+                  <li>
+                    <strong>Database:</strong> Supabase (PostgreSQL)
+                  </li>
+                  <li>
+                    <strong>Authentication:</strong> Supabase Auth
+                  </li>
+                  <li>
+                    <strong>AI Models:</strong> OpenAI GPT-4/GPT-5, Anthropic Claude
+                  </li>
+                  <li>
+                    <strong>AI SDK:</strong> Vercel AI SDK v5
+                  </li>
+                  <li>
+                    <strong>Storage:</strong> Vercel Blob, Supabase Storage
+                  </li>
+                  <li>
+                    <strong>Email:</strong> Resend
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="font-serif text-2xl font-bold text-primary mb-4">AI Architecture</h2>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              Clarity Coach uses advanced AI language models enhanced with a curated knowledge base through
+              Retrieval-Augmented Generation (RAG). The system processes communication through multiple specialized
+              modes:
             </p>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                <strong>Draft Mode:</strong> Translates messages using profile-based context and communication
+                preferences
+              </li>
+              <li>
+                <strong>Analyze Mode:</strong> Provides feedback on existing messages with improvement suggestions
+              </li>
+              <li>
+                <strong>Chat Mode:</strong> Interactive coaching for real-time communication challenges
+              </li>
+              <li>
+                <strong>PoliTalk Explorer:</strong> Explains political positions across different moral frameworks
+              </li>
+            </ul>
           </Card>
 
           <Card className="p-6">
             <h2 className="font-serif text-2xl font-bold text-primary mb-4">Research Foundation</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              The Clarity Coach is built on decades of research in communication theory, neurodiversity, and pragmatic
-              language. Our AI is enhanced with a curated knowledge base of expert research through Retrieval-Augmented
-              Generation (RAG).
+              The Clarity Coach is built on decades of peer-reviewed research in communication theory, neurodiversity,
+              political psychology, and cross-cultural understanding. Our AI is enhanced with a curated knowledge base
+              of expert research.
             </p>
 
             <Accordion type="single" collapsible className="w-full">
@@ -422,20 +529,18 @@ export default function CreditsPage() {
           </Card>
 
           <Card className="p-6">
-            <h2 className="font-serif text-2xl font-bold text-primary mb-4">Technology</h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              The Clarity Coach is powered by advanced AI language models and built with modern web technologies:
-            </p>
+            <h2 className="font-serif text-2xl font-bold text-primary mb-4">Security & Privacy</h2>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li>Next.js and React for the user interface</li>
-              <li>OpenAI GPT models for natural language processing</li>
-              <li>Firebase for data storage and feedback collection</li>
-              <li>Vercel for hosting and deployment</li>
+              <li>Row Level Security (RLS) on all database tables</li>
+              <li>Encrypted data storage and transmission</li>
+              <li>User data isolation and privacy controls</li>
+              <li>Secure authentication with Supabase Auth</li>
+              <li>No third-party data sharing without explicit consent</li>
             </ul>
           </Card>
 
           <Card className="p-6">
-            <h2 className="font-serif text-2xl font-bold text-primary mb-4">Community</h2>
+            <h2 className="font-serif text-2xl font-bold text-primary mb-4">Community Acknowledgments</h2>
             <p className="text-muted-foreground leading-relaxed">
               Special thanks to our beta testers, feedback contributors, and the neurodivergent community for their
               invaluable insights and support in shaping this tool. Your voices have been essential in creating
@@ -444,11 +549,11 @@ export default function CreditsPage() {
           </Card>
 
           <Card className="p-6 bg-muted/50">
-            <h2 className="font-serif text-2xl font-bold text-primary mb-4">Open Source</h2>
+            <h2 className="font-serif text-2xl font-bold text-primary mb-4">Development Philosophy</h2>
             <p className="text-muted-foreground leading-relaxed">
-              We believe in transparency and community-driven development. While the core AI models are proprietary, we
-              are committed to sharing our research findings and contributing to open conversations about communication
-              accessibility.
+              We believe in transparency, research-backed design, and community-driven development. All features are
+              grounded in peer-reviewed research and tested with real users. We are committed to sharing our findings
+              and contributing to open conversations about communication accessibility and human connection.
             </p>
           </Card>
         </div>

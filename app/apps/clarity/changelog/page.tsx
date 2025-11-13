@@ -8,6 +8,237 @@ export default function ChangelogPage() {
         <p className="text-muted-foreground mb-8">Track updates, improvements, and new features.</p>
 
         <div className="space-y-6">
+          {/* Beta v4.5 */}
+          <Card className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-serif text-2xl font-bold text-primary">Beta v4.5</h2>
+              <span className="text-sm text-muted-foreground">Current Version</span>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-3">
+              Relationships & Growth: Connection-Focused Features
+            </h3>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Contacts & Relationship Management</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Built comprehensive Contacts/Recipients Management system - save frequent communication partners with
+                their full context (neurotype, generation, political identity, relationship type)
+              </li>
+              <li>
+                Contacts management page at /account/contacts with add, edit, delete, and view functionality for saved
+                communication partners
+              </li>
+              <li>
+                Enhanced RelationshipSelector component to load and display saved contacts for logged-in users with
+                auto-population of communication preferences
+              </li>
+              <li>
+                Integrated contact selection into Draft, Analyze, and Chat pages - one-click selection auto-fills all
+                context fields
+              </li>
+              <li>
+                Added interaction tracking system that logs each conversation/translation with a contact to build
+                communication history
+              </li>
+              <li>
+                Progress tracking shows improvement trends: interaction count, communication effectiveness, response
+                quality, and reduced reliance on tool over time
+              </li>
+              <li>
+                Contact Progress Card displays relationship-building journey with visual indicators of growth and
+                learning
+              </li>
+              <li>
+                Database schema includes contacts, contact_interactions, and progress metrics with proper RLS policies
+                and triggers
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Onboarding & Tutorial System</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Created warm, connection-focused Welcome Tutorial that emphasizes building bridges between people over
+                product features
+              </li>
+              <li>
+                Multi-step onboarding: Introduction to Clarity Coach mission → Communication Quiz for self-understanding
+                → Understanding Others (Draft, Analyze, Chat) → Bridging Divides (PoliTalk Explorer)
+              </li>
+              <li>Tutorial automatically appears for new users after account creation with skip and replay options</li>
+              <li>
+                Database trigger ensures new user profiles are created with tutorial_completed: false for seamless
+                onboarding experience
+              </li>
+              <li>
+                Frames each feature in terms of empathy, curiosity, and genuine human connection rather than technical
+                functionality
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Notification Preferences & Management</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Built comprehensive Notification Preferences system at /account/settings/notifications with granular
+                user controls
+              </li>
+              <li>
+                Four categories: Communication Activity (saved items, weekly digests), Personal Growth (quiz reminders,
+                communication tips), Platform Updates (features, newsletter), Connection Reminders (practice prompts)
+              </li>
+              <li>
+                Master email toggle plus frequency controls (instant, daily, weekly, monthly, never) for each
+                notification type
+              </li>
+              <li>
+                Created Admin Notification Management interface at /admin/notifications for creating, scheduling, and
+                sending communications
+              </li>
+              <li>
+                Admin scheduler supports immediate sends, scheduled future sends, and draft saving with audience
+                targeting options
+              </li>
+              <li>
+                Notification history view shows all sent notifications with recipient counts, delivery status, and
+                timestamps
+              </li>
+              <li>
+                Branded email templates using BaseEmailTemplate with Hearthside Works orange gradients, arch logo, and
+                connection-focused messaging
+              </li>
+              <li>
+                Email templates for: welcome new users, saved items confirmation, communication tips, feature
+                announcements, connection reminders, weekly digests
+              </li>
+              <li>All emails emphasize relationships and growth, never feeling like spam or product marketing</li>
+              <li>Integration with Resend API for reliable email delivery with proper error handling and logging</li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Export Functionality</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Implemented comprehensive export system for conversations, translations, and progress reports in
+                multiple formats
+              </li>
+              <li>
+                Export formats: Plain Text (.txt), Markdown (.md), JSON (.json) - each optimized for different use cases
+              </li>
+              <li>
+                Individual export buttons on each conversation and translation item with dropdown format selection
+              </li>
+              <li>
+                Batch export functionality to download all conversations or all translations at once as organized
+                archives
+              </li>
+              <li>
+                Export files include metadata (timestamp, participants, context), conversation/translation content, and
+                Hearthside Works attribution
+              </li>
+              <li>
+                Clean formatting preserves readability for offline reference, sharing with therapists/coaches, or
+                documentation purposes
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Dashboard Enhancements</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Redesigned dashboard with prominent "Your Communication Profile" card displaying quiz results,
+                archetype, neurotype, and generation
+              </li>
+              <li>
+                Added Usage Statistics card showing Clarity Coach activity: translations completed, conversations held,
+                saved items, and current streak
+              </li>
+              <li>
+                Created Recent Activity feed displaying latest Clarity Coach sessions with mode indicators and
+                timestamps
+              </li>
+              <li>
+                Reorganized Quick Actions into three categories: Clarity Coach (Draft, Analyze, Chat, PoliTalk), Profile
+                & Settings, Resources
+              </li>
+              <li>
+                Resources section updated to feature "Becoming an Elder" and "Conversations" links replacing individual
+                program links
+              </li>
+              <li>Dashboard now provides comprehensive at-a-glance view of communication journey and progress</li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Save Features & Organization</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Added "Save Conversation" button to Chat page (appears after first exchange) for storing meaningful
+                dialogues
+              </li>
+              <li>
+                Added "Save Translation" buttons to Draft and Analyze pages (appear with results) for preserving
+                communication insights
+              </li>
+              <li>All save features require authentication with helpful prompts to log in if user is not signed in</li>
+              <li>
+                Reorganized Conversations page into tabbed interface: Conversations, Translations, and Drafts sections
+              </li>
+              <li>
+                ConversationsList and TranslationsList components with expand/collapse functionality for clean browsing
+              </li>
+              <li>Delete functionality for managing saved items with confirmation prompts</li>
+              <li>
+                Each saved item displays metadata (date, participants, mode) and can be exported individually or in
+                batch
+              </li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Content & Documentation</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Created "Becoming an Elder" page at /becoming-elder explaining mentorship role, community values, and
+                linking to Elder Program
+              </li>
+              <li>
+                Updated About page with comprehensive Founder section including professional background, LinkedIn
+                profile, and leadership experience
+              </li>
+              <li>
+                Enhanced Clarity Coach product page with clear "Product Status: Beta 4.5" indicator and technology stack
+                details
+              </li>
+              <li>
+                Refocused Credits page to "Product & Technical Information" with comprehensive technology architecture,
+                AI infrastructure, security measures, and research foundation
+              </li>
+              <li>Updated Services component with prominent Clarity Coach showcase featuring current version badge</li>
+              <li>Comprehensive How to Use page updates documenting all new features with easy-to-access guidance</li>
+            </ul>
+
+            <h4 className="text-base font-semibold text-foreground mb-2 mt-4">Technical Improvements</h4>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Fixed archetype consistency between dashboard and quiz results page using standardized
+                getCommunicationArchetype() function
+              </li>
+              <li>
+                Created Supabase client singleton patterns to reduce multiple instance warnings and improve performance
+              </li>
+              <li>
+                Database migrations for contacts, notifications, quiz history, tutorial completion, and interaction
+                tracking
+              </li>
+              <li>Comprehensive RLS policies ensuring user data privacy and security across all new tables</li>
+              <li>
+                Database triggers for automatic profile creation, interaction tracking, and progress metric updates
+              </li>
+              <li>
+                Optimized tutorial loading by removing retry delays and implementing direct profile creation when needed
+              </li>
+            </ul>
+
+            <p className="mt-4 text-sm text-muted-foreground italic">
+              Beta 4.5 transforms Clarity Coach from a one-off translation tool into a relationship-building companion
+              that tracks progress, helps users genuinely improve communication skills, and reduces reliance on the tool
+              over time through authentic understanding and connection.
+            </p>
+          </Card>
+
           {/* Beta v4.1 */}
           <Card className="p-6">
             <div className="flex items-start justify-between mb-4">

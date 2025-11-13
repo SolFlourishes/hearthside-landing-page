@@ -19,7 +19,7 @@ export function ClarityNav() {
             />
             <div className="hidden sm:block">
               <h1 className="font-serif text-lg font-bold text-foreground">Clarity Coach</h1>
-              <p className="text-[10px] text-muted-foreground -mt-0.5">Beta 4.1</p>
+              <p className="text-[10px] text-muted-foreground -mt-0.5">Beta 4.5</p>
             </div>
           </Link>
 

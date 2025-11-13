@@ -12,6 +12,86 @@ export default function RoadmapPage() {
         </p>
 
         <div className="space-y-6">
+          {/* Beta 4.5 - Completed */}
+          <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Check className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 4.5</h2>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">
+                    Current Version
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">
+                  Relationships & Growth: Connection-Focused Features
+                </h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>
+                    Built comprehensive Contacts/Recipients Management system with progress tracking - save frequent
+                    communication partners with their context (neurotype, generation, political identity)
+                  </li>
+                  <li>
+                    Auto-populate saved contacts in Draft, Analyze, and Chat for quick access to relationship-specific
+                    communication guidance
+                  </li>
+                  <li>
+                    Track interaction history and communication effectiveness over time - see your progress in learning
+                    to communicate with specific people
+                  </li>
+                  <li>
+                    Reduced reliance metrics show growth in understanding communication patterns, moving toward genuine
+                    connection without tool dependency
+                  </li>
+                  <li>
+                    Created Welcome Tutorial/Onboarding system emphasizing human connection over product features -
+                    frames Clarity Coach as a bridge-building tool
+                  </li>
+                  <li>
+                    Tutorial guides users through self-understanding (Communication Quiz), understanding others (Draft,
+                    Analyze), and bridging divides (PoliTalk Explorer)
+                  </li>
+                  <li>
+                    Added comprehensive Notification Preferences system with user-controlled email notifications for
+                    communication activity, personal growth reminders, platform updates, and connection reminders
+                  </li>
+                  <li>
+                    Built Admin Notification Management interface for creating, scheduling, and sending communications
+                    with audience targeting
+                  </li>
+                  <li>
+                    Branded email templates with Hearthside Works aesthetic emphasizing connection and growth over
+                    product marketing
+                  </li>
+                  <li>
+                    Implemented Export Functionality - download conversations, translations, and progress reports in
+                    multiple formats (text, Markdown, JSON)
+                  </li>
+                  <li>
+                    Individual export buttons for each saved item plus batch export for all conversations or
+                    translations
+                  </li>
+                  <li>
+                    Enhanced Dashboard with Communication Profile card, Usage Statistics, Recent Activity feed, and
+                    streamlined quick actions
+                  </li>
+                  <li>
+                    Created "Becoming an Elder" page explaining mentorship role and linking to Elder Program
+                    opportunities
+                  </li>
+                  <li>
+                    Save Conversation feature in Chat and Save Translation features in Draft and Analyze for long-term
+                    reference and progress tracking
+                  </li>
+                  <li>
+                    Conversations page reorganized with tabs for Conversations, Translations, and Drafts with
+                    expand/collapse and delete functionality
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
           {/* Beta 4.1 - PoliTalk Explorer & Consistency Check */}
           {/* Beta 4.1 - Completed */}
           <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
@@ -519,12 +599,12 @@ export default function RoadmapPage() {
                     Planning
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-primary mb-3">Monetization / Personalization</h3>
+                <h3 className="text-lg font-semibold text-primary mb-3">Subscription Management & Premium Tiers</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>User profiles and authentication</li>
-                  <li>Conversation history and saved drafts</li>
-                  <li>Premium tier launch</li>
-                  <li>Elder Program implementation</li>
+                  <li>Premium tier launch with Stripe integration</li>
+                  <li>Elder Program subscription management</li>
+                  <li>Usage limits and tier-based feature access</li>
+                  <li>Subscription dashboard with billing history</li>
                 </ul>
               </div>
             </div>

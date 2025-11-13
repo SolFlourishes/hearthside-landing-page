@@ -35,6 +35,57 @@ export default function ClarityCoachPage() {
           </div>
         </section>
 
+        {/* Product Status Section */}
+        <section className="container mx-auto px-4 pb-6">
+          <div className="max-w-3xl mx-auto bg-gradient-to-br from-primary/5 to-background border-2 border-primary/20 rounded-xl p-6">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-primary/10 rounded-lg">
+                <Lightbulb className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-lg font-bold">Clarity Coach: Beta 4.5</h2>
+                  <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded-full">
+                    LIVE & FUNCTIONAL
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                  Clarity Coach is Hearthside Works' flagship SaaS application—a fully functional AI-powered
+                  communication tool currently in public beta. We're actively gathering user feedback to refine features
+                  and enhance the user experience.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-3 text-xs">
+                  <div className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5" />
+                    <span className="text-muted-foreground">
+                      <strong className="text-foreground">Technology:</strong> Next.js 16, React 19, AI SDK, Supabase
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5" />
+                    <span className="text-muted-foreground">
+                      <strong className="text-foreground">Users:</strong> Active beta testers with saved profiles
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5" />
+                    <span className="text-muted-foreground">
+                      <strong className="text-foreground">Business Model:</strong> Freemium SaaS with Elder sponsorship
+                      tier
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5" />
+                    <span className="text-muted-foreground">
+                      <strong className="text-foreground">Roadmap:</strong> Public & updated regularly
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Three Modes */}
         <section className="container mx-auto px-4 py-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
