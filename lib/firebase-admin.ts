@@ -11,9 +11,10 @@ function initializeFirebaseAdmin(): Firestore {
   }
 
   // Check if Firebase is already initialized
+  let serviceAccount: any
+
   if (getApps().length === 0) {
     console.log("[v0] Initializing Firebase Admin SDK...")
-    let serviceAccount: any
 
     if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
       // Option 1: Use the entire service account JSON (RECOMMENDED)
@@ -50,14 +51,28 @@ function initializeFirebaseAdmin(): Firestore {
     console.log("[v0] Initializing Firebase with credentials...")
     initializeApp({
       credential: cert(serviceAccount),
+      projectId: serviceAccount.project_id,
     })
     console.log("[v0] Firebase initialized successfully")
   } else {
     console.log("[v0] Firebase already initialized")
   }
 
-  firestoreInstance = getFirestore()
-  console.log("[v0] Firestore instance created")
+  const databaseId = process.env.FIRESTORE_DATABASE_ID || "(default)"
+  console.log("[v0] Connecting to Firestore database:", databaseId)
+
+  if (databaseId !== "(default)") {
+    // For non-default databases, we need to construct the path explicitly
+    firestoreInstance = getFirestore(undefined, databaseId)
+  } else {
+    firestoreInstance = getFirestore()
+  }
+
+  firestoreInstance.settings({
+    ignoreUndefinedProperties: true,
+  })
+
+  console.log("[v0] Firestore instance created and configured")
   return firestoreInstance
 }
 
