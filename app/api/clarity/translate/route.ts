@@ -17,7 +17,7 @@ import {
   getPoliticalValuesGuidance,
   type PoliticalIdentity,
 } from "@/lib/political-profiles"
-import { getVertexAIModel } from "@/lib/vertex-ai-client"
+import { google } from "@ai-sdk/google"
 
 export async function POST(request: NextRequest) {
   try {
@@ -297,7 +297,7 @@ ${
     }
 
     const { text: aiText } = await generateText({
-      model: getVertexAIModel("gemini-2.0-flash-thinking-exp"),
+      model: google("gemini-2.0-flash-thinking-exp"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
