@@ -6,7 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "upload-rag": "tsx scripts/upload-expert-documents.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "latest",
