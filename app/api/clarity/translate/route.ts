@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
-import { vertex } from "@ai-sdk/google-vertex"
 import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
 import { checkContentSafety, generateSafetyResponse, getSafetySystemPrompt } from "@/lib/content-safety"
 import { checkRateLimitWithTier } from "@/lib/rate-limiter"
@@ -18,6 +17,7 @@ import {
   getPoliticalValuesGuidance,
   type PoliticalIdentity,
 } from "@/lib/political-profiles"
+import { getVertexAIModel } from "@/lib/vertex-ai-client"
 
 export async function POST(request: NextRequest) {
   try {
@@ -297,10 +297,7 @@ ${
     }
 
     const { text: aiText } = await generateText({
-      model: vertex("gemini-2.0-flash-thinking-exp", {
-        project: process.env.GOOGLE_CLOUD_PROJECT,
-        location: process.env.GOOGLE_CLOUD_LOCATION || "us-central1",
-      }),
+      model: getVertexAIModel("gemini-2.0-flash-thinking-exp"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
