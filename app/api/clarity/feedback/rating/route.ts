@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       message: "Feedback received successfully",
     })
   } catch (error) {
-    console.error("[v0] Rating API error:", error)
+    console.error("Rating API error:", error)
     return NextResponse.json({ error: "Failed to submit rating", success: false }, { status: 500 })
   }
 }

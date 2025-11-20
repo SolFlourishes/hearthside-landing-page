@@ -1,25 +1,30 @@
-# Add Firestore Database ID Environment Variable
+# Firestore Database ID Configuration
 
-Your Firestore database has a custom name. Add this environment variable to Vercel:
+**IMPORTANT:** Your database name is `hearthside-production`, NOT `(default)`
 
-## Environment Variable to Add
+## Environment Variable Set
 
-**Variable Name:** `FIRESTORE_DATABASE_ID`  
-**Value:** `(default)`
+✅ **Variable Name:** `FIRESTORE_DATABASE_ID`  
+✅ **Value:** `hearthside-production`
 
-## Steps
+## Why This Matters
 
-1. Go to your Vercel project settings
-2. Navigate to Environment Variables
-3. Add new variable:
-   - Name: `FIRESTORE_DATABASE_ID`
-   - Value: `(default)`
-4. Select all environments (Production, Preview, Development)
-5. Click "Save"
-6. Redeploy your application
+When you created your Firestore database in the `hearthside-works-production` project, it was given the custom name "hearthside-production" instead of the standard "(default)" name. The Firebase Admin SDK needs this exact database name to connect properly.
 
-## Why This Fixes It
+## Verification
 
-The Firebase Console screenshot shows a database path, but Firestore Admin SDK needs to know which database to connect to. Setting this explicitly ensures the connection goes to the right place.
+The health check at `/api/admin/health-check` confirms the connection is working:
+\`\`\`json
+"firestoreWrite": {
+  "success": true,
+  "documentId": "vUPlWVmjrJOCoZchBCQk",
+  "message": "Successfully wrote to Firestore"
+}
+\`\`\`
 
-After adding this variable and redeploying, visit the health check again to verify the fix.
+## For Future Reference
+
+Your Firestore database configuration:
+- **Project:** hearthside-works-production
+- **Database Name:** hearthside-production
+- **Location:** us-central1

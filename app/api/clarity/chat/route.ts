@@ -136,7 +136,10 @@ Remember: You're having a conversation, not writing a manual. Keep it brief, foc
 Format your responses in HTML with proper paragraph tags for readability.${expertContext}${filesContext}${userContext}`
 
     const { text } = await generateText({
-      model: vertex("gemini-2.0-flash-thinking-exp"),
+      model: vertex("gemini-2.0-flash-thinking-exp", {
+        project: process.env.GOOGLE_CLOUD_PROJECT,
+        location: process.env.GOOGLE_CLOUD_LOCATION || "us-central1",
+      }),
       messages: [
         { role: "system", content: systemPrompt },
         ...history.map((msg: any) => ({

@@ -297,7 +297,10 @@ ${
     }
 
     const { text: aiText } = await generateText({
-      model: vertex("gemini-2.0-flash-thinking-exp"),
+      model: vertex("gemini-2.0-flash-thinking-exp", {
+        project: process.env.GOOGLE_CLOUD_PROJECT,
+        location: process.env.GOOGLE_CLOUD_LOCATION || "us-central1",
+      }),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
@@ -307,10 +310,10 @@ ${
 
     let cleanedText = aiText.trim()
 
-    if (cleanedText.startsWith("\`\`\`json")) {
-      cleanedText = cleanedText.replace(/^\`\`\`json\s*/, "").replace(/\s*\`\`\`$/, "")
-    } else if (cleanedText.startsWith("\`\`\`")) {
-      cleanedText = cleanedText.replace(/^\`\`\`\s*/, "").replace(/\s*\`\`\`$/, "")
+    if (cleanedText.startsWith("```json")) {
+      cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "")
+    } else if (cleanedText.startsWith("```")) {
+      cleanedText = cleanedText.replace(/^```\s*/, "").replace(/\s*```$/, "")
     }
 
     const jsonMatch = cleanedText.match(/\{[\s\S]*\}/)
