@@ -50,5 +50,30 @@ export async function GET() {
     diagnostics.tests.vertexAIConfig = { success: false, error: error.message }
   }
 
+  // Test 4: Actual Firestore write to diagnose permission issues
+  try {
+    const { getDb } = await import("@/lib/firebase-admin")
+    const db = getDb()
+    const testDoc = {
+      test: true,
+      timestamp: new Date().toISOString(),
+      message: "Health check test",
+    }
+
+    const docRef = await db.collection("health_checks").add(testDoc)
+    diagnostics.tests.firestoreWrite = {
+      success: true,
+      documentId: docRef.id,
+      message: "Successfully wrote to Firestore",
+    }
+  } catch (error: any) {
+    diagnostics.tests.firestoreWrite = {
+      success: false,
+      error: error.message,
+      code: error.code,
+      details: error.details || "No details available",
+    }
+  }
+
   return Response.json(diagnostics, { status: 200 })
 }
