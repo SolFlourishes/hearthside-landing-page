@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
+import { vertex } from "@ai-sdk/google-vertex"
 import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
 import { checkContentSafety, generateSafetyResponse, getSafetySystemPrompt } from "@/lib/content-safety"
 import { checkRateLimitWithTier } from "@/lib/rate-limiter"
@@ -17,7 +18,6 @@ import {
   getPoliticalValuesGuidance,
   type PoliticalIdentity,
 } from "@/lib/political-profiles"
-import { google } from "@ai-sdk/google"
 
 export async function POST(request: NextRequest) {
   try {
@@ -297,7 +297,7 @@ ${
     }
 
     const { text: aiText } = await generateText({
-      model: google("gemini-2.0-flash-thinking-exp"),
+      model: vertex("gemini-2.0-flash-exp"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
