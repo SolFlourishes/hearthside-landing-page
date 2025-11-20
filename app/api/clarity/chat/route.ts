@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
-import { google } from "@ai-sdk/google"
+import { vertex } from "@ai-sdk/google-vertex"
 import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
 import { checkContentSafety, generateSafetyResponse, getSafetySystemPrompt } from "@/lib/content-safety"
 import { checkRateLimit } from "@/lib/rate-limiter"
@@ -136,7 +136,7 @@ Remember: You're having a conversation, not writing a manual. Keep it brief, foc
 Format your responses in HTML with proper paragraph tags for readability.${expertContext}${filesContext}${userContext}`
 
     const { text } = await generateText({
-      model: google("gemini-2.0-flash-exp"),
+      model: vertex("gemini-2.0-flash-thinking-exp"),
       messages: [
         { role: "system", content: systemPrompt },
         ...history.map((msg: any) => ({

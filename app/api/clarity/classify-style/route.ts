@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
-import { google } from "@ai-sdk/google"
+import { vertex } from "@ai-sdk/google-vertex"
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,7 +26,7 @@ Indirect style characteristics:
 Respond with ONLY a JSON object: {"style": "direct"} or {"style": "indirect"}`
 
     const { text: aiResponse } = await generateText({
-      model: google("gemini-pro-latest"),
+      model: vertex("gemini-2.0-flash-thinking-exp"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: text },
@@ -37,10 +37,10 @@ Respond with ONLY a JSON object: {"style": "direct"} or {"style": "indirect"}`
     console.log("[v0] Classification response:", aiResponse)
 
     let cleanedText = aiResponse.trim()
-    if (cleanedText.startsWith("```json")) {
-      cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "")
-    } else if (cleanedText.startsWith("```")) {
-      cleanedText = cleanedText.replace(/^```\s*/, "").replace(/\s*```$/, "")
+    if (cleanedText.startsWith("\`\`\`json")) {
+      cleanedText = cleanedText.replace(/^\`\`\`json\s*/, "").replace(/\s*\`\`\`$/, "")
+    } else if (cleanedText.startsWith("\`\`\`")) {
+      cleanedText = cleanedText.replace(/^\`\`\`\s*/, "").replace(/\s*\`\`\`$/, "")
     }
 
     const result = JSON.parse(cleanedText)

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "latest",
+    "@ai-sdk/google-vertex": "latest",
     "@google/generative-ai": "latest",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "1.2.2",
@@ -72,6 +73,7 @@
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.19.2",
     "url": "latest",
     "vaul": "^0.9.9",
     "vue-router": "latest",
