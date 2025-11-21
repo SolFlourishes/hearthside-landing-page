@@ -14,10 +14,18 @@ function initializeFirebaseAdmin(): Firestore {
 
   if (getApps().length === 0) {
     if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-      // Option 1: Use the entire service account JSON (RECOMMENDED)
+      console.log("[v0] FIREBASE_SERVICE_ACCOUNT_KEY exists, length:", process.env.FIREBASE_SERVICE_ACCOUNT_KEY.length)
+      console.log("[v0] First 100 chars:", process.env.FIREBASE_SERVICE_ACCOUNT_KEY.substring(0, 100))
+      console.log(
+        "[v0] Last 100 chars:",
+        process.env.FIREBASE_SERVICE_ACCOUNT_KEY.substring(process.env.FIREBASE_SERVICE_ACCOUNT_KEY.length - 100),
+      )
+
       try {
         serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+        console.log("[v0] Successfully parsed service account, project_id:", serviceAccount.project_id)
       } catch (error) {
+        console.error("[v0] JSON parse error:", error)
         throw new Error(
           "Failed to parse FIREBASE_SERVICE_ACCOUNT_KEY. Make sure it contains valid JSON from your Firebase service account file.",
         )
