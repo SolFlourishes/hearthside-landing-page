@@ -1,3 +1,5 @@
+import { createVertex } from "@ai-sdk/google-vertex"
+
 export function getVertexAICredentials() {
   // Parse the Firebase service account key
   const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
@@ -35,4 +37,14 @@ export function getVertexAIConfig() {
       projectId: creds.projectId,
     },
   }
+}
+
+export function getVertexAIProvider() {
+  const config = getVertexAIConfig()
+
+  return createVertex({
+    project: config.project,
+    location: config.location,
+    googleAuthOptions: config.googleAuthOptions,
+  })
 }

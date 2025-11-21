@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
-import { vertex } from "@ai-sdk/google-vertex"
+import { getVertexAIProvider } from "@/lib/vertex-ai"
 import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
 import { checkContentSafety, generateSafetyResponse, getSafetySystemPrompt } from "@/lib/content-safety"
 import { checkRateLimitWithTier } from "@/lib/rate-limiter"
@@ -295,6 +295,8 @@ ${
     } else {
       throw new Error("Invalid mode. Must be 'draft' or 'analyze'")
     }
+
+    const vertex = getVertexAIProvider()
 
     const { text: aiText } = await generateText({
       model: vertex("gemini-2.0-flash-exp"),

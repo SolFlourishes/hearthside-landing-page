@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
-import { vertex } from "@ai-sdk/google-vertex"
+import { getVertexAIProvider } from "@/lib/vertex-ai"
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,6 +24,8 @@ Indirect style characteristics:
 - More elaborate explanations
 
 Respond with ONLY a JSON object: {"style": "direct"} or {"style": "indirect"}`
+
+    const vertex = getVertexAIProvider()
 
     const { text: aiResponse } = await generateText({
       model: vertex("gemini-2.0-flash-exp"),

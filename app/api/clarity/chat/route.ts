@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
-import { vertex } from "@ai-sdk/google-vertex"
 import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
 import { checkContentSafety, generateSafetyResponse, getSafetySystemPrompt } from "@/lib/content-safety"
 import { checkRateLimit } from "@/lib/rate-limiter"
 import { validateOutput } from "@/lib/output-validator"
+import { getVertexAIProvider } from "@/lib/vertex-ai"
 
 export async function POST(request: NextRequest) {
   try {
@@ -134,6 +134,8 @@ When relevant expert knowledge is provided below, use it to inform your response
 Remember: You're having a conversation, not writing a manual. Keep it brief, focused, and engaging. Users can always ask follow-up questions if they want more detail.
 
 Format your responses in HTML with proper paragraph tags for readability.${expertContext}${filesContext}${userContext}`
+
+    const vertex = getVertexAIProvider()
 
     const { text } = await generateText({
       model: vertex("gemini-2.0-flash-exp"),
