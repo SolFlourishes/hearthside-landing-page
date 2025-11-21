@@ -19,6 +19,21 @@ export function Services() {
       badge: "Beta 4.5",
     },
     {
+      category: "Products",
+      title: "Leadership Leader",
+      description:
+        "Develop your leadership skills through AI-powered practice conversations. Simulate difficult leadership scenarios, receive real-time coaching, and track your growth across key competencies.",
+      features: [
+        "AI conversation simulator",
+        "Difficult scenario practice",
+        "Growth tracking dashboard",
+        "360 feedback integration",
+      ],
+      image: "/leadership-coaching-dashboard-with-growth-metrics.jpg",
+      link: "/apps/leader",
+      badge: "Alpha 0.1",
+    },
+    {
       category: "Services",
       title: "Hearthside Cultivates",
       description:
