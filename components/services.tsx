@@ -1,5 +1,9 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { ClarityLogo } from "./clarity-logo"
+import { LeaderLogo } from "./leader-logo"
+import { CultivatesLogo } from "./cultivates-logo"
+import { ElderLogo } from "./elder-logo"
 
 export function Services() {
   const services = [
@@ -14,10 +18,9 @@ export function Services() {
         "Communication Style Quiz",
         "Auto-populated personal context",
       ],
-      image: "/clarity-coach-logo-square.jpg",
+      logoComponent: ClarityLogo,
       link: "/apps/clarity",
       badge: "Beta 4.5",
-      useComponent: false,
     },
     {
       category: "Products",
@@ -30,10 +33,9 @@ export function Services() {
         "Growth tracking dashboard",
         "360 feedback integration",
       ],
-      image: "/leadership-leader-logo-square.jpg",
+      logoComponent: LeaderLogo,
       link: "/apps/leader",
       badge: "Alpha 0.1",
-      useComponent: false,
     },
     {
       category: "Services",
@@ -41,9 +43,8 @@ export function Services() {
       description:
         "Professional development workshops and consulting services designed to foster psychological safety and effective communication in your organization.",
       features: ["Team workshops", "Leadership coaching", "Custom training"],
-      image: "/professional-workshop-with-diverse-team-collaborat.jpg",
+      logoComponent: CultivatesLogo,
       link: "/cultivates",
-      useComponent: false,
     },
     {
       category: "Community",
@@ -51,9 +52,8 @@ export function Services() {
       description:
         "Be the reason someone else can flourish. Join our community of Elders who support others by sponsoring Clarity Coach subscriptions for those in need.",
       features: ["Support others", "Build community", "Create belonging"],
-      image: "/diverse-community-gathering-in-warm-welcoming-circ.jpg",
+      logoComponent: ElderLogo,
       link: "/elder-program",
-      useComponent: false,
     },
   ]
 
@@ -81,18 +81,18 @@ export function Services() {
               aria-labelledby={`service-${index}-title`}
               aria-describedby={`service-${index}-description`}
             >
-              {/* Image */}
+              {/* Image or Logo Component */}
               <div className={`${index % 2 === 1 ? "lg:order-2" : ""}`}>
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl max-h-[300px] bg-white">
-                  {service.useComponent && service.logoComponent ? (
-                    <div className="w-full h-[300px] flex items-center justify-center p-6">
-                      {service.logoComponent({ className: "w-full h-full" })}
+                  {service.logoComponent ? (
+                    <div className="w-full h-[300px] flex items-center justify-center p-8">
+                      <service.logoComponent size={250} />
                     </div>
                   ) : (
                     <img
                       src={service.image || "/placeholder.svg"}
                       alt={`${service.title} - ${service.description}`}
-                      className={`w-full h-full max-h-[300px] object-contain p-6`}
+                      className="w-full h-full max-h-[300px] object-cover"
                     />
                   )}
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full">
