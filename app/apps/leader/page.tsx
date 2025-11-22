@@ -18,8 +18,18 @@ export default function LeaderDashboard() {
       <main className="min-h-screen bg-gradient-to-b from-background via-background to-[#10b981]/5 pt-4">
         <section className="container mx-auto px-4 py-6 text-center">
           <div className="max-w-4xl mx-auto">
+            <div className="flex justify-center mb-4">
+              <div className="w-48 h-48">
+                <img
+                  src="/leadership-leader-logo-square.jpg"
+                  alt="Leadership Leader Logo"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
+
             <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3">
-              Welcome to <span className="text-[#10b981]">Leadership Leader</span>
+              Welcome to <span className="text-[#059669]">Leadership Leader</span>
             </h1>
             <p className="text-base text-muted-foreground mb-4">
               Practice difficult conversations, track your leadership growth, and build the skills to lead with clarity

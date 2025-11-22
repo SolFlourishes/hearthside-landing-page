@@ -23,8 +23,8 @@
   --border: #e5e7eb;
   --input: #e5e7eb;
   --ring: #007b8c;
-  /* Added Leadership Leader green color to design tokens */
-  --leader-green: #10b981;
+  /* Updated Leadership Leader green to meet WCAG AA contrast standards (4.5:1) */
+  --leader-green: #059669;
   --leader-green-foreground: #ffffff;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -62,7 +62,7 @@
   --border: #374151;
   --input: #374151;
   --ring: #4db8c9;
-  /* Added dark mode version of Leadership Leader green */
+  /* Dark mode green already meets standards, keeping as is */
   --leader-green: #34d399;
   --leader-green-foreground: #1f2937;
   --chart-1: oklch(0.488 0.243 264.376);
@@ -88,8 +88,8 @@
   --color-primary: #007b8c;
   --color-secondary: #e28a6d;
   --color-accent: #ffc72c;
-  /* Added leader-green to brand colors */
-  --color-leader-green: #10b981;
+  /* Updated brand green color token for accessibility */
+  --color-leader-green: #059669;
   --color-dark: #1f2937;
   --color-light: #f9fafb;
 

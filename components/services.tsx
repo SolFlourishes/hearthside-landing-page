@@ -17,6 +17,7 @@ export function Services() {
       image: "/clarity-coach-logo-square.jpg",
       link: "/apps/clarity",
       badge: "Beta 4.5",
+      useComponent: false,
     },
     {
       category: "Products",
@@ -29,9 +30,10 @@ export function Services() {
         "Growth tracking dashboard",
         "360 feedback integration",
       ],
-      image: "/leadership-coaching-dashboard-with-growth-metrics.jpg",
+      image: "/leadership-leader-logo-square.jpg",
       link: "/apps/leader",
       badge: "Alpha 0.1",
+      useComponent: false,
     },
     {
       category: "Services",
@@ -41,6 +43,7 @@ export function Services() {
       features: ["Team workshops", "Leadership coaching", "Custom training"],
       image: "/professional-workshop-with-diverse-team-collaborat.jpg",
       link: "/cultivates",
+      useComponent: false,
     },
     {
       category: "Community",
@@ -50,6 +53,7 @@ export function Services() {
       features: ["Support others", "Build community", "Create belonging"],
       image: "/diverse-community-gathering-in-warm-welcoming-circ.jpg",
       link: "/elder-program",
+      useComponent: false,
     },
   ]
 
@@ -80,11 +84,17 @@ export function Services() {
               {/* Image */}
               <div className={`${index % 2 === 1 ? "lg:order-2" : ""}`}>
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl max-h-[300px] bg-white">
-                  <img
-                    src={service.image || "/placeholder.svg"}
-                    alt={`${service.title} - ${service.description}`}
-                    className={`w-full h-full max-h-[300px] ${index === 0 ? "object-contain p-6" : "object-cover"}`}
-                  />
+                  {service.useComponent && service.logoComponent ? (
+                    <div className="w-full h-[300px] flex items-center justify-center p-6">
+                      {service.logoComponent({ className: "w-full h-full" })}
+                    </div>
+                  ) : (
+                    <img
+                      src={service.image || "/placeholder.svg"}
+                      alt={`${service.title} - ${service.description}`}
+                      className={`w-full h-full max-h-[300px] object-contain p-6`}
+                    />
+                  )}
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full">
                     <span className="text-xs font-semibold text-[#007B8C] uppercase tracking-wide">
                       {service.category}

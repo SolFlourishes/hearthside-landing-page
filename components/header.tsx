@@ -68,6 +68,14 @@ export function Header() {
                     >
                       Clarity Coach
                     </Link>
+                    <Link
+                      href="/apps/leader"
+                      className="block px-4 py-2 text-sm text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#F9FAFB] dark:hover:bg-[#4B5563] hover:text-[#10B981] dark:hover:text-[#34D399] transition-colors"
+                      role="menuitem"
+                      onClick={() => setAppsOpen(false)}
+                    >
+                      Leadership Leader
+                    </Link>
                   </div>
                 </div>
               )}
@@ -176,6 +184,13 @@ export function Header() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Clarity Coach
+                </Link>
+                <Link
+                  href="/apps/leader"
+                  className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#10B981] dark:hover:text-[#34D399] transition-colors py-2 px-4 block"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Leadership Leader
                 </Link>
               </div>
               <div className="space-y-2">

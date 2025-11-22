@@ -12,7 +12,7 @@ export function HearthArch({ className = "", ...props }: HearthArchProps) {
       {...props}
       aria-label="Hearthside Works Logo"
     >
-      <path d="M 10 50 A 40 40 0 0 1 90 50" stroke="currentColor" strokeWidth="12" fill="none" strokeLinecap="round" />
+      <path d="M 10 50 A 40 40 0 0 1 90 50" stroke="#E97551" strokeWidth="16" fill="none" strokeLinecap="round" />
     </svg>
   )
 }
