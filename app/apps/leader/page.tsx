@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useEffect } from "react"
+import { LeaderLogo } from "@/components/leader-logo"
 
 export default function LeaderDashboard() {
   useEffect(() => {
@@ -19,13 +20,7 @@ export default function LeaderDashboard() {
         <section className="container mx-auto px-4 py-6 text-center">
           <div className="max-w-4xl mx-auto">
             <div className="flex justify-center mb-4">
-              <div className="w-48 h-48">
-                <img
-                  src="/leadership-leader-logo-square.jpg"
-                  alt="Leadership Leader Logo"
-                  className="w-full h-full object-contain"
-                />
-              </div>
+              <LeaderLogo className="w-48 h-48" />
             </div>
 
             <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3">
