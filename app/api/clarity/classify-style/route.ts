@@ -28,7 +28,7 @@ Respond with ONLY a JSON object: {"style": "direct"} or {"style": "indirect"}`
     const vertex = getVertexAIProvider()
 
     const { text: aiResponse } = await generateText({
-      model: vertex("gemini-pro-latest"), // Updated to gemini-pro-latest
+      model: vertex("gemini-2.5-flash"),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: text },

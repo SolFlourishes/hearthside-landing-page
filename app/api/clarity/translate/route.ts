@@ -299,7 +299,7 @@ ${
 
     try {
       const { text: aiText } = await generateText({
-        model: vertex("gemini-pro-latest"), // Updated to gemini-pro-latest
+        model: vertex("gemini-2.5-flash"), // Updated to use stable gemini-2.5-flash model instead of invalid gemini-pro-latest
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },

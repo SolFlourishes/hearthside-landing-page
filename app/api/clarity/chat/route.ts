@@ -138,7 +138,7 @@ Format your responses in HTML with proper paragraph tags for readability.${exper
     const vertex = getVertexAIProvider()
 
     const { text } = await generateText({
-      model: vertex("gemini-pro-latest"), // Updated to gemini-pro-latest
+      model: vertex("gemini-2.5-flash"),
       messages: [
         { role: "system", content: systemPrompt },
         ...history.map((msg: any) => ({
