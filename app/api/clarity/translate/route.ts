@@ -4,7 +4,6 @@ import { getVertexAIProvider } from "@/lib/vertex-ai"
 import { retrieveRelevantDocuments, formatContextForPrompt } from "@/lib/rag-system"
 import { checkContentSafety, generateSafetyResponse, getSafetySystemPrompt } from "@/lib/content-safety"
 import { checkRateLimitWithTier } from "@/lib/rate-limiter"
-import { validateOutput } from "@/lib/output-validator"
 import {
   getNeurotypeGuidance,
   getGenerationGuidance,
@@ -298,64 +297,78 @@ ${
 
     const vertex = getVertexAIProvider()
 
-    const { text: aiText } = await generateText({
-      model: vertex("gemini-2.0-flash-exp"),
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.7,
-    })
-
-    let cleanedText = aiText.trim()
-
-    if (cleanedText.startsWith("```json")) {
-      cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "")
-    } else if (cleanedText.startsWith("```")) {
-      cleanedText = cleanedText.replace(/^```\s*/, "").replace(/\s*```$/, "")
-    }
-
-    const jsonMatch = cleanedText.match(/\{[\s\S]*\}/)
-    if (jsonMatch) {
-      cleanedText = jsonMatch[0]
-    }
-
-    let parsed
     try {
-      parsed = JSON.parse(cleanedText)
-    } catch (parseError) {
-      console.error("JSON parse error:", parseError)
-      throw new Error(`Invalid JSON response: ${parseError instanceof Error ? parseError.message : String(parseError)}`)
-    }
-
-    if (!parsed.explanation || !parsed.translation) {
-      console.error("Missing required fields in response:", parsed)
-      throw new Error("Response missing required fields (explanation or translation)")
-    }
-
-    const outputValidation = validateOutput(parsed.explanation + " " + parsed.translation, audience)
-
-    if (!outputValidation.isSafe) {
-      return NextResponse.json({
-        explanation:
-          "I apologize, but I need to reconsider my response to ensure it's helpful and appropriate. Please try rephrasing your request, or contact support if you believe this is an error.",
-        response: "",
-        attachmentGuidance: null,
-        success: true,
-        outputValidationFailed: true,
+      const { text: aiText } = await generateText({
+        model: vertex("gemini-pro-latest"), // Updated to gemini-pro-latest
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        temperature: 0.7,
+        maxRetries: 2,
       })
-    }
 
-    return NextResponse.json({
-      detectedStyle: parsed.detectedStyle || "communication style analyzed from message",
-      explanation: parsed.explanation,
-      response: parsed.translation,
-      attachmentGuidance: parsed.attachmentGuidance || null,
-      success: true,
-      safetyWarning: showSafetyResources ? safetyCheck : null,
-    })
+      let parsedResponse
+      try {
+        // Remove any markdown code blocks if present
+        const cleanedText = aiText
+          .replace(/```json\n?/g, "")
+          .replace(/```\n?/g, "")
+          .trim()
+        parsedResponse = JSON.parse(cleanedText)
+      } catch (parseError) {
+        console.error("[v0] Failed to parse AI response:", aiText)
+        return NextResponse.json(
+          {
+            error: "Invalid response format",
+            details: "The AI service returned an unexpected format. Please try again.",
+            success: false,
+          },
+          { status: 500 },
+        )
+      }
+
+      return NextResponse.json({
+        ...parsedResponse,
+        success: true,
+        showSafetyResources,
+      })
+    } catch (aiError: any) {
+      console.error("[v0] AI Generation Error:", {
+        status: aiError.statusCode,
+        message: aiError.message,
+        url: aiError.url,
+      })
+
+      if (aiError.statusCode === 429 || aiError.message?.includes("Resource exhausted")) {
+        return NextResponse.json(
+          {
+            error: "Service temporarily unavailable",
+            details:
+              "The AI model is currently unavailable. This could be due to quota limits or model availability. Please try again in a few minutes.",
+            success: false,
+            retryAfter: 60,
+          },
+          { status: 429 },
+        )
+      }
+
+      if (aiError.statusCode === 403 || aiError.message?.includes("permission")) {
+        return NextResponse.json(
+          {
+            error: "Configuration error",
+            details: "There's an issue with the AI service configuration. Please contact support if this persists.",
+            success: false,
+          },
+          { status: 500 },
+        )
+      }
+
+      // Generic error fallback
+      throw aiError
+    }
   } catch (error) {
-    console.error("Translation API error:", error)
+    console.error("[v0] Translation API error:", error)
     return NextResponse.json(
       {
         error: "Failed to generate translation",

@@ -1,10 +1,13 @@
 import { Redis } from "@upstash/redis"
 
-// Initialize Redis client
-const redis = new Redis({
-  url: process.env.UPSTASH_KV_KV_REST_API_URL!,
-  token: process.env.UPSTASH_KV_KV_REST_API_TOKEN!,
-})
+const isRedisConfigured = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
+
+const redis = isRedisConfigured
+  ? new Redis({
+      url: process.env.KV_REST_API_URL!,
+      token: process.env.KV_REST_API_TOKEN!,
+    })
+  : null
 
 export interface RateLimitResult {
   success: boolean
@@ -23,6 +26,18 @@ export async function checkRateLimit(identifier: string, limit = 10, windowMs = 
   const key = `rate_limit:${identifier}`
   const now = Date.now()
   const windowStart = now - windowMs
+
+  if (!redis) {
+    console.warn("[v0] Redis not configured, allowing request without rate limiting")
+    return {
+      success: true,
+      allowed: true,
+      limit,
+      remaining: limit,
+      reset: now + windowMs,
+      resetIn: windowMs,
+    }
+  }
 
   try {
     // Remove old entries outside the window
