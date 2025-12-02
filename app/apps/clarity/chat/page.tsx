@@ -133,7 +133,7 @@ export default function ChatModePage() {
 
       if (!response.ok) {
         const errData = await response.json()
-        throw new Error(errData.error || "The server had an issue connecting.")
+        throw new Error(errData.error || errData.details || "The server had an issue connecting.")
       }
 
       const data = await response.json()

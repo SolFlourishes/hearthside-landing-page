@@ -123,7 +123,7 @@ export default function AnalyzeModePage() {
 
       if (!transRes.ok) {
         const errData = await transRes.json()
-        throw new Error(errData.error || "An error occurred during analysis.")
+        throw new Error(errData.error || errData.details || "An error occurred during analysis.")
       }
 
       const data = await transRes.json()

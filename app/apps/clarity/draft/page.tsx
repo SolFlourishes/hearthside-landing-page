@@ -196,16 +196,9 @@ export default function DraftModePage() {
 
   const handleTranslate = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsLoading(true)
     setError(null)
     setAiResponse(null)
-    setFeedbackSuccess({ explanation: false, response: false })
-    setIsEditing(false)
-    setEditedResponse("")
-    setEditSaveSuccess(false)
-    setIsReanalyzing(false)
-    setReanalysisResult(null)
-    setFeedbackDocId(null)
-    setIsLoading(true)
 
     try {
       const requestBody = {
@@ -238,10 +231,23 @@ export default function DraftModePage() {
         body: JSON.stringify(requestBody),
       })
 
-      if (!transRes.ok) throw new Error("An error occurred during translation.")
+      if (!transRes.ok) {
+        const errorData = await transRes.json().catch(() => ({ error: "Unknown error", details: null }))
+        const errorMessage = errorData.details
+          ? `${errorData.error}: ${errorData.details}`
+          : errorData.error || "An error occurred during translation."
+        throw new Error(errorMessage)
+      }
+
       const data = await transRes.json()
+
+      if (!data.success) {
+        throw new Error(data.error || "Translation failed. Please try again.")
+      }
+
       setAiResponse(data)
     } catch (err: any) {
+      console.error("[v0] Translation error:", err)
       setError(err.message)
     } finally {
       setIsLoading(false)
