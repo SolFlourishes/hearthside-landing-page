@@ -245,6 +245,10 @@ export default function DraftModePage() {
         throw new Error(data.error || "Translation failed. Please try again.")
       }
 
+      if (!data.explanation || !data.translation) {
+        throw new Error("Incomplete response from AI service. Please try again.")
+      }
+
       setAiResponse(data)
     } catch (err: any) {
       console.error("[v0] Translation error:", err)
@@ -255,7 +259,7 @@ export default function DraftModePage() {
   }
 
   const handleEditClick = () => {
-    setEditedResponse(aiResponse.response)
+    setEditedResponse(aiResponse.translation)
     setIsEditing(true)
     setEditSaveSuccess(false)
     setReanalysisResult(null)
@@ -270,7 +274,7 @@ export default function DraftModePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          originalResponse: aiResponse.response,
+          originalResponse: aiResponse.translation,
           editedResponse,
           mode: "draft",
         }),
@@ -298,7 +302,7 @@ export default function DraftModePage() {
       const requestBody = {
         mode: "analyze",
         text: editedResponse,
-        analyzeContext: `The user edited the AI's suggestion. Analyze their new version for clarity and potential misinterpretations. Original AI suggestion was: "${aiResponse.response}"`,
+        analyzeContext: `The user edited the AI's suggestion. Analyze their new version for clarity and potential misinterpretations. Original AI suggestion was: "${aiResponse.translation}"`,
         interpretation: "How does my new version sound?",
         sender: senderStyle,
         receiver: receiverStyle,
@@ -420,7 +424,7 @@ export default function DraftModePage() {
         user_id: user.id,
         mode: "draft",
         original_text: draft,
-        translated_text: aiResponse.response,
+        translated_text: aiResponse.translation,
         context: intent,
         translation_data: {
           explanation: aiResponse.explanation,
@@ -848,8 +852,12 @@ export default function DraftModePage() {
               </Card>
 
               <Card className="p-4 relative">
-                <ReportButton content={isEditing ? editedResponse : aiResponse.response} mode="draft" type="response" />
-                <CopyButton text={isEditing ? editedResponse : aiResponse.response} />
+                <ReportButton
+                  content={isEditing ? editedResponse : aiResponse.translation}
+                  mode="draft"
+                  type="response"
+                />
+                <CopyButton text={isEditing ? editedResponse : aiResponse.translation} />
                 <h3 className="text-base font-bold font-serif text-primary mb-3">The Translation</h3>
                 {isEditing ? (
                   <Textarea
@@ -859,7 +867,7 @@ export default function DraftModePage() {
                   />
                 ) : (
                   <div className="mb-3">
-                    <MarkdownRenderer content={aiResponse.response} />
+                    <MarkdownRenderer content={aiResponse.translation} />
                   </div>
                 )}
 

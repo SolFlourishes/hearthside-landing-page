@@ -1,12 +1,16 @@
 "use client"
 
-import type React from "react" // Import React to declare JSX
+import type React from "react"
 
 interface MarkdownRendererProps {
   content: string
 }
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
+  if (!content || typeof content !== "string") {
+    return <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">No content available</div>
+  }
+
   // Simple markdown parser for basic formatting
   const parseMarkdown = (text: string) => {
     const lines = text.split("\n")

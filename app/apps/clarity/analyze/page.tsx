@@ -127,6 +127,11 @@ export default function AnalyzeModePage() {
       }
 
       const data = await transRes.json()
+
+      if (!data.explanation || !data.response) {
+        throw new Error("Incomplete response from AI. Missing explanation or response content.")
+      }
+
       setAiResponse(data)
     } catch (err: any) {
       setError(err.message)
