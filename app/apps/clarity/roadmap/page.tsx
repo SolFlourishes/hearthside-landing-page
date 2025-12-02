@@ -92,7 +92,52 @@ export default function RoadmapPage() {
             </div>
           </Card>
 
-          {/* Beta 4.1 - PoliTalk Explorer & Consistency Check */}
+          {/* Beta 4.6 - Communication Medium Recommendations (Phase 3) */}
+          {/* Beta 4.6 - Next */}
+          <Card className="p-6 border-blue-500/50 bg-blue-50/50 dark:bg-blue-950/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Circle className="w-6 h-6 text-blue-500 mt-1 flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">Beta 4.6</h2>
+                  <span className="px-2 py-1 bg-blue-500/20 text-blue-700 dark:text-blue-400 text-xs rounded-full font-medium">
+                    Up Next
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-3">Communication Medium Recommendations</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>
+                    AI analyzes message content and context to recommend optimal communication medium: Email, Phone
+                    Call, Video Chat, or In-Person
+                  </li>
+                  <li>
+                    Recommendation factors include emotional sensitivity, complexity requiring dialogue, relationship
+                    dynamics, urgency, and need for tone/body language
+                  </li>
+                  <li>
+                    Clear reasoning provided for each recommendation - helps users understand why certain mediums work
+                    better for specific situations
+                  </li>
+                  <li>Integrated into Draft, Analyze, and Chat modes - appears alongside translations and analysis</li>
+                  <li>
+                    When verbal communication is recommended (phone, video, in-person), provides 3-5 context-specific
+                    conversation tips including opening strategies, communication techniques, non-verbal cues to watch
+                    for, de-escalation tactics, and closing approaches
+                  </li>
+                  <li>
+                    Conversation tips are personalized based on your communication style, recipient context, and message
+                    content
+                  </li>
+                  <li>
+                    Helps users recognize when asynchronous text communication may lose important nuance or escalate
+                    misunderstanding
+                  </li>
+                  <li>Supports better communication choices by matching message intent with medium capabilities</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
           {/* Beta 4.1 - Completed */}
           <Card className="p-6 border-green-500/50 bg-green-50/50 dark:bg-green-950/20">
             <div className="flex items-start gap-3 mb-4">
