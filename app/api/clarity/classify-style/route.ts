@@ -7,8 +7,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { text } = body
 
-    console.log("[v0] Classify style request received, text length:", text?.length)
-
     const systemPrompt = `You are a communication style classifier. Analyze the given text and determine if the communication style is "direct" or "indirect".
 
 Direct style characteristics:
@@ -36,8 +34,6 @@ Respond with ONLY a JSON object: {"style": "direct"} or {"style": "indirect"}`
       temperature: 0.3,
     })
 
-    console.log("[v0] Classification response:", aiResponse)
-
     let cleanedText = aiResponse.trim()
     if (cleanedText.startsWith("```json")) {
       cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "")
@@ -52,7 +48,7 @@ Respond with ONLY a JSON object: {"style": "direct"} or {"style": "indirect"}`
       success: true,
     })
   } catch (error) {
-    console.error("[v0] Classify style API error:", error)
+    console.error("Classify style API error:", error)
     return NextResponse.json(
       {
         error: "Failed to classify style",

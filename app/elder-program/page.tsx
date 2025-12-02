@@ -1,7 +1,8 @@
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Heart, Users, Gift, CheckCircle } from "lucide-react"
+import { Users, Gift, CheckCircle } from "lucide-react"
+import { ElderLogo } from "@/components/elder-logo"
 
 export default function ElderProgramPage() {
   return (
@@ -11,8 +12,8 @@ export default function ElderProgramPage() {
         <section className="bg-gradient-to-br from-[#FFC72C] to-[#e6b028] text-[#1F2937] py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
-              <div className="flex items-center gap-3 mb-4">
-                <Heart className="w-10 h-10" aria-hidden="true" />
+              <div className="flex items-center gap-4 mb-4">
+                <ElderLogo size={80} />
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-balance">The Elder Program</h1>
               </div>
               <p className="text-lg md:text-xl leading-relaxed mb-6">
